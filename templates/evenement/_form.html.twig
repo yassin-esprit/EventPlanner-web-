@@ -1,4 +1,31 @@
-{{ form_start(form) }}
-{{ form_widget(form) }}
-<button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+<div class="mb-3">
+	{{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+	{{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+	{{ form_label(form.type, 'Type', {'label_attr': {'class': 'form-label'}}) }}
+	{{ form_widget(form.type, {'attr': {'class': 'form-select'}}) }}
+</div>
+<div class="mb-3">
+	{{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+	{{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+	{{ form_label(form.date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
+	{{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+	{{ form_label(form.lieu, 'Lieu', {'label_attr': {'class': 'form-label'}}) }}
+	{{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+	{{ form_label(form.nbrplaces, 'Number of Places', {'label_attr': {'class': 'form-label'}}) }}
+	{{ form_widget(form.nbrplaces, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+	{{ form_label(form.sponsor, 'Sponsor', {'label_attr': {'class': 'form-label'}}) }}
+	{{ form_widget(form.sponsor, {'attr': {'class': 'form-select'}}) }}
+</div>
+<button class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
