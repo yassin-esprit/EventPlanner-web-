@@ -9,15 +9,21 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType; 
 class EvenementType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('titre')
-            ->add('type')
-            ->add('description')
+            ->add('type', ChoiceType::class, [
+                'choices' => [
+                    'Fête' => 'fete',
+                    'Conférence' => 'conference',
+                    'Formation' => 'formation',
+                ],
+                'placeholder' => 'Choisir un type', 
+            ])            ->add('description')
             ->add('date', null, [
                 'widget' => 'single_text',
             ])
@@ -25,13 +31,13 @@ class EvenementType extends AbstractType
             ->add('nbrplaces')
             ->add('sponsor', EntityType::class, [
                 'class' => Sponsor::class,
-                'choice_label' => 'id',
+                'choice_label' => 'id_sponsor',
             ])
-            ->add('users', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
+            // ->add('users', EntityType::class, [
+            //     'class' => User::class,
+            //     'choice_label' => 'id',
+            //     'multiple' => true,
+            // ])
         ;
     }
 
