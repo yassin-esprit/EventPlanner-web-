@@ -1,20 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!
+{% block title %}Login to Festava Live
 {% endblock %}
 
 {% block body %}
-	<h1>Login</h1>
-	{% if error %}
-		<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-	{% endif %}
+	<section class="ticket-section section-padding">
+		<div class="section-overlay"></div>
 
-	<form method="post">
-		<label for="inputEmail">Email</label>
-		<input type="email" value="{{ last_username }}" name="email" id="inputEmail" required autofocus>
-		<label for="inputPassword">Password</label>
-		<input type="password" name="password" id="inputPassword" required>
-		<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-		<button type="submit">Sign in</button>
-	</form>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 col-10 mx-auto">
+					<form class="custom-form ticket-form mb-5 mb-lg-0" method="post">
+						<h2 class="text-center mb-4">Login to Your Account</h2>
+
+						{% if error %}
+							<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+						{% endif %}
+
+						<div class="ticket-form-body">
+							<div class="mb-3">
+								<input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+							</div>
+
+							<div class="mb-3">
+								<input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+							</div>
+
+							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+							<div class="d-flex justify-content-between align-items-center mb-3">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" name="_remember_me" id="rememberMe">
+									<label class="form-check-label" for="rememberMe">
+										Remember me
+									</label>
+								</div>
+								<a href="#">Forgot password?</a>
+							</div>
+
+							<div class="col-lg-4 col-md-10 col-8 mx-auto">
+								<button type="submit" class="form-control">Login</button>
+							</div>
+
+							<div class="text-center mt-3">
+								<p>Don't have an account?
+									<a href="{{ path('app_register') }}">Register here</a>
+								</p>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
 {% endblock %}

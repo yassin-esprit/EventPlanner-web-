@@ -1,20 +1,96 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register
+{% block title %}Register for Festava Live
 {% endblock %}
 
 {% block body %}
-	<h1>Register</h1>
+	<section class="ticket-section section-padding">
+		<div class="section-overlay"></div>
 
-	{{ form_start(registrationForm) }}
-	{{ form_row(registrationForm.firstName) }}
-	{{ form_row(registrationForm.lastName) }}
-	{{ form_row(registrationForm.email) }}
-	{{ form_row(registrationForm.phone) }}
-	{{ form_row(registrationForm.password) }}
-	{{ form_row(registrationForm.Role) }}
-	{# Add the role field #}
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 col-10 mx-auto">
+					<form class="custom-form ticket-form mb-5 mb-lg-0" method="post">
+						<h2 class="text-center mb-4">Register for Festava Live</h2>
 
-	<button type="submit" class="btn btn-primary">Register</button>
-	{{ form_end(registrationForm) }}
+						<div class="ticket-form-body">
+							{{ form_start(registrationForm) }}
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-12">
+									{{ form_row(registrationForm.firstName, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'First Name'
+                                    },
+                                    'label': false
+                                }) }}
+								</div>
+
+								<div class="col-lg-6 col-md-6 col-12">
+									{{ form_row(registrationForm.lastName, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Last Name'
+                                    },
+                                    'label': false
+                                }) }}
+								</div>
+							</div>
+
+							{{ form_row(registrationForm.email, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Email address'
+                            },
+                            'label': false
+                        }) }}
+
+							{{ form_row(registrationForm.phone, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Phone number'
+                            },
+                            'label': false
+                        }) }}
+
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-12">
+									{{ form_row(registrationForm.password.first, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Password'
+                                    },
+                                    'label': false
+                                }) }}
+								</div>
+
+								<div class="col-lg-6 col-md-6 col-12">
+									{{ form_row(registrationForm.password.second, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Repeat Password'
+                                    },
+                                    'label': false
+                                }) }}
+								</div>
+							</div>
+
+							<h6>Choose Your Role</h6>
+							{{ form_row(registrationForm.Role, {
+                            'attr': {
+                                'class': 'form-control'
+                            },
+                            'label': false
+                        }) }}
+
+							<div class="col-lg-4 col-md-10 col-8 mx-auto mt-3">
+								<button type="submit" class="form-control">Register</button>
+							</div>
+							{{ form_end(registrationForm) }}
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
 {% endblock %}
