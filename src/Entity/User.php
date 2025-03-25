@@ -15,7 +15,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(name: 'userId' ,type: 'integer')]
     private ?int $userId = null;
 
     #[ORM\Column(name: 'firstName', type: 'string', nullable: false)]
@@ -145,14 +145,14 @@ private ?string $Role = null; // Ensure the property name is lowercase 'role'
         return $this;
     }
 
-    public function getRoles(): array
+public function getRoles(): array
     {
-        return [$this->Role];
-    }
-
-    public function getSalt(): ?string
-    {
-        return null;
+        // Ensure role starts with ROLE_ and is uppercase
+        $role = strtoupper($this->Role);
+        if (!str_starts_with($role, 'ROLE_')) {
+            $role = 'ROLE_' . $role;
+        }
+        return [$role];
     }
 
     public function getUserIdentifier(): string
@@ -162,7 +162,14 @@ private ?string $Role = null; // Ensure the property name is lowercase 'role'
 
     public function eraseCredentials(): void
     {
+        // If you store any temporary, sensitive data on the user, clear it here
     }
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
 
     public function serialize(): string
     {
