@@ -124,6 +124,7 @@
     </section>
 {% endblock %}
 
+
 {% block stylesheets %}
     <style>
         /* Hero Section */
@@ -181,7 +182,7 @@
         
         .artists-image-wrap {
             position: relative;
-            height: 280px;
+            height: 300px;
             overflow: hidden;
         }
         
@@ -238,23 +239,29 @@
         
         .event-meta {
             margin-bottom: 15px;
-		
+            color: #000; /* Changed to black for better visibility */
+            background-color: rgba(255, 255, 255, 0); /* Added light background */
+            padding: 15px;
+            border-radius: 8px;
         }
         
         .event-meta p {
             margin-bottom: 5px;
             display: flex;
             align-items: center;
+            color: #000; /* Changed to black */
         }
         
         .event-meta i {
             margin-right: 8px;
             font-size: 1.1rem;
+            color: #000; /* Changed to black */
         }
         
         .event-description {
             font-size: 0.9rem;
             line-height: 1.5;
+            color: #000; /* Changed to black */
         }
         
         .custom-btn {
