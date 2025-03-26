@@ -13,10 +13,12 @@ class DashboardController extends AbstractController
 {
     #[Route('/dashboard/admin', name: 'admin_dashboard')]
     #[IsGranted('ROLE_ADMIN')]
-    public function adminDashboard(): Response
+    public function adminDashboard(EvenementRepository $evenementRepository): Response
     {
+                 $evenements = $evenementRepository->findAll();
         return $this->render('dashboard/admin/admin.html.twig', [
             'controller_name' => 'DashboardController',
+            'evenements' => $evenements
         ]);
     }
 
