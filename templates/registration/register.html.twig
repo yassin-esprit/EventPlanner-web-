@@ -18,73 +18,82 @@
 							<div class="row">
 								<div class="col-lg-6 col-md-6 col-12">
 									{{ form_row(registrationForm.firstName, {
-                                    'attr': {
-                                        'class': 'form-control',
-                                        'placeholder': 'First Name'
-                                    },
-                                    'label': false
-                                }) }}
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'First Name'
+                                        },
+                                        'label': false
+                                    }) }}
 								</div>
 
 								<div class="col-lg-6 col-md-6 col-12">
 									{{ form_row(registrationForm.lastName, {
-                                    'attr': {
-                                        'class': 'form-control',
-                                        'placeholder': 'Last Name'
-                                    },
-                                    'label': false
-                                }) }}
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Last Name'
+                                        },
+                                        'label': false
+                                    }) }}
 								</div>
 							</div>
 
 							{{ form_row(registrationForm.email, {
-                            'attr': {
-                                'class': 'form-control',
-                                'placeholder': 'Email address'
-                            },
-                            'label': false
-                        }) }}
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Email address'
+                                },
+                                'label': false
+                            }) }}
 
 							{{ form_row(registrationForm.phone, {
-                            'attr': {
-                                'class': 'form-control',
-                                'placeholder': 'Phone number'
-                            },
-                            'label': false
-                        }) }}
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Phone number'
+                                },
+                                'label': false
+                            }) }}
 
 							<div class="row">
 								<div class="col-lg-6 col-md-6 col-12">
 									{{ form_row(registrationForm.password.first, {
-                                    'attr': {
-                                        'class': 'form-control',
-                                        'placeholder': 'Password'
-                                    },
-                                    'label': false
-                                }) }}
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Password'
+                                        },
+                                        'label': false
+                                    }) }}
 								</div>
 
 								<div class="col-lg-6 col-md-6 col-12">
 									{{ form_row(registrationForm.password.second, {
-                                    'attr': {
-                                        'class': 'form-control',
-                                        'placeholder': 'Repeat Password'
-                                    },
-                                    'label': false
-                                }) }}
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Repeat Password'
+                                        },
+                                        'label': false
+                                    }) }}
 								</div>
 							</div>
 
-							<h6>Choose Your Role</h6>
+							<h6 class="mt-3">Choose Your Role</h6>
 							{{ form_row(registrationForm.Role, {
-                            'attr': {
-                                'class': 'form-control'
-                            },
-                            'label': false
-                        }) }}
+                                'attr': {
+                                    'class': 'form-control'
+                                },
+                                'label': false
+                            }) }}
 
-							<div class="col-lg-4 col-md-10 col-8 mx-auto mt-3">
-								<button type="submit" class="form-control">Register</button>
+							<div class="row mt-4">
+								<div class="col-md-6 col-12 mb-3 mb-md-0">
+									<button type="submit" class="custom-btn w-100">
+										<i class="bi bi-person-plus me-2"></i>Register
+									</button>
+								</div>
+								<div class="col-md-6 col-12">
+									<a href="{{ path('app_login') }}" class="custom-border-btn w-100 d-inline-block text-center">
+										<i class="bi bi-box-arrow-in-right me-2"></i>Login Instead
+									</a>
+								</div>
 							</div>
 							{{ form_end(registrationForm) }}
 						</div>
@@ -93,4 +102,74 @@
 			</div>
 		</div>
 	</section>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		/* Custom button styles - matches your existing template */
+		.custom-btn {
+			background: var(--custom-btn-bg-color);
+			border: 2px solid transparent;
+			border-radius: var(--border-radius-large);
+			color: var(--white-color);
+			font-size: var(--btn-font-size);
+			font-weight: var(--font-weight-bold);
+			line-height: normal;
+			transition: all 0.3s;
+			padding: 12px 20px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-transform: uppercase;
+		}
+
+		.custom-btn:hover {
+			background: var(--custom-btn-bg-hover-color);
+			color: var(--white-color);
+			transform: translateY(-2px);
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+		}
+
+		.custom-border-btn {
+			background: transparent;
+			border: 2px solid var(--custom-btn-bg-color);
+			border-radius: var(--border-radius-large);
+			color: var(--custom-btn-bg-color);
+			font-size: var(--btn-font-size);
+			font-weight: var(--font-weight-bold);
+			line-height: normal;
+			transition: all 0.3s;
+			padding: 12px 20px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			text-transform: uppercase;
+		}
+
+		.custom-border-btn:hover {
+			background: var(--custom-btn-bg-hover-color);
+			border-color: transparent;
+			color: var(--white-color);
+			transform: translateY(-2px);
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+		}
+
+		/* Form styling */
+		.ticket-form {
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: var(--border-radius-medium);
+			box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+		}
+
+		/* Responsive adjustments */
+		@media(max-width: 767px) {
+			.custom-btn,
+			.custom-border-btn {
+				padding: 10px 15px;
+				font-size: 14px;
+			}
+		}
+	</style>
 {% endblock %}

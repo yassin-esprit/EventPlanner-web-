@@ -4,14 +4,22 @@
 {% endblock %}
 
 {% block body %}
-	<!-- Hero Section -->
+	<!-- Hero Section with Full-Size Video -->
 	<section class="hero-section" id="section_1">
 		<div class="section-overlay"></div>
 		<div class="container d-flex justify-content-center align-items-center">
 			<div class="row">
 				<div class="col-12 mt-auto mb-5 text-center">
 					<h1 class="text-white mb-5">Your Events Dashboard</h1>
-					<a class="btn custom-btn smoothscroll" href="#events">Browse Events</a>
+					<div
+						class="d-flex justify-content-center gap-3">
+						<!-- Browse Events Button (Always Visible) -->
+						<a class="btn custom-btn smoothscroll" href="#events">
+							<i class="bi bi-calendar-event me-2"></i>Browse Events
+						</a>
+
+
+					</div>
 				</div>
 			</div>
 		</div>
@@ -126,8 +134,8 @@
 		/* Hero Section */
 		.hero-section {
 			position: relative;
-			height: 60vh;
-			min-height: 400px;
+			height: 100vh;
+			min-height: 600px;
 			display: flex;
 			align-items: center;
 			overflow: hidden;
@@ -157,17 +165,18 @@
 			object-fit: cover;
 		}
 
-		/* Custom Button */
+		/* Button Styles */
 		.custom-btn {
 			background-color: #f6388a;
 			color: white;
 			border: none;
-			padding: 10px 25px;
+			padding: 12px 30px;
 			border-radius: 50px;
 			font-weight: 600;
 			transition: all 0.3s ease;
 			display: inline-flex;
 			align-items: center;
+			font-size: 1.1rem;
 		}
 
 		.custom-btn:hover {
@@ -177,10 +186,29 @@
 			color: white;
 		}
 
+		.btn-outline-light {
+			border: 2px solid white;
+			color: white;
+			background: transparent;
+			padding: 12px 30px;
+			border-radius: 50px;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			display: inline-flex;
+			align-items: center;
+			font-size: 1.1rem;
+		}
+
+		.btn-outline-light:hover {
+			background: white;
+			color: #f6388a;
+			transform: translateY(-3px);
+		}
+
 		/* Events Section */
 		.artists-section {
 			background: #f8f9fa;
-			padding: 40px 0;
+			padding: 60px 0;
 		}
 
 		.artists-thumb {
@@ -257,7 +285,7 @@
 		.event-meta {
 			margin-bottom: 15px;
 			color: #000;
-			background-color: rgba(255, 255, 255, 0);
+			background-color: rgba(255, 255, 255, 0.8);
 			padding: 15px;
 			border-radius: 8px;
 		}
@@ -286,15 +314,31 @@
 			scroll-behavior: smooth;
 		}
 
+		/* Button spacing */
+		.gap-3 {
+			gap: 1rem;
+		}
+
 		/* Responsive adjustments */
 		@media(max-width: 767.98px) {
 			.hero-section {
-				min-height: 300px;
-				height: 40vh;
+				min-height: 500px;
+				height: 80vh;
 			}
 
 			.artists-image-wrap {
 				height: 200px;
+			}
+
+			.custom-btn,
+			.btn-outline-light {
+				padding: 10px 20px;
+				font-size: 1rem;
+			}
+
+			.d-flex {
+				flex-direction: column;
+				gap: 0.5rem;
 			}
 		}
 	</style>

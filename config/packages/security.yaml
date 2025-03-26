@@ -1,6 +1,8 @@
 security:
   password_hashers:
-    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+      algorithm: auto
+      cost: 12 # Increased for better security
 
   providers:
     app_user_provider:
@@ -10,26 +12,40 @@ security:
 
   firewalls:
     dev:
-      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      pattern: ^/(_(profiler|wdt)|css|images|js|video)/
       security: false
+
     main:
       lazy: true
       provider: app_user_provider
       form_login:
         login_path: app_login
         check_path: app_login
-        username_parameter: "email" # Add this line
-        password_parameter: "password" # Add this line
-        default_target_path: app_dashboard_redirect # Add this line
+        username_parameter: email
+        password_parameter: password
+        default_target_path: app_dashboard_redirect
         enable_csrf: true
+        # Add these for better UX
+        use_referer: true
+        always_use_default_target_path: false
+        target_path_parameter: redirect_to
       logout:
         path: app_logout
+        target: home # Redirect to home after logout
+        # Add CSRF protection for logout
+        csrf_token_id: logout
+        invalidate_session: true
+        delete_cookies:
+          - REMEMBERME
 
   access_control:
-    - { path: ^/login, roles: PUBLIC_ACCESS }
+    - { path: ^/login$, roles: PUBLIC_ACCESS }
+    - { path: ^/register, roles: PUBLIC_ACCESS }
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/owner, roles: ROLE_OWNER }
     - { path: ^/dashboard, roles: ROLE_PARTICIPANT }
+    # Add a catch-all rule for the rest of your application
+    - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
   security:
