@@ -3,53 +3,50 @@
 namespace App\Controller;
 
 use App\Repository\EvenementRepository;
-use App\Entity\Evenement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Entity\Evenement;
 
 class DashboardController extends AbstractController
 {
-    #[Route('/admin/dashboard', name: 'admin_dashboard')]
+    #[Route('/dashboard/admin', name: 'admin_dashboard')]
     #[IsGranted('ROLE_ADMIN')]
     public function adminDashboard(): Response
     {
-        return $this->render('dashboard/admin.html.twig', [
+        return $this->render('dashboard/admin/admin.html.twig', [
             'controller_name' => 'DashboardController',
         ]);
     }
 
-    #[Route('/owner/dashboard', name: 'owner_dashboard')]
+    #[Route('/dashboard/owner', name: 'owner_dashboard')]
     #[IsGranted('ROLE_OWNER')]
-    public function ownerDashboard(): Response
+    public function ownerDashboard(EvenementRepository $evenementRepository): Response
     {
-        return $this->render('dashboard/owner.html.twig', [
+         $evenements = $evenementRepository->findAll();
+        return $this->render('dashboard/owner/owner.html.twig', [
             'controller_name' => 'DashboardController',
+            'evenements' => $evenements
         ]);
     }
 
-    #[Route('/dashboard', name: 'participant_dashboard')]
+    #[Route('/dashboard/participant', name: 'participant_dashboard')]
     #[IsGranted('ROLE_PARTICIPANT')]
     public function participantDashboard(EvenementRepository $evenementRepository): Response
     {
-        // Get all events (or filter as needed)
         $evenements = $evenementRepository->findAll();
         
-        // Alternatively, you could filter for upcoming events only:
-        // $evenements = $evenementRepository->findUpcomingEvents();
-        
-        return $this->render('dashboard/participant.html.twig', [
+        return $this->render('dashboard/participant/participant.html.twig', [
             'evenements' => $evenements,
         ]);
     }
 
-
-    #[Route('/participant/event/{id}', name: 'app_evenement_participant_show', methods: ['GET'])]
-public function showParticipant(Evenement $evenement): Response
-{
-    return $this->render('evenement/showEVparticipant.html.twig', [
-        'evenement' => $evenement,
-    ]);
-}
+    #[Route('/dashboard/participant/event/{id}', name: 'app_evenement_participant_show', methods: ['GET'])]
+    public function showParticipant(Evenement $evenement): Response
+    {
+        return $this->render('evenement/showEVparticipant.html.twig', [
+            'evenement' => $evenement,
+        ]);
+    }
 }

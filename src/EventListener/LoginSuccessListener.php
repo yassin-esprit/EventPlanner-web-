@@ -1,5 +1,4 @@
 <?php
-// src/EventListener/LoginSuccessListener.php
 namespace App\EventListener;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;

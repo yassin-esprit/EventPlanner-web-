@@ -1,11 +1,9 @@
 <?php
-// src/Controller/SecurityRedirectController.php
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class SecurityRedirectController extends AbstractController
 {
@@ -22,7 +20,6 @@ class SecurityRedirectController extends AbstractController
             return $this->redirectToRoute('participant_dashboard');
         }
         
-        // Fallback for users with no specific role
         return $this->redirectToRoute('app_home');
     }
 }

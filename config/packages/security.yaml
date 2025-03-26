@@ -41,9 +41,9 @@ security:
   access_control:
     - { path: ^/login$, roles: PUBLIC_ACCESS }
     - { path: ^/register, roles: PUBLIC_ACCESS }
-    - { path: ^/admin, roles: ROLE_ADMIN }
-    - { path: ^/owner, roles: ROLE_OWNER }
-    - { path: ^/dashboard, roles: ROLE_PARTICIPANT }
+    - { path: ^/dashboard/owner, roles: ROLE_OWNER }
+    - { path: ^/dashboard/admin, roles: ROLE_ADMIN }
+    - { path: ^/dashboard/participant, roles: ROLE_PARTICIPANT }
     # Add a catch-all rule for the rest of your application
     - { path: ^/, roles: PUBLIC_ACCESS }
 
