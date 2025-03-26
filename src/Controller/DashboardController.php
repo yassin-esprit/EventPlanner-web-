@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\EvenementRepository;
+use App\Entity\Evenement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,10 +31,25 @@ class DashboardController extends AbstractController
 
     #[Route('/dashboard', name: 'participant_dashboard')]
     #[IsGranted('ROLE_PARTICIPANT')]
-    public function participantDashboard(): Response
+    public function participantDashboard(EvenementRepository $evenementRepository): Response
     {
+        // Get all events (or filter as needed)
+        $evenements = $evenementRepository->findAll();
+        
+        // Alternatively, you could filter for upcoming events only:
+        // $evenements = $evenementRepository->findUpcomingEvents();
+        
         return $this->render('dashboard/participant.html.twig', [
-            'controller_name' => 'DashboardController',
+            'evenements' => $evenements,
         ]);
     }
+
+
+    #[Route('/participant/event/{id}', name: 'app_evenement_participant_show', methods: ['GET'])]
+public function showParticipant(Evenement $evenement): Response
+{
+    return $this->render('evenement/showEVparticipant.html.twig', [
+        'evenement' => $evenement,
+    ]);
+}
 }
