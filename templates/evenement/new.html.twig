@@ -1,189 +1,207 @@
 {# new.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Create New Event{% endblock %}
+{% block title %}Create New Event
+{% endblock %}
 
 {% block body %}
-    <section class="ticket-section section-padding">
-        <div class="section-overlay"></div>
+	<section class="ticket-section section-padding">
+		<div class="section-overlay"></div>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-10 mx-auto">
-                    <form class="custom-form ticket-form mb-5 mb-lg-0" method="post" enctype="multipart/form-data">
-                        <h2 class="text-center mb-4">Create New Event</h2>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-10 mx-auto">
+					<form class="custom-form ticket-form mb-5 mb-lg-0" method="post" enctype="multipart/form-data" novalidate>
+						<h2 class="text-center mb-4">Create New Event</h2>
 
-                        <div class="ticket-form-body">
-                            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
-                            
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6 col-12">
-                                    {{ form_row(form.titre, {
-                                        'attr': {
-                                            'class': 'form-control',
-                                            'placeholder': 'Event Title'
-                                        },
-                                        'label': false
-                                    }) }}
-                                </div>
+						<div class="ticket-form-body">
+							{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
 
-                                <div class="col-lg-6 col-md-6 col-12">
-                                    {{ form_row(form.type, {
-                                        'attr': {
-                                            'class': 'form-select'
-                                        },
-                                        'label': false,
-                                        'placeholder': 'Select Event Type'
-                                    }) }}
-                                </div>
-                            </div>
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="input-with-error">
+										{{ form_widget(form.titre, {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'placeholder': 'Event Title',
+                                                'data-error': form.titre.vars.errors|length > 0 ? form.titre.vars.errors[0].message : ''
+                                            }
+                                        }) }}
+										{% if form.titre.vars.errors|length > 0 %}
+											<div class="error-message">{{ form.titre.vars.errors[0].message }}</div>
+										{% endif %}
+									</div>
+								</div>
 
-                            {{ form_row(form.description, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'placeholder': 'Event Description',
-                                    'rows': 4
-                                },
-                                'label': false
-                            }) }}
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="input-with-error">
+										{{ form_widget(form.type, {
+                                            'attr': {
+                                                'class': 'form-select',
+                                                'data-error': form.type.vars.errors|length > 0 ? form.type.vars.errors[0].message : ''
+                                            }
+                                        }) }}
+										{% if form.type.vars.errors|length > 0 %}
+											<div class="error-message">{{ form.type.vars.errors[0].message }}</div>
+										{% endif %}
+									</div>
+								</div>
+							</div>
 
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6 col-12">
-                                    {{ form_row(form.date, {
-                                        'attr': {
-                                            'class': 'form-control'
-                                        },
-                                        'label': 'Event Date'
-                                    }) }}
-                                </div>
+							<div class="input-with-error">
+								{{ form_widget(form.description, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Event Description',
+                                        'rows': 4,
+                                        'data-error': form.description.vars.errors|length > 0 ? form.description.vars.errors[0].message : ''
+                                    }
+                                }) }}
+								{% if form.description.vars.errors|length > 0 %}
+									<div class="error-message">{{ form.description.vars.errors[0].message }}</div>
+								{% endif %}
+							</div>
 
-                                <div class="col-lg-6 col-md-6 col-12">
-                                    {{ form_row(form.nbrplaces, {
-                                        'attr': {
-                                            'class': 'form-control',
-                                            'placeholder': 'Number of Places'
-                                        },
-                                        'label': false
-                                    }) }}
-                                </div>
-                            </div>
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="input-with-error">
+										{{ form_label(form.date, 'Event Date') }}
+										{{ form_widget(form.date, {
+        'attr': {
+            'class': 'form-control' ~ (form.date.vars.valid ? '' : ' is-invalid'),
+            'data-error': form.date.vars.errors|length > 0 ? form.date.vars.errors[0].message : '',
+            'min': 'now'|date('Y-m-d')
+        }
+    }) }}
+										{% if form.date.vars.errors|length > 0 %}
+											<div class="error-message">
+												{{ form.date.vars.errors[0].message }}
+											</div>
+										{% endif %}
+									</div>
+								</div>
 
-                            {{ form_row(form.lieu, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'placeholder': 'Location'
-                                },
-                                'label': false
-                            }) }}
+								<div class="col-lg-6 col-md-6 col-12">
+									<div class="input-with-error">
+										{{ form_widget(form.nbrplaces, {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'placeholder': 'Number of Places',
+                                                'data-error': form.nbrplaces.vars.errors|length > 0 ? form.nbrplaces.vars.errors[0].message : ''
+                                            }
+                                        }) }}
+										{% if form.nbrplaces.vars.errors|length > 0 %}
+											<div class="error-message">{{ form.nbrplaces.vars.errors[0].message }}</div>
+										{% endif %}
+									</div>
+								</div>
+							</div>
 
-                            {{ form_row(form.sponsor, {
-                                'attr': {
-                                    'class': 'form-select'
-                                },
-                                'label': 'Select Sponsor',
-                                'placeholder': 'Choose a Sponsor'
-                            }) }}
+							<div class="input-with-error">
+								{{ form_widget(form.lieu, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Location',
+                                        'data-error': form.lieu.vars.errors|length > 0 ? form.lieu.vars.errors[0].message : ''
+                                    }
+                                }) }}
+								{% if form.lieu.vars.errors|length > 0 %}
+									<div class="error-message">{{ form.lieu.vars.errors[0].message }}</div>
+								{% endif %}
+							</div>
 
-                            <div class="col-lg-4 col-md-6 col-8 mx-auto mt-4">
-                                <button type="submit" class="form-control">{{ button_label|default('Create Event') }}</button>
-                            </div>
+							<div class="input-with-error">
+								{{ form_label(form.sponsor, 'Select Sponsor') }}
+								{{ form_widget(form.sponsor, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'data-error': form.sponsor.vars.errors|length > 0 ? form.sponsor.vars.errors[0].message : ''
+                                    }
+                                }) }}
+								{% if form.sponsor.vars.errors|length > 0 %}
+									<div class="error-message">{{ form.sponsor.vars.errors[0].message }}</div>
+								{% endif %}
+							</div>
 
-                            <div class="text-center mt-3">
-                                <a href="{{ path('app_evenement_index') }}" class="btn btn-link">Back to Events</a>
-                            </div>
-                            
-                            {{ form_end(form) }}
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+							<div class="col-lg-4 col-md-6 col-8 mx-auto mt-4">
+								<button type="submit" class="form-control">{{ button_label|default('Create Event') }}</button>
+							</div>
+
+							<div class="text-center mt-3">
+								<a href="{{ path('app_evenement_index') }}" class="btn btn-link">Back to Events</a>
+							</div>
+
+							{{ form_end(form) }}
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
 {% endblock %}
 
 {% block stylesheets %}
-    <style>
-        .ticket-section {
-            position: relative;
-            min-height: 100vh;
-            padding-top: 80px;
-            padding-bottom: 80px;
-            display: flex;
-            align-items: center;
-        }
+	{{ parent() }}
+	<style>
+		/* Your existing styles */
+		.ticket-section {
+			position: relative;
+			min-height: 100vh;
+			padding-top: 80px;
+			padding-bottom: 80px;
+			display: flex;
+			align-items: center;
+		}
 
-        .section-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+		/* ... (keep all your existing styles) ... */
 
-        .custom-form {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
+		/* New error message styles */
+		.input-with-error {
+			position: relative;
+			margin-bottom: 20px;
+		}
 
-        .ticket-form h2 {
-            color: #2c3e50;
-            font-weight: 700;
-            margin-bottom: 30px;
-        }
+		.error-message {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 100%;
+			padding: 5px 10px;
+			background-color: #f8d7da;
+			color: #721c24;
+			border: 1px solid #f5c6cb;
+			border-radius: 0 0 5px 5px;
+			font-size: 0.8rem;
+			z-index: 10;
+			margin-top: -2px; /* Adjust to match your spacing */
+		}
 
-        .form-control, .form-select {
-            height: 50px;
-            border: 1px solid #e1e1e1;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            padding: 10px 15px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
+		.is-invalid {
+			border-color: #dc3545 !important;
+			margin-bottom: 0; /* Remove extra margin since error message is attached */
+		}
+	</style>
+{% endblock %}
 
-        .form-control:focus, .form-select:focus {
-            border-color: #f6388a;
-            box-shadow: 0 0 0 0.25rem rgba(246, 56, 138, 0.25);
-        }
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Clear invalid input and show error messages
+document.querySelectorAll('[data-error]').forEach(element => {
+if (element.dataset.error) { // Add invalid class to parent container
+element.classList.add('is-invalid');
 
-        textarea.form-control {
-            height: auto;
-            min-height: 120px;
-        }
+// For text inputs, clear the invalid value
+if (element.tagName === 'INPUT' && element.type !== 'file') {
+element.value = '';
+}
 
-        button[type="submit"] {
-            background-color: #f6388a;
-            color: white;
-            border: none;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #e4317d;
-            transform: translateY(-2px);
-        }
-
-        .btn-link {
-            color: #f6388a;
-            text-decoration: none;
-        }
-
-        .btn-link:hover {
-            color: #e4317d;
-            text-decoration: underline;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 767.98px) {
-            .custom-form {
-                padding: 30px 20px;
-            }
-        }
-    </style>
+// For selects, reset to placeholder
+if (element.tagName === 'SELECT') {
+element.selectedIndex = 0;
+}
+}
+});
+});
+	</script>
 {% endblock %}
