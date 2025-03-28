@@ -80,12 +80,7 @@
 									<a class="nav-link click-scroll" href="#section_6">Contact</a>
 								</li>
 
-								{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 
-									<li class="nav-item">
-										<a class="nav-link" href="{{ path('app_my_participations') }}">Participations</a>
-									</li>
-								{% endif %}
 							</ul>
 
 							{% if is_granted('IS_AUTHENTICATED_FULLY') %}

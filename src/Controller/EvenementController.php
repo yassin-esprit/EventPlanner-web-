@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/evenement')]
 final class EvenementController extends AbstractController
@@ -78,4 +79,34 @@ final class EvenementController extends AbstractController
 
         return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+    #[Route('/{id}/participate', name: 'app_evenement_participate', methods: ['POST'])]
+    public function participate(
+    Request $request, 
+    Evenement $evenement, 
+    EntityManagerInterface $entityManager,
+    Security $security
+): Response {
+    $user = $security->getUser();
+    
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    if ($this->isCsrfTokenValid('participate'.$evenement->getId(), $request->request->get('_token'))) {
+        // Check if user is already participating
+        if (!$evenement->getUsers()->contains($user)) {
+            $evenement->addUser($user);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'You have successfully registered for this event!');
+        } else {
+            $this->addFlash('warning', 'You are already registered for this event.');
+        }
+    }
+
+    return $this->redirectToRoute('app_evenement_participant_show', ['id' => $evenement->getId()]);
+}
 }
