@@ -46,6 +46,56 @@
 									</div>
 								</div>
 							</div>
+
+							{# Ratings Section #}
+							<div class="ratings-section mt-5">
+								<h4 class="section-title">
+									<i class="bi bi-star-fill text-warning me-2"></i>Ratings & Reviews
+									<small class="text-muted">({{ evenement.ratings|length }})</small>
+								</h4>
+
+								{# Rating Action Button #}
+								{% if is_granted('ROLE_PARTICIPANT') %}
+									<div class="mb-4">
+										<a href="{{ path('app_event_rate', {'id': evenement.id}) }}" class="btn btn-sm {% if app.user.hasRatedEvent(evenement) %}btn-outline-warning{% else %}btn-warning{% endif %}">
+											<i class="bi bi-star-fill me-1"></i>
+											{% if app.user.hasRatedEvent(evenement) %}Update Your Rating{% else %}Rate This Event
+											{% endif %}
+										</a>
+									</div>
+								{% else %}
+									<div class="alert alert-info">
+										<a href="{{ path('app_login') }}" class="alert-link">Log in</a>
+										to rate this event
+									</div>
+								{% endif %}
+
+								{# Ratings List #}
+								{% if evenement.ratings|length > 0 %}
+									<div class="ratings-list">
+										{% for rating in evenement.ratings %}
+											<div class="rating-item mb-3 p-3 bg-light rounded">
+												<div class="d-flex justify-content-between align-items-center mb-2">
+													<strong>{{ rating.user.firstName }}</strong>
+													<div class="text-warning">
+														{% for i in 1..5 %}
+															<i class="bi bi-star{% if i <= rating.rating %}-fill{% endif %}"></i>
+														{% endfor %}
+														<small class="text-muted ms-2">{{ rating.createdAt|date('M d, Y') }}</small>
+													</div>
+												</div>
+												{% if rating.review %}
+													<div class="review-text mt-2">{{ rating.review }}</div>
+												{% endif %}
+											</div>
+										{% endfor %}
+									</div>
+								{% else %}
+									<div class="alert alert-light">
+										No ratings yet. Be the first to rate this event!
+									</div>
+								{% endif %}
+							</div>
 						</div>
 
 						<div class="event-actions mt-5 text-center">
@@ -63,7 +113,7 @@
 {% block stylesheets %}
 	{{ parent() }}
 	<style>
-		event-details-section {
+		.event-details-section {
 			position: relative;
 			min-height: 100vh;
 			padding-top: 80px;
@@ -81,7 +131,6 @@
 			left: 0;
 			width: 100%;
 			background-color: rgba(0, 0, 0, 0);
-
 			background-image: url('https://www.carnifest.com/wp-content/uploads/2019/09/5-rock-pop-Image_by_StockSnap_from_Pixabay.jpg');
 		}
 
@@ -178,6 +227,43 @@
 		.detail-item p {
 			color: #6c757d;
 			margin: 0;
+		}
+
+		/* Ratings Section Styles */
+		.ratings-section {
+			border-top: 1px solid rgba(0, 0, 0, 0.1);
+			padding-top: 20px;
+			margin-top: 30px;
+		}
+
+		.rating-item {
+			border-left: 3px solid #ffc107;
+			background-color: rgba(255, 255, 255, 0.9);
+		}
+
+		.review-text {
+			color: #495057;
+			line-height: 1.6;
+		}
+
+		.btn-warning {
+			background-color: #ffc107;
+			border-color: #ffc107;
+		}
+
+		.btn-outline-warning {
+			color: #ffc107;
+			border-color: #ffc107;
+		}
+
+		.btn-outline-warning:hover {
+			background-color: #ffc107;
+			color: #000;
+		}
+
+		/* Star Rating Styles */
+		.text-warning {
+			color: #ffc107 !important;
 		}
 
 		/* Responsive adjustments */

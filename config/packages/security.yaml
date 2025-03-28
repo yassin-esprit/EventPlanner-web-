@@ -47,7 +47,7 @@ security:
     # Add a catch-all rule for the rest of your application
     - { path: ^/, roles: PUBLIC_ACCESS }
     - { path: ^/evenement/\d+/participate, roles: ROLE_USER }
-
+    - { path: ^/rating/event/\d+/rate, roles: ROLE_PARTICIPANT }
 when@test:
   security:
     password_hashers:

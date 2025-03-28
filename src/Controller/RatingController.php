@@ -1,81 +1,65 @@
 <?php
 
+// src/Controller/RatingController.php
 namespace App\Controller;
 
 use App\Entity\Rating;
+use App\Entity\Evenement;
 use App\Form\RatingType;
-use App\Repository\RatingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/rating')]
-final class RatingController extends AbstractController
+class RatingController extends AbstractController
 {
-    #[Route(name: 'app_rating_index', methods: ['GET'])]
-    public function index(RatingRepository $ratingRepository): Response
-    {
-        return $this->render('rating/index.html.twig', [
-            'ratings' => $ratingRepository->findAll(),
-        ]);
-    }
+    #[Route('/event/{id}/rate', name: 'app_event_rate', methods: ['GET', 'POST'])]
+    public function rateEvent(
+        Request $request,
+        Evenement $event,
+        EntityManagerInterface $entityManager,
+        Security $security
+    ): Response {
+        $user = $security->getUser();
+        
+        if (!$user) {
+            $this->addFlash('warning', 'You need to be logged in to rate events.');
+            return $this->redirectToRoute('app_login');
+        }
 
-    #[Route('/new', name: 'app_rating_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $rating = new Rating();
+        // Check if user already rated this event
+        $existingRating = $entityManager->getRepository(Rating::class)->findOneBy([
+            'user' => $user,
+            'evenement' => $event
+        ]);
+
+        $rating = $existingRating ?? new Rating();
         $form = $this->createForm(RatingType::class, $rating);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($rating);
+            if (!$existingRating) {
+                $rating->setUser($user);
+                $rating->setEvenement($event);
+                $rating->setCreatedAt(new \DateTimeImmutable());
+                $entityManager->persist($rating);
+            }
+            
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_rating_index', [], Response::HTTP_SEE_OTHER);
+            
+            $this->addFlash('success', 'Thank you for your rating!');
+            return $this->redirectToRoute('app_evenement_show', ['id' => $event->getId()]);
         }
 
-        return $this->render('rating/new.html.twig', [
-            'rating' => $rating,
-            'form' => $form,
+        return $this->render('rating/rate_event.html.twig', [
+            'event' => $event,
+            'form' => $form->createView(),
+            'existingRating' => $existingRating
         ]);
     }
 
-    #[Route('/{id}', name: 'app_rating_show', methods: ['GET'])]
-    public function show(Rating $rating): Response
-    {
-        return $this->render('rating/show.html.twig', [
-            'rating' => $rating,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_rating_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Rating $rating, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(RatingType::class, $rating);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_rating_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('rating/edit.html.twig', [
-            'rating' => $rating,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_rating_delete', methods: ['POST'])]
-    public function delete(Request $request, Rating $rating, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$rating->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($rating);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_rating_index', [], Response::HTTP_SEE_OTHER);
-    }
+    // ... keep your existing CRUD methods ...
 }

@@ -229,4 +229,14 @@ public function getRoles(): array
         $this->evenements->removeElement($evenement);
         return $this;
     }
+
+    public function hasRatedEvent(Evenement $event): bool
+{
+    foreach ($this->ratings as $rating) {
+        if ($rating->getEvenement() === $event) {
+            return true;
+        }
+    }
+    return false;
+}
 }
