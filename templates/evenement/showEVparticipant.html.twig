@@ -63,13 +63,16 @@
 {% block stylesheets %}
 	{{ parent() }}
 	<style>
-		.event-details-section {
+		event-details-section {
 			position: relative;
 			min-height: 100vh;
 			padding-top: 80px;
 			padding-bottom: 80px;
 			display: flex;
 			align-items: center;
+			background-size: cover;
+			background-position: center;
+			background-attachment: fixed;
 		}
 
 		.section-overlay {
@@ -77,12 +80,13 @@
 			top: 0;
 			left: 0;
 			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.7);
+			background-color: rgba(0, 0, 0, 0);
+
+			background-image: url('https://www.carnifest.com/wp-content/uploads/2019/09/5-rock-pop-Image_by_StockSnap_from_Pixabay.jpg');
 		}
 
 		.event-details-card {
-			background-color: #ffffff;
+			background-color: rgba(255, 255, 255, 0.85);
 			padding: 40px;
 			border-radius: 10px;
 			box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
