@@ -21,15 +21,13 @@
 					</div>
 					<div class="card-body">
 						{{ form_start(form) }}
-						<div class="mb-3">
-							{{ form_label(form.rating) }}
+						<div class="mb-4">
+							<label class="form-label">Your rating</label>
 							<div class="star-rating">
 								{% for i in 5..1 %}
-									<input type="radio" id="star{{ i }}" name="{{ form.rating.vars.full_name }}" value="{{ i }}" {{ (form.rating.vars.value == i) ? 'checked' : '' }}>
-									<label for="star{{ i }}">
-										<i class="bi bi-star-fill"></i>
-									</label>
+									<i class="bi bi-star-fill star" data-value="{{ i }}"></i>
 								{% endfor %}
+								{{ form_widget(form.rating) }}
 							</div>
 							{{ form_errors(form.rating) }}
 						</div>
@@ -62,23 +60,47 @@
 	{{ parent() }}
 	<style>
 		.star-rating {
-			display: flex;
-			flex-direction: row-reverse;
-			justify-content: flex-end;
+			font-size: 2rem;
+			line-height: 1;
 		}
-		.star-rating input {
-			display: none;
-		}
-		.star-rating label {
+		.star-rating .star {
 			color: #ddd;
-			font-size: 1.5rem;
-			padding: 0 0.2rem;
 			cursor: pointer;
+			transition: color 0.2s;
+			margin-right: 5px;
 		}
-		.star-rating input:checked ~ label,
-		.star-rating label:hover,
-		.star-rating label:hover ~ label {
+		.star-rating .star:hover,
+		.star-rating .star.active {
 			color: #ffc107;
 		}
 	</style>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const stars = document.querySelectorAll('.star-rating .star');
+const ratingInput = document.querySelector('.rating-value');
+
+stars.forEach(star => {
+star.addEventListener('click', function () {
+const value = this.getAttribute('data-value');
+ratingInput.value = value;
+
+// Update star display
+stars.forEach(s => {
+s.classList.toggle('active', s.getAttribute('data-value') <= value);
+});
+});
+
+// Initialize with existing rating if available
+if (ratingInput.value) {
+if (star.getAttribute('data-value') <= ratingInput.value) {
+star.classList.add('active');
+}
+}
+});
+});
+	</script>
 {% endblock %}

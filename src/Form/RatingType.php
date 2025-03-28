@@ -1,4 +1,5 @@
 <?php
+
 // src/Form/RatingType.php
 namespace App\Form;
 
@@ -6,28 +7,17 @@ use App\Entity\Rating;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Validator\Constraints\Range;
 
 class RatingType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('rating', IntegerType::class, [
-                'label' => 'Your rating (1-5 stars)',
-                'constraints' => [
-                    new Range([
-                        'min' => 1,
-                        'max' => 5,
-                        'notInRangeMessage' => 'Please enter a rating between {{ min }} and {{ max }}',
-                    ]),
-                ],
+            ->add('rating', HiddenType::class, [
                 'attr' => [
-                    'min' => 1,
-                    'max' => 5,
-                    'class' => 'form-control'
+                    'class' => 'rating-value' // We'll use this class for JavaScript
                 ]
             ])
             ->add('review', TextareaType::class, [
