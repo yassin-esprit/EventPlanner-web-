@@ -81,8 +81,9 @@
 								</li>
 
 								{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+
 									<li class="nav-item">
-										<a class="nav-link" href="{{ path('participant_dashboard') }}">Dashboard</a>
+										<a class="nav-link" href="{{ path('app_my_participations') }}">Participations</a>
 									</li>
 								{% endif %}
 							</ul>

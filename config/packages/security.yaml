@@ -46,6 +46,7 @@ security:
     - { path: ^/dashboard/participant, roles: ROLE_PARTICIPANT }
     # Add a catch-all rule for the rest of your application
     - { path: ^/, roles: PUBLIC_ACCESS }
+    - { path: ^/evenement/\d+/participate, roles: ROLE_USER }
 
 when@test:
   security:
