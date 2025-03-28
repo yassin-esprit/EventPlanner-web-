@@ -27,7 +27,7 @@ class RatingController extends AbstractController
         
         if (!$user) {
             $this->addFlash('warning', 'You need to be logged in to rate events.');
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('participant_dashboard');
         }
 
         // Check if user already rated this event
@@ -51,7 +51,7 @@ class RatingController extends AbstractController
             $entityManager->flush();
             
             $this->addFlash('success', 'Thank you for your rating!');
-            return $this->redirectToRoute('app_evenement_show', ['id' => $event->getId()]);
+            return $this->redirectToRoute('participant_dashboard', ['id' => $event->getId()]);
         }
 
         return $this->render('rating/rate_event.html.twig', [
