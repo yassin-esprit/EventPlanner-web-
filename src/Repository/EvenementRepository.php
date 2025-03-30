@@ -70,5 +70,34 @@ public function getParticipationStats(): array
         ->getQuery()
         ->getResult();
 }
+// src/Repository/EvenementRepository.php
 
+public function findWithSearchAndSort(
+    ?string $search = null,
+    string $sort = 'date',
+    string $direction = 'asc'
+): array {
+    $qb = $this->createQueryBuilder('e');
+
+    if ($search) {
+        $qb->andWhere('e.titre LIKE :search OR e.description LIKE :search OR e.type LIKE :search')
+            ->setParameter('search', '%' . $search . '%');
+    }
+
+    // Add sorting
+    switch ($sort) {
+        case 'title':
+            $qb->orderBy('e.titre', $direction);
+            break;
+        case 'type':
+            $qb->orderBy('e.type', $direction);
+            break;
+        case 'date':
+        default:
+            $qb->orderBy('e.date', $direction);
+            break;
+    }
+
+    return $qb->getQuery()->getResult();
+}
 }
