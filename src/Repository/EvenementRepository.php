@@ -40,4 +40,35 @@ class EvenementRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function countEventsByType(): array
+{
+    return $this->createQueryBuilder('e')
+        ->select('e.type as eventType, COUNT(e.id) as count')
+        ->groupBy('e.type')
+        ->getQuery()
+        ->getResult();
+}
+
+public function countUpcomingEvents(): int
+{
+    return $this->createQueryBuilder('e')
+        ->select('COUNT(e.id)')
+        ->where('e.date >= :today')
+        ->setParameter('today', new \DateTime())
+        ->getQuery()
+        ->getSingleScalarResult();
+}
+
+public function getParticipationStats(): array
+{
+    return $this->createQueryBuilder('e')
+        ->select('e.id, e.titre, COUNT(p.userId) as participantCount')
+        ->leftJoin('e.users', 'p')
+        ->groupBy('e.id')
+        ->orderBy('participantCount', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+
 }
