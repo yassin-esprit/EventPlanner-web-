@@ -1,164 +1,122 @@
-{% for evenement in evenements %}
-	{% set event_assets = {
-        'conference': {
-            'image': 'conference.jpg',
-            'color': 'rgba(70, 130, 180, 0.9)',
-            'icon': 'bi-mic'
-        },
-        'fête': {
-            'image': 'party.jpg',
-            'color': 'rgba(220, 53, 69, 0.9)',
-            'icon': 'bi-music-note-beamed'
-        },
-        'fete': {
-            'image': 'party.jpg',
-            'color': 'rgba(220, 53, 69, 0.9)',
-            'icon': 'bi-music-note-beamed'
-        },
-        'formation': {
-            'image': 'training.jpg',
-            'color': 'rgba(25, 135, 84, 0.9)',
-            'icon': 'bi-mortarboard'
-        },
-        'default': {
-            'image': 'event-default.jpg',
-            'color': 'rgba(108, 117, 125, 0.9)',
-            'icon': 'bi-calendar-event'
-        }
-    } %}
+<div class="container">
+	<div class="row justify-content-center">
+		{% for evenement in evenements %}
+			{# Define image and color based on event type #}
+			{% set event_assets = {
+                'conference': {
+                    'image': 'conference.jpg',
+                    'color': 'rgba(70, 130, 180, 0.9)',
+                    'icon': 'bi-mic'
+                },
+                'fête': {
+                    'image': 'party.jpg',
+                    'color': 'rgba(220, 53, 69, 0.9)',
+                    'icon': 'bi-music-note-beamed'
+                },
+                'fete': {
+                    'image': 'party.jpg',
+                    'color': 'rgba(220, 53, 69, 0.9)',
+                    'icon': 'bi-music-note-beamed'
+                },
+                'formation': {
+                    'image': 'training.jpg',
+                    'color': 'rgba(25, 135, 84, 0.9)',
+                    'icon': 'bi-mortarboard'
+                },
+                'default': {
+                    'image': 'event-default.jpg',
+                    'color': 'rgba(108, 117, 125, 0.9)',
+                    'icon': 'bi-calendar-event'
+                }
+            } %}
 
-	{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
+			{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
 
-	<div class="container">
-		<div class="row justify-content-center">
-
-
-			{% for evenement in evenements %}
-				{# Define image and color based on event type #}
-				{% set event_assets = {
-                        'conference': {
-                            'image': 'conference.jpg',
-                            'color': 'rgba(70, 130, 180, 0.9)',
-                            'icon': 'bi-mic'
-                        },
-                        'fête': {
-                            'image': 'party.jpg',
-                            'color': 'rgba(220, 53, 69, 0.9)',
-                            'icon': 'bi-music-note-beamed'
-                        },
-                        'fete': {
-                            'image': 'party.jpg',
-                            'color': 'rgba(220, 53, 69, 0.9)',
-                            'icon': 'bi-music-note-beamed'
-                        },
-                        'formation': {
-                            'image': 'training.jpg',
-                            'color': 'rgba(25, 135, 84, 0.9)',
-                            'icon': 'bi-mortarboard'
-                        },
-                        'default': {
-                            'image': 'event-default.jpg',
-                            'color': 'rgba(108, 117, 125, 0.9)',
-                            'icon': 'bi-calendar-event'
-                        }
-                    } %}
-
-				{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
-
-				<div class="col-lg-4 col-md-6 col-12 mb-4">
-					<div class="artists-thumb">
-						<div class="artists-image-wrap">
-							<img src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="artists-image img-fluid" alt="{{ evenement.titre }}">
-							<div class="artists-date-badge">
-								<i class="bi {{ current_event.icon }} me-1"></i>
-								{{ evenement.date ? evenement.date|date('d M') : '' }}
-							</div>
-							<div class="artists-type-badge" style="background: {{ current_event.color }}">
-								{{ evenement.type }}
-							</div>
+			<div class="col-lg-4 col-md-6 col-12 mb-4">
+				<div class="artists-thumb">
+					<div class="artists-image-wrap">
+						<img src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="artists-image img-fluid" alt="{{ evenement.titre }}">
+						<div class="artists-date-badge">
+							<i class="bi {{ current_event.icon }} me-1"></i>
+							{{ evenement.date ? evenement.date|date('d M') : '' }}
 						</div>
-						<div class="artists-hover" style="background: {{ current_event.color }}">
-							<h4>{{ evenement.titre }}</h4>
-							<div class="event-meta">
-								<p>
-									<i class="bi bi-geo-alt"></i>
-									{{ evenement.lieu }}
-								</p>
-								<p>
-									<i class="bi bi-people"></i>
-									{{ evenement.users.count }}
-									participants /
-									{{ evenement.nbrplaces }}
-									seats
-								</p>
-								<p>
-									<i class="bi bi-calendar-check"></i>
-									{{ evenement.date ? evenement.date|date('F j, Y') : '' }}
-								</p>
-								<p class="event-description">
-									{{ evenement.description|slice(0, 120) }}
-									{% if evenement.description|length > 120 %}...
-									{% endif %}
-								</p>
-							</div>
-							<div class="d-flex justify-content-between mt-3">
-								<a href="{{ path('app_evenement_participant_show', {'id': evenement.id}) }}" class="btn btn-sm btn-light">
-									<i class="bi bi-eye me-1"></i>Details
-								</a>
+						<div class="artists-type-badge" style="background: {{ current_event.color }}">
+							{{ evenement.type }}
+						</div>
+					</div>
+					<div class="artists-hover" style="background: {{ current_event.color }}">
+						<h4>{{ evenement.titre }}</h4>
+						<div class="event-meta">
+							<p>
+								<i class="bi bi-geo-alt"></i>
+								{{ evenement.lieu }}
+							</p>
+							<p>
+								<i class="bi bi-people"></i>
+								{{ evenement.users.count }}
+								participants /
+								{{ evenement.nbrplaces }}
+								seats
+							</p>
+							<p>
+								<i class="bi bi-calendar-check"></i>
+								{{ evenement.date ? evenement.date|date('F j, Y') : '' }}
+							</p>
+							<p class="event-description">
+								{{ evenement.description|slice(0, 120) }}
+								{% if evenement.description|length > 120 %}...
+								{% endif %}
+							</p>
+						</div>
+						<div class="d-flex justify-content-between mt-3">
+							<a href="{{ path('app_evenement_participant_show', {'id': evenement.id}) }}" class="btn btn-sm btn-light">
+								<i class="bi bi-eye me-1"></i>Details
+							</a>
 
-								{% if app.user %}
-									{% if evenement.nbrplaces <= evenement.users.count %}
-										<span class="badge bg-danger d-flex align-items-center">
-											<i class="bi bi-x-circle me-1"></i>Sold Out
-										</span>
-									{% elseif evenement.users.contains(app.user) %}
-										<span class="badge bg-success d-flex align-items-center">
-											<i class="bi bi-check-circle me-1"></i>Registered
-										</span>
-									{% else %}
-										<form method="post" action="{{ path('app_evenement_participate', {'id': evenement.id}) }}" class="d-inline">
-											<input type="hidden" name="_token" value="{{ csrf_token('participate' ~ evenement.id) }}">
-											<button type="submit" class="btn btn-sm btn-success">
-												<i class="bi bi-check-circle me-1"></i>Participate
-											</button>
-										</form>
-									{% endif %}
+							{% if app.user %}
+								{% if evenement.nbrplaces <= evenement.users.count %}
+									<span class="badge bg-danger d-flex align-items-center">
+										<i class="bi bi-x-circle me-1"></i>Sold Out
+									</span>
+								{% elseif evenement.users.contains(app.user) %}
+									<span class="badge bg-success d-flex align-items-center">
+										<i class="bi bi-check-circle me-1"></i>Registered
+									</span>
 								{% else %}
-									<a href="{{ path('app_login') }}" class="btn btn-sm btn-warning">
-										<i class="bi bi-box-arrow-in-right me-1"></i>Login to Join
-									</a>
+									<form method="post" action="{{ path('app_evenement_participate', {'id': evenement.id}) }}" class="d-inline">
+										<input type="hidden" name="_token" value="{{ csrf_token('participate' ~ evenement.id) }}">
+										<button type="submit" class="btn btn-sm btn-success">
+											<i class="bi bi-check-circle me-1"></i>Participate
+										</button>
+									</form>
 								{% endif %}
+							{% else %}
+								<a href="{{ path('app_login') }}" class="btn btn-sm btn-warning">
+									<i class="bi bi-box-arrow-in-right me-1"></i>Login to Join
+								</a>
+							{% endif %}
 
-								{% if is_granted('ROLE_ADMIN') %}
-									<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-light">
-										<i class="bi bi-pencil me-1"></i>Edit
-									</a>
-								{% endif %}
-							</div>
+							{% if is_granted('ROLE_ADMIN') %}
+								<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-light">
+									<i class="bi bi-pencil me-1"></i>Edit
+								</a>
+							{% endif %}
 						</div>
 					</div>
 				</div>
-			{% else %}
-				<div class="col-12 text-center">
-					<div class="alert alert-info py-4">
-						<i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-						<h4>No events found</h4>
+			</div>
+		{% else %}
+			<div class="col-12 text-center">
+				<div class="alert alert-info py-4">
+					<i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
+					<h4>No events found</h4>
+					{% if search is defined and search %}
+						<p class="mb-0">No events match your search criteria. Try a different search term.</p>
+					{% else %}
 						<p class="mb-0">Check back later for upcoming events!</p>
-					</div>
+					{% endif %}
 				</div>
-			{% endfor %}
-		</div>
+			</div>
+		{% endfor %}
 	</div>
-{% else %}
-	<div class="col-12 text-center">
-		<div class="alert alert-info py-4">
-			<i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-			<h4>No events found</h4>
-			{% if search %}
-				<p class="mb-0">No events match your search criteria. Try a different search term.</p>
-			{% else %}
-				<p class="mb-0">Check back later for upcoming events!</p>
-			{% endif %}
-		</div>
-	</div>
-{% endfor %}
+</div>
