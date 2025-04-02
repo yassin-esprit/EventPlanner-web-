@@ -66,68 +66,22 @@
                                 </h4>
                                 
                                 <div class="weather-container text-center">
-                                    <a href="{{ path('app_evenement_weather', {'id': evenement.id}) }}" class="btn btn-primary mb-3">
+                                    <button id="check-weather-btn" class="btn btn-primary mb-3">
                                         <i class="bi bi-cloud-sun me-2"></i>Check Weather Forecast
-                                    </a>
+                                    </button>
                                     
-                                    {% if show_weather is defined and show_weather %}
-                                        {% if weather_data %}
-                                            <div class="weather-results">
-                                                <div class="weather-card p-4 bg-light rounded">
-                                                    <div class="weather-header mb-3">
-                                                        <h5>Weather for {{ evenement.date|date('F j, Y') }}</h5>
-                                                        <p class="mb-1"><i class="bi bi-geo-alt-fill"></i> {{ evenement.lieu }}</p>
-                                                    </div>
-                                                    
-                                                    <div class="weather-main d-flex justify-content-center align-items-center mb-3">
-                                                        <div class="weather-icon me-3">
-                                                            <img src="https://openweathermap.org/img/wn/{{ weather_data.icon }}@2x.png" alt="Weather icon" width="60">
-                                                        </div>
-                                                        <div class="weather-temp">
-                                                            <h2 class="mb-0">{{ weather_data.temperature|round }}°C</h2>
-                                                            <p class="mb-0 text-capitalize">{{ weather_data.conditions }}</p>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="weather-details row text-center">
-                                                        <div class="col-4">
-                                                            <i class="bi bi-droplet"></i>
-                                                            <p class="mb-0">{{ weather_data.humidity }}%</p>
-                                                            <small>Humidity</small>
-                                                        </div>
-                                                        <div class="col-4">
-                                                            <i class="bi bi-wind"></i>
-                                                            <p class="mb-0">{{ (weather_data.wind_speed * 3.6)|round }} km/h</p>
-                                                            <small>Wind</small>
-                                                        </div>
-                                                        <div class="col-4">
-                                                            <i class="bi bi-calendar-event"></i>
-                                                            <p class="mb-0">
-                                                                {% if weather_data.days_until == 0 %}
-                                                                    Today
-                                                                {% elseif weather_data.days_until == 1 %}
-                                                                    Tomorrow
-                                                                {% else %}
-                                                                    {{ weather_data.days_until }} days
-                                                                {% endif %}
-                                                            </p>
-                                                            <small>Days until</small>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="weather-recommendation mt-3 p-3 bg-info bg-opacity-10 rounded">
-                                                        <i class="bi bi-lightbulb-fill text-warning me-2"></i>
-                                                        <strong>Recommendation:</strong> 
-                                                        {{ weather_recommendation }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% else %}
-                                            <div class="alert alert-danger mt-3">
-                                                Could not fetch weather data. Please try again later.
-                                            </div>
-                                        {% endif %}
-                                    {% endif %}
+                                    <div id="weather-results" class="weather-results" style="display: none;">
+                                        <!-- Weather data will be inserted here by JavaScript -->
+                                    </div>
+                                    
+                                    <div id="weather-loading" class="text-center my-3" style="display: none;">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p>Fetching weather data...</p>
+                                    </div>
+                                    
+                                    <div id="weather-error" class="alert alert-danger mt-3" style="display: none;"></div>
                                 </div>
                             </div>
 
@@ -369,6 +323,15 @@
             border-left: 3px solid #ffc107;
         }
 
+        #check-weather-btn {
+            transition: all 0.3s ease;
+        }
+
+        #check-weather-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
         /* Responsive adjustments */
         @media(max-width: 767.98px) {
             .event-details-card {
@@ -385,4 +348,105 @@
             }
         }
     </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Weather functionality
+            const weatherBtn = document.getElementById('check-weather-btn');
+            const weatherResults = document.getElementById('weather-results');
+            const weatherLoading = document.getElementById('weather-loading');
+            const weatherError = document.getElementById('weather-error');
+            
+            weatherBtn.addEventListener('click', function() {
+                const eventId = {{ evenement.id }};
+                
+                // Show loading, hide results and error
+                weatherLoading.style.display = 'block';
+                weatherResults.style.display = 'none';
+                weatherError.style.display = 'none';
+                
+                fetch(`/evenement/${eventId}/weather`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        weatherLoading.style.display = 'none';
+                        
+                        if (data.error) {
+                            // Show error message
+                            weatherError.textContent = data.message;
+                            weatherError.style.display = 'block';
+                        } else {
+                            // Show weather results
+                            weatherResults.innerHTML = `
+                                <div class="weather-card p-4 bg-light rounded">
+                                    <div class="weather-header mb-3">
+                                        <h5>Weather for ${new Date(data.event_date).toLocaleDateString('en-US', { 
+                                            weekday: 'long', 
+                                            year: 'numeric', 
+                                            month: 'long', 
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        })}</h5>
+                                        <p class="mb-1"><i class="bi bi-geo-alt-fill"></i> ${data.location}</p>
+                                    </div>
+                                    
+                                    <div class="weather-main d-flex justify-content-center align-items-center mb-3">
+                                        <div class="weather-icon me-3">
+                                            <img src="https://openweathermap.org/img/wn/${data.weather.icon}@2x.png" alt="Weather icon" width="60">
+                                        </div>
+                                        <div class="weather-temp">
+                                            <h2 class="mb-0">${Math.round(data.weather.temperature)}°C</h2>
+                                            <p class="mb-0 text-capitalize">${data.weather.conditions}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="weather-details row text-center">
+                                        <div class="col-4">
+                                            <i class="bi bi-droplet"></i>
+                                            <p class="mb-0">${data.weather.humidity}%</p>
+                                            <small>Humidity</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <i class="bi bi-wind"></i>
+                                            <p class="mb-0">${Math.round(data.weather.wind_speed * 3.6)} km/h</p>
+                                            <small>Wind</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <i class="bi bi-calendar-event"></i>
+                                            <p class="mb-0">
+                                                ${data.weather.days_until === 0 ? 'Today' : 
+                                                 data.weather.days_until === 1 ? 'Tomorrow' : 
+                                                 `${data.weather.days_until} days`}
+                                            </p>
+                                            <small>Days until</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="weather-recommendation mt-3 p-3 bg-info bg-opacity-10 rounded">
+                                        <i class="bi bi-lightbulb-fill text-warning me-2"></i>
+                                        <strong>Recommendation:</strong> 
+                                        ${data.recommendation}
+                                    </div>
+                                </div>
+                            `;
+                            weatherResults.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        weatherLoading.style.display = 'none';
+                        weatherError.textContent = 'Could not fetch weather data. Please try again later.';
+                        weatherError.style.display = 'block';
+                        console.error('Error fetching weather:', error);
+                    });
+            });
+        });
+    </script>
 {% endblock %}

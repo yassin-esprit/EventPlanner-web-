@@ -162,37 +162,27 @@ public function participantDashboardAjax(
     ]);
 }
 
- #[Route('/{id}/weather', name: 'app_evenement_weather', methods: ['GET'])]
-public function getWeather(
-    Evenement $evenement, 
-    WeatherService $weatherService,
-    Request $request
-): Response {
-    if ($request->isXmlHttpRequest()) {
-        // For AJAX requests (if you want to keep both options)
-        $weatherData = $weatherService->getWeatherForecast($evenement->getLieu(), $evenement->getDate());
-        $recommendation = $weatherService->getWeatherRecommendation($weatherData);
-
+#[Route('/{id}/weather', name: 'app_evenement_weather', methods: ['GET'])]
+public function getWeather(Evenement $evenement, WeatherService $weatherService): Response
+{
+    $weatherData = $weatherService->getWeatherForecast($evenement->getLieu(), $evenement->getDate());
+    
+    if ($weatherData === null) {
         return $this->json([
-            'weather' => $weatherData,
-            'recommendation' => $recommendation,
-            'event_date' => $evenement->getDate()->format('Y-m-d H:i:s'),
-            'location' => $evenement->getLieu()
+            'error' => true,
+            'message' => 'Could not fetch weather data for this location and date.'
         ]);
     }
 
-    $weatherData = $weatherService->getWeatherForecast($evenement->getLieu(), $evenement->getDate());
     $recommendation = $weatherService->getWeatherRecommendation($weatherData);
 
-    return $this->render('evenement/showEVparticipant.html.twig', [
-        'evenement' => $evenement,
-        'weather_data' => $weatherData,
-        'weather_recommendation' => $recommendation,
-        'show_weather' => true
+    return $this->json([
+        'weather' => $weatherData,
+        'recommendation' => $recommendation,
+        'event_date' => $evenement->getDate()->format('Y-m-d H:i:s'),
+        'location' => $evenement->getLieu()
     ]);
 }
-
-
 
 
  }
