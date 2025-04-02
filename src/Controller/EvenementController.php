@@ -4,13 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Evenement;
 use App\Form\EvenementType;
+use App\Service\WeatherService;
 use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/evenement')]
 final class EvenementController extends AbstractController
@@ -109,4 +110,79 @@ final class EvenementController extends AbstractController
 
     return $this->redirectToRoute('app_evenement_participant_show', ['id' => $evenement->getId()]);
 }
+
+
+    #[Route('/participant/dashboard', name: 'participant_dashboard')]
+    public function participantDashboard(
+        EvenementRepository $evenementRepository,
+        Request $request
+        ): Response {
+         // Get search and sort parameters
+         $search = $request->query->get('search');
+        $sort = $request->query->get('sort', 'date');
+        $direction = $request->query->get('direction', 'asc');
+
+        // Get filtered and sorted events
+        $evenements = $evenementRepository->findWithSearchAndSort(
+            $search,
+            $sort,
+            $direction
+            );
+            
+            return $this->render('dashboard/participant/participant.html.twig', [
+                'evenements' => $evenements,
+                'search' => $search,
+                'sort' => $sort,
+                'direction' => $direction,
+            ]);
+        }
+
+
+
+        #[Route('/participant/dashboard/ajax', name: 'participant_dashboard_ajax')]
+public function participantDashboardAjax(
+    EvenementRepository $evenementRepository,
+    Request $request
+): Response {
+    // Get search and sort parameters
+    $search = $request->query->get('search');
+    $sort = $request->query->get('sort', 'date');
+    $direction = $request->query->get('direction', 'asc');
+
+    // Get filtered and sorted events
+    $evenements = $evenementRepository->findWithSearchAndSort(
+        $search,
+        $sort,
+        $direction
+    );
+
+    return $this->render('dashboard/participant/_events_list.html.twig', [
+        'evenements' => $evenements,
+        'search' => $search
+    ]);
 }
+
+#[Route('/{id}/weather', name: 'app_evenement_weather', methods: ['GET'])]
+public function getWeather(Evenement $evenement, WeatherService $weatherService): Response
+{
+    $weatherData = $weatherService->getWeatherForecast($evenement->getLieu(), $evenement->getDate());
+    
+    if ($weatherData === null) {
+        return $this->json([
+            'error' => true,
+            'message' => 'Could not fetch weather data for this location and date.'
+        ]);
+    }
+
+    $recommendation = $weatherService->getWeatherRecommendation($weatherData);
+
+    return $this->json([
+        'weather' => $weatherData,
+        'recommendation' => $recommendation,
+        'event_date' => $evenement->getDate()->format('Y-m-d H:i:s'),
+        'location' => $evenement->getLieu()
+    ]);
+}
+
+
+ }

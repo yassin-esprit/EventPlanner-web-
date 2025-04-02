@@ -1,5 +1,8 @@
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+  resource:
+    path: ../src/Controller/
+    namespace: App\Controller
+  type: attribute
+participant_dashboard_ajax:
+  path: /participant/dashboard/ajax
+  controller: App\Controller\EvenementController::participantDashboardAjax

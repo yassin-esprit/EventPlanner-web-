@@ -40,4 +40,64 @@ class EvenementRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function countEventsByType(): array
+{
+    return $this->createQueryBuilder('e')
+        ->select('e.type as eventType, COUNT(e.id) as count')
+        ->groupBy('e.type')
+        ->getQuery()
+        ->getResult();
+}
+
+public function countUpcomingEvents(): int
+{
+    return $this->createQueryBuilder('e')
+        ->select('COUNT(e.id)')
+        ->where('e.date >= :today')
+        ->setParameter('today', new \DateTime())
+        ->getQuery()
+        ->getSingleScalarResult();
+}
+
+public function getParticipationStats(): array
+{
+    return $this->createQueryBuilder('e')
+        ->select('e.id, e.titre, COUNT(p.userId) as participantCount')
+        ->leftJoin('e.users', 'p')
+        ->groupBy('e.id')
+        ->orderBy('participantCount', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+// src/Repository/EvenementRepository.php
+
+public function findWithSearchAndSort(
+    ?string $search = null,
+    string $sort = 'date',
+    string $direction = 'asc'
+): array {
+    $qb = $this->createQueryBuilder('e');
+
+    if ($search) {
+        $qb->andWhere('e.titre LIKE :search OR e.description LIKE :search OR e.type LIKE :search')
+            ->setParameter('search', '%' . $search . '%');
+    }
+
+    // Add sorting
+    switch ($sort) {
+        case 'title':
+            $qb->orderBy('e.titre', $direction);
+            break;
+        case 'type':
+            $qb->orderBy('e.type', $direction);
+            break;
+        case 'date':
+        default:
+            $qb->orderBy('e.date', $direction);
+            break;
+    }
+
+    return $qb->getQuery()->getResult();
+}
 }
