@@ -4,13 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Evenement;
 use App\Form\EvenementType;
+use App\Service\WeatherService;
 use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/evenement')]
 final class EvenementController extends AbstractController
@@ -160,4 +161,38 @@ public function participantDashboardAjax(
         'search' => $search
     ]);
 }
+
+ #[Route('/{id}/weather', name: 'app_evenement_weather', methods: ['GET'])]
+public function getWeather(
+    Evenement $evenement, 
+    WeatherService $weatherService,
+    Request $request
+): Response {
+    if ($request->isXmlHttpRequest()) {
+        // For AJAX requests (if you want to keep both options)
+        $weatherData = $weatherService->getWeatherForecast($evenement->getLieu(), $evenement->getDate());
+        $recommendation = $weatherService->getWeatherRecommendation($weatherData);
+
+        return $this->json([
+            'weather' => $weatherData,
+            'recommendation' => $recommendation,
+            'event_date' => $evenement->getDate()->format('Y-m-d H:i:s'),
+            'location' => $evenement->getLieu()
+        ]);
+    }
+
+    $weatherData = $weatherService->getWeatherForecast($evenement->getLieu(), $evenement->getDate());
+    $recommendation = $weatherService->getWeatherRecommendation($weatherData);
+
+    return $this->render('evenement/showEVparticipant.html.twig', [
+        'evenement' => $evenement,
+        'weather_data' => $weatherData,
+        'weather_recommendation' => $recommendation,
+        'show_weather' => true
+    ]);
+}
+
+
+
+
  }
