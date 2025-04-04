@@ -15,6 +15,7 @@ class Publicite
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    //#[ORM\Column(name: 'id_pub' ,type: 'integer')]
     #[ORM\Column(type: 'integer')]
     private ?int $id_pub = null;
 

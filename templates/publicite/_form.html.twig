@@ -1,0 +1,33 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+    <div class="mb-3">
+        {{ form_label(form.titre_pub, 'Title', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.titre_pub, {'attr': {'class': 'form-control' ~ (form.titre_pub.vars.errors ? ' is-invalid' : '')}}) }}
+        {{ form_errors(form.titre_pub, {'attr': {'class': 'invalid-feedback'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.type_pub, 'Type', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.type_pub, {'attr': {'class': 'form-select' ~ (form.type_pub.vars.errors ? ' is-invalid' : '')}}) }}
+        {{ form_errors(form.type_pub, {'attr': {'class': 'invalid-feedback'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.contenu_pub, 'Content', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.contenu_pub, {'attr': {'class': 'form-control' ~ (form.contenu_pub.vars.errors ? ' is-invalid' : ''), 'rows': 5}}) }}
+        {{ form_errors(form.contenu_pub, {'attr': {'class': 'invalid-feedback'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.emplacement_pub, 'Placement', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.emplacement_pub, {'attr': {'class': 'form-control' ~ (form.emplacement_pub.vars.errors ? ' is-invalid' : '')}}) }}
+        {{ form_errors(form.emplacement_pub, {'attr': {'class': 'invalid-feedback'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.statut_pub, 'Status', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.statut_pub, {'attr': {'class': 'form-select' ~ (form.statut_pub.vars.errors ? ' is-invalid' : '')}}) }}
+        {{ form_errors(form.statut_pub, {'attr': {'class': 'invalid-feedback'}}) }}
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
