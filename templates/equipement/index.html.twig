@@ -1,0 +1,296 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Equipment List{% endblock %}
+
+{% block body %}
+    <!-- Hero Section -->
+    <section class="hero-section" id="section_1">
+        <div class="section-overlay"></div>
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="row">
+                <div class="col-12 mt-auto mb-5 text-center">
+                    <h1 class="text-white mb-5">Our Equipment</h1>
+                    <a class="btn custom-btn smoothscroll" href="#equipment">Browse Equipment</a>
+                </div>
+            </div>
+        </div>
+        <div class="video-wrap">
+            <video autoplay loop muted class="custom-video" poster="">
+                <source src="{{ asset('video/pexels-2022395.mp4') }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
+
+    <!-- Equipment Section -->
+    <section class="artists-section section-padding" id="equipment" style="
+            background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        ">
+        <div class="section-overlay" style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(231, 228, 228, 0.5);
+            "></div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="mb-4">Equipment Inventory</h2>
+                    <a href="{{ path('app_equipement_new') }}" class="btn custom-btn">
+                        <i class="bi bi-plus-circle me-2"></i>Add New Equipment
+                    </a>
+                </div>
+
+                {% for equipement in equipements %}
+                    {# Define color based on equipment status #}
+                    {% set status_colors = {
+                        'Available': 'rgba(25, 135, 84, 0.9)',    
+                        'In Use': 'rgba(13, 110, 253, 0.9)',      
+                        'Maintenance': 'rgba(255, 193, 7, 0.9)', 
+                        'Out of Service': 'rgba(220, 53, 69, 0.9)' 
+                    } %}
+
+                    {% set status_color = status_colors[equipement.statut] ?? 'rgba(108, 117, 125, 0.9)' %}
+                    {% set status_icon = equipement.quantiteDispo > 0 ? 'bi-check-circle' : 'bi-exclamation-circle' %}
+
+                    <div class="col-lg-4 col-md-6 col-12 mb-4">
+                        <div class="artists-thumb">
+                            <div class="artists-image-wrap">
+                                <img src="{{ asset('assets/images/equipment/equipment-default.jpg') }}" class="artists-image img-fluid" alt="{{ equipement.nom }}">
+                                <div class="artists-date-badge">
+                                    <i class="bi {{ status_icon }} me-1"></i>
+                                    {{ equipement.quantiteDispo }}/{{ equipement.quantiteTotale }}
+                                </div>
+                                <div class="artists-type-badge" style="background: {{ status_color }}">
+                                    {{ equipement.statut }}
+                                </div>
+                            </div>
+                            <div class="artists-hover" style="background: {{ status_color }}">
+                                <h4>{{ equipement.nom }}</h4>
+                                <div class="event-meta">
+                                    <p>
+                                        <i class="bi bi-box-seam"></i>
+                                        Total: {{ equipement.quantiteTotale }}
+                                    </p>
+                                    <p>
+                                        <i class="bi bi-box-seam-fill"></i>
+                                        Available: {{ equipement.quantiteDispo }}
+                                    </p>
+                                    <p class="event-description">
+                                        {{ equipement.description|slice(0, 120) }}
+                                        {% if equipement.description|length > 120 %}...
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <a href="{{ path('app_equipement_show', {'id_eq': equipement.idEq}) }}" class="btn btn-sm btn-light">
+                                        <i class="bi bi-eye me-1"></i>Details
+                                    </a>
+                                    <a href="{{ path('app_equipement_edit', {'id_eq': equipement.idEq}) }}" class="btn btn-sm btn-outline-light">
+                                        <i class="bi bi-pencil me-1"></i>Edit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info py-4">
+                            <i class="bi bi-box-seam fs-1 d-block mb-3"></i>
+                            <h4>No equipment found</h4>
+                            <p class="mb-0">Add your first equipment item to get started!</p>
+                            <a href="{{ path('app_equipement_new') }}" class="btn btn-primary mt-3">
+                                <i class="bi bi-plus-circle me-1"></i>Add Equipment
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .section-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .hero-section .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .video-wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .custom-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Equipment Section */
+        .artists-section {
+            position: relative;
+        }
+
+        .artists-thumb {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .artists-thumb:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .artists-image-wrap {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .artists-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .artists-thumb:hover .artists-image {
+            transform: scale(1.1);
+        }
+
+        .artists-date-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .artists-type-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .artists-hover {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            color: white;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .artists-thumb:hover .artists-hover {
+            transform: translateY(0);
+        }
+
+        .event-meta {
+            margin-bottom: 15px;
+            color: #000;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .event-meta p {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            color: #000;
+        }
+
+        .event-meta i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+            color: #000;
+        }
+
+        .event-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #000;
+        }
+
+        .custom-btn {
+            background-color: #f6388a;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .custom-btn:hover {
+            background-color: #e4317d;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(246, 56, 138, 0.4);
+            color: white;
+        }
+
+        /* Responsive adjustments */
+        @media(max-width: 767.98px) {
+            .hero-section {
+                min-height: 500px;
+            }
+
+            .artists-image-wrap {
+                height: 200px;
+            }
+        }
+    </style>
+{% endblock %}

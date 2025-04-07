@@ -1,0 +1,72 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+
+<div class="mb-3">
+    {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.nom, {
+        'attr': {
+            'class': 'form-control' ~ (form.nom.vars.errors ? ' is-invalid' : ''),
+            'placeholder': 'Nom de l\'équipement'
+        }
+    }) }}
+    {{ form_errors(form.nom) }}
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="mb-3">
+            {{ form_label(form.quantite_totale, 'Quantité totale', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.quantite_totale, {
+                'attr': {
+                    'class': 'form-control' ~ (form.quantite_totale.vars.errors ? ' is-invalid' : ''),
+                    'min': 0
+                }
+            }) }}
+            {{ form_errors(form.quantite_totale) }}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            {{ form_label(form.quantite_dispo, 'Quantité disponible', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.quantite_dispo, {
+                'attr': {
+                    'class': 'form-control' ~ (form.quantite_dispo.vars.errors ? ' is-invalid' : ''),
+                    'min': 0
+                }
+            }) }}
+            {{ form_errors(form.quantite_dispo) }}
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.description, {
+        'attr': {
+            'class': 'form-control' ~ (form.description.vars.errors ? ' is-invalid' : ''),
+            'rows': 4,
+            'placeholder': 'Description détaillée de l\'équipement'
+        }
+    }) }}
+    {{ form_errors(form.description) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.statut, {
+        'attr': {
+            'class': 'form-select' ~ (form.statut.vars.errors ? ' is-invalid' : '')
+        }
+    }) }}
+    {{ form_errors(form.statut) }}
+</div>
+
+<div class="d-flex justify-content-between mt-4">
+    <a href="{{ path('app_equipement_index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Retour à la liste
+    </a>
+    <button class="btn btn-primary" type="submit">
+        <i class="bi bi-save me-2"></i>{{ button_label|default('Enregistrer') }}
+    </button>
+</div>
+
+{{ form_end(form) }}
