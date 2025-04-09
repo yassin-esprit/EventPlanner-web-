@@ -1,0 +1,75 @@
+security:
+  password_hashers:
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+      algorithm: auto
+      cost: 12 # Increased for better security
+      time_cost: 4
+      memory_cost: 13
+
+  providers:
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: email
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js|video)/
+      security: false
+
+    main:
+      lazy: true
+      provider: app_user_provider
+      form_login:
+        login_path: app_login
+        check_path: app_login
+        username_parameter: email
+        password_parameter: password
+        default_target_path: app_dashboard_redirect
+        enable_csrf: true
+        # Add these for better UX
+        use_referer: true
+        always_use_default_target_path: false
+        target_path_parameter: redirect_to
+        success_handler: App\Security\LoginSuccessHandler
+        failure_handler: App\Security\LoginFailureHandler
+        use_forward: false
+        post_only: true
+        remember_me: true
+      logout:
+        path: app_logout
+        target: home # Redirect to home after logout
+        # Add CSRF protection for logout
+        csrf_token_id: logout
+        invalidate_session: true
+        delete_cookies:
+          - REMEMBERME
+      remember_me:
+        secret: '%kernel.secret%'
+        lifetime: 604800 # 1 week in seconds
+        path: /
+        domain: null
+        secure: true
+        httponly: true
+        samesite: 'lax'
+      entry_point: App\Security\AuthenticationEntryPoint
+      access_denied_handler: App\Security\AccessDeniedHandler
+
+  access_control:
+    - { path: ^/login$, roles: PUBLIC_ACCESS }
+    - { path: ^/register, roles: PUBLIC_ACCESS }
+    - { path: ^/dashboard/owner, roles: ROLE_OWNER }
+    - { path: ^/dashboard/admin, roles: ROLE_ADMIN }
+    - { path: ^/dashboard/participant, roles: ROLE_PARTICIPANT }
+    # Add a catch-all rule for the rest of your application
+    - { path: ^/, roles: PUBLIC_ACCESS }
+    - { path: ^/evenement/\d+/participate, roles: ROLE_USER }
+    - { path: ^/rating/event/\d+/rate, roles: ROLE_PARTICIPANT }
+when@test:
+  security:
+    password_hashers:
+      Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+        algorithm: auto
+        cost: 4
+        time_cost: 3
+        memory_cost: 10

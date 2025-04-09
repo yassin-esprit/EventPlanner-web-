@@ -1,0 +1,303 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event Index
+{% endblock %}
+
+{% block body %}
+	<!-- Hero Section -->
+	<section class="hero-section" id="section_1">
+		<div class="section-overlay"></div>
+		<div class="container d-flex justify-content-center align-items-center">
+			<div class="row">
+				<div class="col-12 mt-auto mb-5 text-center">
+					<h1 class="text-white mb-5">Upcoming Events</h1>
+					<a class="btn custom-btn smoothscroll" href="#events">Browse Events</a>
+				</div>
+			</div>
+		</div>
+		<div class="video-wrap">
+			<video autoplay loop muted class="custom-video" poster="">
+				<source src="{{ asset('video/pexels-2022395.mp4') }}" type="video/mp4">
+				Your browser does not support the video tag.
+			</video>
+		</div>
+	</section>
+
+	<!-- Events Section -->
+	<section class="artists-section section-padding" id="events" style="
+												        background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+												        background-size: cover;
+												        background-position: center;
+												        background-attachment: fixed;
+												        position: relative;
+												    ">
+		<div class="section-overlay" style="
+																					        position: absolute;
+																					        top: 0;
+																					        left: 0;
+																					        width: 100%;
+																					        height: 100%;
+																					        background-color: rgba(231, 228, 228, 0.5);
+																					    "></div>
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-12 text-center mb-5">
+					<h2 class="mb-4">Our Events</h2>
+					<a href="{{ path('app_evenement_new') }}" class="btn custom-btn">
+						<i class="bi bi-plus-circle me-2"></i>Create New Event
+					</a>
+				</div>
+
+				{% for evenement in evenements %}
+					{# Define image and color based on event type #}
+					{% set event_assets = {
+                        'conference': {
+                            'image': 'conference.jpg',
+                            'color': 'rgba(70, 130, 180, 0.9)',
+                            'icon': 'bi-mic'
+                        },
+                        'fête': {
+                            'image': 'party.jpg',
+                            'color': 'rgba(220, 53, 69, 0.9)',
+                            'icon': 'bi-music-note-beamed'
+                        },
+                        'fete': {
+                            'image': 'party.jpg',
+                            'color': 'rgba(220, 53, 69, 0.9)',
+                            'icon': 'bi-music-note-beamed'
+                        },
+                        'formation': {
+                            'image': 'training.jpg',
+                            'color': 'rgba(25, 135, 84, 0.9)',
+                            'icon': 'bi-mortarboard'
+                        },
+                        'default': {
+                            'image': 'event-default.jpg',
+                            'color': 'rgba(108, 117, 125, 0.9)',
+                            'icon': 'bi-calendar-event'
+                        }
+                    } %}
+
+					{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
+
+					<div class="col-lg-4 col-md-6 col-12 mb-4">
+						<div class="artists-thumb">
+							<div class="artists-image-wrap">
+								<img src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="artists-image img-fluid" alt="{{ evenement.titre }}">
+								<div class="artists-date-badge">
+									<i class="bi {{ current_event.icon }} me-1"></i>
+									{{ evenement.date ? evenement.date|date('d M') : '' }}
+								</div>
+								<div class="artists-type-badge" style="background: {{ current_event.color }}">
+									{{ evenement.type }}
+								</div>
+							</div>
+							<div class="artists-hover" style="background: {{ current_event.color }}">
+								<h4>{{ evenement.titre }}</h4>
+								<div class="event-meta">
+									<p>
+										<i class="bi bi-geo-alt"></i>
+										{{ evenement.lieu }}
+									</p>
+									<p>
+										<i class="bi bi-ticket-perforated"></i>
+										{{ evenement.nbrplaces }}
+										seats available
+									</p>
+									<p class="event-description">
+										{{ evenement.description|slice(0, 120) }}
+										{% if evenement.description|length > 120 %}...
+										{% endif %}
+									</p>
+								</div>
+								<div class="d-flex justify-content-between mt-3">
+									<a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-light">
+										<i class="bi bi-eye me-1"></i>Details
+									</a>
+									<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-light">
+										<i class="bi bi-pencil me-1"></i>Edit
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<div class="col-12 text-center">
+						<div class="alert alert-info py-4">
+							<i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
+							<h4>No events found</h4>
+							<p class="mb-0">Create your first event to get started!</p>
+							<a href="{{ path('app_evenement_new') }}" class="btn btn-primary mt-3">
+								<i class="bi bi-plus-circle me-1"></i>Create Event
+							</a>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+
+{% block stylesheets %}
+	<style>
+		/* Hero Section */
+		.hero-section {
+			position: relative;
+			height: 100vh;
+			min-height: 600px;
+			display: flex;
+			align-items: center;
+			overflow: hidden;
+		}
+
+
+		.video-wrap {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: -1;
+		}
+
+		.custom-video {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		/* Events Section */
+		.artists-section {
+			background: #f8f9fa;
+		}
+
+		.artists-thumb {
+			position: relative;
+			overflow: hidden;
+			border-radius: 10px;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s ease;
+			height: 100%;
+		}
+
+		.artists-thumb:hover {
+			transform: translateY(-10px);
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+		}
+
+		.artists-image-wrap {
+			position: relative;
+			height: 300px;
+			overflow: hidden;
+		}
+
+		.artists-image {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			transition: transform 0.5s ease;
+		}
+
+		.artists-thumb:hover .artists-image {
+			transform: scale(1.1);
+		}
+
+		.artists-date-badge {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			background: rgba(0, 0, 0, 0.7);
+			color: white;
+			padding: 8px 12px;
+			border-radius: 5px;
+			font-weight: bold;
+			display: flex;
+			align-items: center;
+		}
+
+		.artists-type-badge {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			color: white;
+			padding: 6px 12px;
+			border-radius: 5px;
+			font-weight: bold;
+			font-size: 0.8rem;
+		}
+
+		.artists-hover {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			color: white;
+			padding: 20px;
+			transform: translateY(100%);
+			transition: transform 0.3s ease;
+			border-radius: 0 0 10px 10px;
+		}
+
+		.artists-thumb:hover .artists-hover {
+			transform: translateY(0);
+		}
+
+		.event-meta {
+			margin-bottom: 15px;
+			color: #000; /* Changed to black for better visibility */
+			background-color: rgba(255, 255, 255, 0); /* Added light background */
+			padding: 15px;
+			border-radius: 8px;
+		}
+
+		.event-meta p {
+			margin-bottom: 5px;
+			display: flex;
+			align-items: center;
+			color: #000; /* Changed to black */
+		}
+
+		.event-meta i {
+			margin-right: 8px;
+			font-size: 1.1rem;
+			color: #000; /* Changed to black */
+		}
+
+		.event-description {
+			font-size: 0.9rem;
+			line-height: 1.5;
+			color: #000; /* Changed to black */
+		}
+
+		.custom-btn {
+			background-color: #f6388a;
+			color: white;
+			border: none;
+			padding: 10px 25px;
+			border-radius: 50px;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.custom-btn:hover {
+			background-color: #e4317d;
+			transform: translateY(-3px);
+			box-shadow: 0 5px 15px rgba(246, 56, 138, 0.4);
+			color: white;
+		}
+
+		/* Responsive adjustments */
+		@media(max-width: 767.98px) {
+			.hero-section {
+				min-height: 500px;
+			}
+
+			.artists-image-wrap {
+				height: 200px;
+			}
+		}
+	</style>
+{% endblock %}

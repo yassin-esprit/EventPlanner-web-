@@ -1,0 +1,188 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Evenement;
+use App\Form\EvenementType;
+use App\Service\WeatherService;
+use App\Repository\EvenementRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+#[Route('/evenement')]
+final class EvenementController extends AbstractController
+{
+    #[Route(name: 'app_evenement_index', methods: ['GET'])]
+    public function index(EvenementRepository $evenementRepository): Response
+    {
+        return $this->render('evenement/index.html.twig', [
+            'evenements' => $evenementRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/new', name: 'app_evenement_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $evenement = new Evenement();
+        $form = $this->createForm(EvenementType::class, $evenement);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($evenement);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('evenement/new.html.twig', [
+            'evenement' => $evenement,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_evenement_show', methods: ['GET'])]
+    public function show(Evenement $evenement): Response
+    {
+        return $this->render('evenement/show.html.twig', [
+            'evenement' => $evenement,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_evenement_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(EvenementType::class, $evenement);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('evenement/edit.html.twig', [
+            'evenement' => $evenement,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_evenement_delete', methods: ['POST'])]
+    public function delete(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$evenement->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($evenement);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+
+    #[Route('/{id}/participate', name: 'app_evenement_participate', methods: ['POST'])]
+    public function participate(
+    Request $request, 
+    Evenement $evenement, 
+    EntityManagerInterface $entityManager,
+    Security $security
+): Response {
+    $user = $security->getUser();
+    
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    if ($this->isCsrfTokenValid('participate'.$evenement->getId(), $request->request->get('_token'))) {
+        // Check if user is already participating
+        if (!$evenement->getUsers()->contains($user)) {
+            $evenement->addUser($user);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'You have successfully registered for this event!');
+        } else {
+            $this->addFlash('warning', 'You are already registered for this event.');
+        }
+    }
+
+    return $this->redirectToRoute('app_evenement_participant_show', ['id' => $evenement->getId()]);
+}
+
+
+    #[Route('/participant/dashboard', name: 'participant_dashboard')]
+    public function participantDashboard(
+        EvenementRepository $evenementRepository,
+        Request $request
+        ): Response {
+         // Get search and sort parameters
+         $search = $request->query->get('search');
+        $sort = $request->query->get('sort', 'date');
+        $direction = $request->query->get('direction', 'asc');
+
+        // Get filtered and sorted events
+        $evenements = $evenementRepository->findWithSearchAndSort(
+            $search,
+            $sort,
+            $direction
+            );
+            
+            return $this->render('dashboard/participant/participant.html.twig', [
+                'evenements' => $evenements,
+                'search' => $search,
+                'sort' => $sort,
+                'direction' => $direction,
+            ]);
+        }
+
+
+
+        #[Route('/participant/dashboard/ajax', name: 'participant_dashboard_ajax')]
+public function participantDashboardAjax(
+    EvenementRepository $evenementRepository,
+    Request $request
+): Response {
+    // Get search and sort parameters
+    $search = $request->query->get('search');
+    $sort = $request->query->get('sort', 'date');
+    $direction = $request->query->get('direction', 'asc');
+
+    // Get filtered and sorted events
+    $evenements = $evenementRepository->findWithSearchAndSort(
+        $search,
+        $sort,
+        $direction
+    );
+
+    return $this->render('dashboard/participant/_events_list.html.twig', [
+        'evenements' => $evenements,
+        'search' => $search
+    ]);
+}
+
+#[Route('/{id}/weather', name: 'app_evenement_weather', methods: ['GET'])]
+public function getWeather(Evenement $evenement, WeatherService $weatherService): Response
+{
+    $weatherData = $weatherService->getWeatherForecast($evenement->getLieu(), $evenement->getDate());
+    
+    if ($weatherData === null) {
+        return $this->json([
+            'error' => true,
+            'message' => 'Could not fetch weather data for this location and date.'
+        ]);
+    }
+
+    $recommendation = $weatherService->getWeatherRecommendation($weatherData);
+
+    return $this->json([
+        'weather' => $weatherData,
+        'recommendation' => $recommendation,
+        'event_date' => $evenement->getDate()->format('Y-m-d H:i:s'),
+        'location' => $evenement->getLieu()
+    ]);
+}
+
+
+ }

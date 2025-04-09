@@ -1,0 +1,353 @@
+{# templates/rating/rate_event.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Rate
+	{{ event.titre }}
+{% endblock %}
+
+{% block body %}
+	<!-- Hero Section -->
+	<section class="hero-section" id="section_1" style="padding-top: 100px; background-image: url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')">
+		<div class="section-overlay"></div>
+		<div class="container d-flex justify-content-center align-items-center">
+			<div class="row">
+				<div class="col-12 mt-auto mb-5 text-center">
+					<h1 class="text-white mb-3">Rate Your Experience</h1>
+					<p class="text-white">Share your thoughts about
+						{{ event.titre }}</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Rating Section -->
+	<section class="about-section section-padding" id="section_2" style="background-image: url('https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-8 col-12">
+					<div class="custom-block custom-block-full">
+						<div class="custom-block-info">
+							<h5 class="mb-4">Your Opinion Matters</h5>
+							<p>We value your feedback about
+								{{ event.titre }}. Please take a moment to rate your experience and share your thoughts with us.</p>
+
+							{{ form_start(form) }}
+							<div class="mb-4">
+								<label class="form-label">Your Rating</label>
+								<div class="star-rating mb-3">
+									{% for i in 5..1 %}
+										<i class="bi bi-star-fill star" data-value="{{ i }}"></i>
+									{% endfor %}
+									{{ form_widget(form.rating, {'attr': {'class': 'rating-value d-none'}}) }}
+								</div>
+								{{ form_errors(form.rating) }}
+							</div>
+
+							<div class="mb-4">
+								{{ form_label(form.review) }}
+								{{ form_widget(form.review, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Tell us about your experience...'}}) }}
+								{{ form_errors(form.review) }}
+							</div>
+
+							<div class="d-flex justify-content-between mt-5">
+								<a href="{{ path('participant_dashboard', {'id': event.id}) }}" class="btn btn-primary">
+									<i class="bi bi-arrow-left me-2"></i>
+									Back to Event
+								</a>
+
+								<button type="submit" class="btn btn-warning">
+									<i class="bi bi-check2 me-1"></i>
+									{% if existingRating %}Update Rating{% else %}Submit Rating
+									{% endif %}
+								</button>
+							</div>
+							{{ form_end(form) }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Testimonials Section -->
+	<section class="section-bg section-padding" style="background-image: url('https://images.unsplash.com/photo-1527529482837-4698179dc6ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')">
+		<div class="section-overlay" style="
+						        position: absolute;
+						        top: 0;
+						        left: 0;
+						        width: 100%;
+						        height: 100%;
+						        background-color: rgba(220, 211, 211, 0.72);
+						    "></div>
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-8 col-12 text-center">
+					<h2 class="mb-4">What Others Are Saying</h2>
+					<p>Read reviews from other participants who attended this event</p>
+				</div>
+
+				{% if event.ratings|length > 0 %}
+					{% for rating in event.ratings|slice(0, 3) %}
+						<div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
+							<div class="custom-block custom-block-testimonial">
+								<div class="d-flex justify-content-between align-items-center mb-2">
+									<strong>{{ rating.user.firstName }}</strong>
+									<div class="text-warning">
+										{% for i in 1..5 %}
+											<i class="bi bi-star{% if i <= rating.rating %}-fill{% endif %}"></i>
+										{% endfor %}
+									</div>
+								</div>
+
+								{% if rating.review %}
+									<div class="review-text mt-2">{{ rating.review }}</div>
+								{% endif %}
+
+								<div class="d-flex align-items-center mt-3">
+									<small class="text-muted">{{ rating.createdAt|date('M d, Y') }}</small>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				{% else %}
+					<div class="col-12 text-center">
+						<div class="custom-block custom-block-testimonial">
+							<p class="mb-0">No reviews yet. Be the first to share your experience!</p>
+						</div>
+					</div>
+				{% endif %}
+
+				{% if event.ratings|length > 3 %}
+					<div class="col-12 text-center mt-4">
+						<a href="#all-reviews" class="btn btn-outline-warning" data-bs-toggle="collapse">
+							Show All Reviews ({{ event.ratings|length }})
+						</a>
+					</div>
+
+					<div id="all-reviews" class="collapse row">
+						{% for rating in event.ratings|slice(3) %}
+							<div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0 mt-4">
+								<div class="custom-block custom-block-testimonial">
+									<div class="d-flex justify-content-between align-items-center mb-2">
+										<strong>{{ rating.user.prenom }}</strong>
+										<div class="text-warning">
+											{% for i in 1..5 %}
+												<i class="bi bi-star{% if i <= rating.rating %}-fill{% endif %}"></i>
+											{% endfor %}
+										</div>
+									</div>
+
+									{% if rating.review %}
+										<div class="review-text mt-2">{{ rating.review }}</div>
+									{% endif %}
+
+									<div class="d-flex align-items-center mt-3">
+										<small class="text-muted">{{ rating.createdAt|date('M d, Y') }}</small>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</section>
+
+	<!-- Call to Action -->
+	<section class="cta-section section-padding section-bg" style="background-image: url('https://images.unsplash.com/photo-1464375117522-1311d6a5b81f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')">
+		<div class="container">
+			<div class="row justify-content-center align-items-center">
+				<div class="col-lg-8 col-12 text-center">
+					<h2 class="mb-4">More Events Waiting For You</h2>
+					<p class="mb-4">Discover other exciting events that match your interests</p>
+					<a href="{{ path('participant_dashboard') }}" class="btn btn-primary">
+						Browse All Events
+						<i class="bi bi-arrow-right ms-2"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.hero-section {
+			min-height: 300px;
+			padding-top: 100px;
+			position: relative;
+			overflow: hidden;
+			background-size: cover;
+			background-position: center;
+			background-attachment: fixed;
+		}
+
+		.section-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.7);
+		}
+
+		.about-section,
+		.section-bg,
+		.cta-section {
+			position: relative;
+		}
+
+		.about-section::before,
+		.section-bg::before,
+		.cta-section::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.18);
+		}
+
+		.custom-block {
+			border-radius: 10px;
+			padding: 30px;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+			background-color: white;
+			margin-bottom: 30px;
+			position: relative;
+			z-index: 1;
+		}
+
+		.custom-block-full {
+			padding: 40px;
+		}
+
+		.custom-block-testimonial {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			background-color: rgba(255, 255, 255, 0.95);
+			border-left: 3px solid #ffc107;
+		}
+
+		.star-rating {
+			font-size: 2rem;
+			line-height: 1;
+			margin-bottom: 15px;
+		}
+
+		.star-rating .star {
+			color: #ddd;
+			cursor: pointer;
+			transition: color 0.2s;
+			margin-right: 5px;
+		}
+
+		.star-rating .star:hover,
+		.star-rating .star.active {
+			color: #ffc107;
+		}
+
+		.text-warning {
+			color: #ffc107 !important;
+		}
+
+		.review-text {
+			color: #495057;
+			line-height: 1.6;
+		}
+
+		/* Updated Button Styles to match reference */
+		.btn-primary {
+			background-color: #6C55F9;
+			border-color: #6C55F9;
+			color: white;
+			transition: all 0.3s;
+		}
+
+		.btn-primary:hover {
+			background-color: #5a46d6;
+			border-color: #5a46d6;
+			transform: translateY(-2px);
+		}
+
+		.btn-warning {
+			background-color: #ffc107;
+			border-color: #ffc107;
+			color: #000;
+			transition: all 0.3s;
+		}
+
+		.btn-warning:hover {
+			background-color: #e0a800;
+			border-color: #d39e00;
+			transform: translateY(-2px);
+		}
+
+		.btn-outline-warning {
+			color: #ffc107;
+			border-color: #ffc107;
+			transition: all 0.3s;
+		}
+
+		.btn-outline-warning:hover {
+			background-color: #ffc107;
+			color: #000;
+			transform: translateY(-2px);
+		}
+
+		.form-control {
+			border-radius: 5px;
+			padding: 12px 15px;
+			border: 1px solid #e0e0e0;
+		}
+
+		textarea.form-control {
+			min-height: 150px;
+		}
+	</style>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Initialize rating stars
+const stars = document.querySelectorAll('.star-rating:not(.small) .star');
+const ratingInput = document.querySelector('.rating-value');
+
+stars.forEach(star => {
+star.addEventListener('click', function () {
+const value = this.getAttribute('data-value');
+ratingInput.value = value;
+
+// Update star display
+stars.forEach(s => {
+s.classList.toggle('active', s.getAttribute('data-value') <= value);
+});
+});
+
+// Initialize with existing rating if available
+if (ratingInput.value) {
+if (star.getAttribute('data-value') <= ratingInput.value) {
+star.classList.add('active');
+}
+}
+});
+
+// Initialize existing ratings display
+document.querySelectorAll('.rating-item .text-warning').forEach(ratingContainer => {
+const stars = ratingContainer.querySelectorAll('.bi-star, .bi-star-fill');
+const ratingValue = ratingContainer.querySelector('small') ?. previousElementSibling ?. textContent.trim().length || 0;
+
+stars.forEach((star, index) => {
+if (index < ratingValue) {
+star.classList.add('bi-star-fill');
+star.classList.remove('bi-star');
+}
+});
+});
+});
+	</script>
+{% endblock %}

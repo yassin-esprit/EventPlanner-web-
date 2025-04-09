@@ -1,0 +1,106 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Log Details{% endblock %}
+
+{% block content %}
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Log Details</h1>
+        <a href="{{ path('app_admin_logs_index') }}" class="btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Logs
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Log #{{ log.id }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">Basic Information</div>
+                        <div class="card-body">
+                             <table class="table table-sm table-borderless">
+                                <tr>
+                                    <th style="width: 120px;">Date:</th>
+                                    <td>{{ log.createdAt|date('Y-m-d H:i:s') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Level:</th>
+                                    <td>
+                                        {% set level_class = 'info' %}
+                                        {% if log.level == 'WARNING' %}
+                                            {% set level_class = 'warning' %}
+                                        {% elseif log.level == 'ERROR' or log.level == 'CRITICAL' or log.level == 'ALERT' or log.level == 'EMERGENCY' %}
+                                            {% set level_class = 'danger' %}
+                                        {% elseif log.level == 'NOTICE' %}
+                                             {% set level_class = 'primary' %}
+                                        {% endif %}
+                                        <span class="badge bg-{{ level_class }} text-white">{{ log.level }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Action:</th>
+                                    <td>{{ log.action }}</td>
+                                </tr>
+                                <tr>
+                                    <th>IP Address:</th>
+                                    <td>{{ log.ipAddress ?? 'N/A' }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">User Information</div>
+                        <div class="card-body">
+                             <table class="table table-sm table-borderless">
+                                <tr>
+                                    <th style="width: 120px;">User:</th>
+                                    <td>
+                                        {% if log.user %}
+                                            {# Assuming user detail route exists #}
+                                            {# <a href="{{ path('admin_user_show', {'id': log.user.userId}) }}"> #}
+                                                {{ log.user.email }}
+                                            {# </a> #}
+                                        {% else %}
+                                            <span class="text-muted">System/Anonymous</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                 {# Assuming userAgent is not stored; remove if not present #}
+                                {#
+                                <tr>
+                                    <th>User Agent:</th>
+                                    <td>{{ log.userAgent ?? 'N/A' }}</td>
+                                </tr>
+                                #}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">Details (Context)</div>
+                        <div class="card-body">
+                            {% if log.context is not empty %}
+                                <pre style="background-color: #f8f9fa; padding: 1rem; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word;">{{ log.context|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
+                            {% else %}
+                                <p class="text-muted">No additional context available.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+{% endblock %} 

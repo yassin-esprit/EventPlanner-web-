@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- CSS FILES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;400;700&display=swap" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-icons.css') }}" rel="stylesheet">
+    {# Add specific admin CSS if needed, or keep using base site styles? For now, use base #}
+    {# <link href="{{ asset('css/admin-specific.css') }}" rel="stylesheet"> #}
+    <link href="{{ asset('css/templatemo-festava-live.css') }}" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #f8cb2e; /* Yellow */
+            --secondary-color: #ee5007; /* Orange */
+            --section-bg-color: #f0f8ff; /* Light Alice Blue */
+            --custom-btn-bg-color: #ee5007;
+            --custom-btn-bg-hover-color: #c01f27; /* Darker Red/Orange */
+            --dark-color: #212529; /* Bootstrap Dark */
+            --p-color: #6c757d; /* Bootstrap Secondary Text */
+            --border-color: #dee2e6; /* Bootstrap Border Color */
+            --link-hover-color: #c01f27;
+            --sidebar-bg: linear-gradient(180deg, #343a40 0%, #212529 100%); /* Dark gradient */
+            --sidebar-text-color: rgba(255, 255, 255, 0.8);
+            --sidebar-text-hover-color: #ffffff;
+            --sidebar-active-bg: rgba(255, 255, 255, 0.1);
+            --sidebar-active-border: var(--primary-color);
+            --content-bg: #f8f9fc; /* Light Grey */
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--content-bg); /* Set background for the whole page */
+            margin: 0; /* Remove default body margin */
+            padding: 0; /* Remove default body padding */
+        }
+
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text-color);
+            position: fixed; /* Fixed sidebar */
+            top: 0;
+            left: 0;
+            height: 100vh; /* Full height */
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding-top: 0; /* Remove potential padding */
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+
+        .sidebar-brand {
+            height: 60px; /* Adjust height if needed */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem; /* Slightly smaller */
+            color: var(--sidebar-text-hover-color);
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+        .sidebar-brand:hover {
+             color: var(--sidebar-text-hover-color);
+        }
+
+        .sidebar-brand-icon {
+            color: var(--primary-color);
+            margin-right: 8px;
+            font-size: 1.3rem;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 1rem; /* Add horizontal margin */
+        }
+
+        .sidebar-heading {
+            padding: 0.5rem 1.25rem; /* Adjust padding */
+            font-size: 0.75rem; /* Smaller heading */
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+        }
+
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: var(--sidebar-text-color);
+            padding: 10px 20px; /* Adjust padding */
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease-in-out;
+            font-size: 0.9rem; /* Adjust font size */
+            text-decoration: none;
+            border-left: 4px solid transparent; /* Prepare for active state */
+             margin: 2px 0; /* Add small margin between items */
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--sidebar-text-hover-color);
+            background: var(--sidebar-active-bg);
+            border-left-color: var(--sidebar-active-border);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1rem; /* Adjust icon size */
+            color: var(--sidebar-text-color); /* Match text color initially */
+            width: 20px;
+            text-align: center;
+             transition: color 0.2s ease-in-out;
+        }
+         .nav-link:hover i,
+         .nav-link.active i {
+             color: var(--primary-color); /* Highlight icon on hover/active */
+         }
+
+        /* Content */
+        #content-wrapper { /* Renamed to avoid clash if #content is used elsewhere */
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background-color: var(--content-bg);
+            display: flex;
+            flex-direction: column; /* Allow header/footer within content */
+        }
+
+        /* Optional Topbar inside content */
+        #topbar {
+            height: 60px; /* Match sidebar brand height */
+            background-color: #ffffff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            justify-content: flex-end; /* Align items to the right */
+            position: sticky; /* Make topbar sticky */
+            top: 0;
+            z-index: 999;
+        }
+
+         #topbar .nav-item .nav-link { /* Style topbar items */
+             color: var(--p-color);
+             padding: 0.5rem 1rem;
+             border-left: none; /* Remove sidebar border */
+              margin: 0 0.5rem; /* Spacing */
+         }
+         #topbar .nav-item .nav-link:hover {
+             color: var(--dark-color);
+             background: none; /* No background hover */
+              border-left: none;
+         }
+         #topbar .nav-item .nav-link i {
+             margin-right: 5px;
+             color: var(--p-color);
+         }
+         #topbar .nav-item .nav-link:hover i {
+             color: var(--dark-color);
+         }
+
+          #topbar .user-info {
+            color: var(--dark-color);
+          }
+
+        /* Main Content Area */
+        .container-fluid {
+            padding: 1.5rem; /* Adjust padding */
+            flex-grow: 1; /* Allow content to take remaining space */
+        }
+
+        /* Add styles from old admin.html.twig for cards, tables etc. if needed */
+        .card {
+            border: none;
+            border-radius: 0.35rem; /* Standard Bootstrap radius */
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, .15);
+            margin-bottom: 1.5rem;
+            background: white;
+        }
+
+        .card-header {
+            background: #f8f9fc; /* Lighter header */
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1rem 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color); /* Use primary color for header text */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: calc(0.35rem - 1px) calc(0.35rem - 1px) 0 0;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        /* Basic Footer inside content */
+        #admin-footer {
+            padding: 1rem 1.5rem;
+            background-color: #e9ecef; /* Light grey footer */
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--p-color);
+            margin-top: auto; /* Push footer to bottom */
+            border-top: 1px solid #dee2e6;
+        }
+
+
+        /* Responsive */
+        @media(max-width: 768px) {
+            #sidebar {
+                margin-left: -250px;
+            }
+            #sidebar.active { /* Add class via JS to toggle */
+                margin-left: 0;
+            }
+            #content-wrapper {
+                width: 100%;
+                margin-left: 0;
+            }
+            /* Consider adding a toggle button for mobile */
+        }
+
+    </style>
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul id="sidebar" class="navbar-nav sidebar">
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand" href="{{ path('app_dashboard_admin') }}"> {# Link brand to admin dashboard #}
+                <div class="sidebar-brand-icon">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+                <div class="sidebar-brand-text mx-2">Admin Panel</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Items -->
+            <li class="nav-item">
+                {# Add logic to set 'active' class based on current route #}
+                {% set route = app.request.attributes.get('_route') %}
+                <a class="nav-link {% if route == 'app_dashboard_admin' %}active{% endif %}" href="{{ path('app_dashboard_admin') }}">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Management
+            </div>
+
+            <!-- Events Nav Item (Example - Adjust route as needed) -->
+            <li class="nav-item">
+                <a class="nav-link {% if route starts with 'app_evenement_' %}active{% endif %}" href="{{ path('app_evenement_index') }}"> {# Assuming 'app_evenement_index' is the route #}
+                    <i class="bi bi-calendar-event"></i>
+                    <span>Events</span>
+                </a>
+            </li>
+
+             <!-- Users Nav Item (Example - Adjust route as needed) -->
+            <li class="nav-item">
+                 {# Assuming user management route starts with 'admin_user_' #}
+                <a class="nav-link {% if route starts with 'admin_user_' %}active{% endif %}" href="#">
+                    <i class="bi bi-people"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+
+             <!-- System Logs Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link {% if route starts with 'app_admin_logs_' %}active{% endif %}" href="{{ path('app_admin_logs_index') }}">
+                    <i class="bi bi-journal-text"></i>
+                    <span>System Logs</span>
+                </a>
+            </li>
+
+             {# Add other sidebar items here following the pattern #}
+             {# Example:
+             <li class="nav-item">
+                <a class="nav-link {% if route starts with 'admin_sponsors_' %}active{% endif %}" href="#">
+                    <i class="bi bi-award"></i>
+                    <span>Sponsors</span>
+                </a>
+            </li>
+             #}
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper">
+
+            <!-- Topbar -->
+            <nav id="topbar" class="navbar navbar-expand navbar-light topbar mb-4 static-top">
+                 {# Add topbar content here - e.g., user menu, logout #}
+                 <ul class="navbar-nav ml-auto">
+                     <li class="nav-item dropdown no-arrow">
+                         <a class="nav-link dropdown-toggle user-info" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                             <i class="bi bi-person-circle me-2"></i>
+                             <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user ? app.user.firstName : 'Admin' }}</span>
+                         </a>
+                         <!-- Dropdown - User Information -->
+                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                             <a class="dropdown-item" href="#">
+                                 <i class="bi bi-person me-2 text-gray-400"></i>
+                                 Profile
+                             </a>
+                             <div class="dropdown-divider"></div>
+                             <a class="dropdown-item" href="{{ path('app_logout') }}">
+                                 <i class="bi bi-box-arrow-right me-2 text-gray-400"></i>
+                                 Logout
+                             </a>
+                         </div>
+                     </li>
+                 </ul>
+            </nav>
+            <!-- End of Topbar -->
+
+
+            <!-- Main Content -->
+            <div class="container-fluid">
+                {% block content %}
+                    {# Default content if block is not overridden #}
+                    <h1 class="h3 mb-4 text-gray-800">Page Content</h1>
+                {% endblock %}
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer id="admin-footer">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Mythos Planner {{ "now"|date("Y") }}</span>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script> {# Use bundle for Popper #}
+    {# Add other necessary admin JS files here #}
+    {# <script src="{{ asset('js/admin-specific.js') }}"></script> #}
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html> 
