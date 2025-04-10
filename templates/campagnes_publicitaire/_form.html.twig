@@ -1,0 +1,92 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+<div class="mb-3">
+    {{ form_label(form.nom_camp, 'Nom de la campagne', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.nom_camp, {
+        'attr': {
+            'class': 'form-control' ~ (form.nom_camp.vars.errors ? ' is-invalid' : ''),
+            'placeholder': 'Entrez le nom de la campagne'
+        }
+    }) }}
+    <div class="invalid-feedback">
+        {{ form_errors(form.nom_camp) }}
+    </div>
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.budget_camp, 'Budget (€)', {'label_attr': {'class': 'form-label'}}) }}
+    <div class="input-group">
+        {{ form_widget(form.budget_camp, {
+            'attr': {
+                'class': 'form-control' ~ (form.budget_camp.vars.errors ? ' is-invalid' : ''),
+                'placeholder': 'Montant en euros'
+            }
+        }) }}
+        <span class="input-group-text">€</span>
+    </div>
+    <div class="invalid-feedback">
+        {{ form_errors(form.budget_camp) }}
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        {{ form_label(form.date_debut_camp, 'Date et heure de début', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.date_debut_camp, {
+            'attr': {
+                'class': 'form-control datetimepicker' ~ (form.date_debut_camp.vars.errors ? ' is-invalid' : '')
+            }
+        }) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.date_debut_camp) }}
+        </div>
+    </div>
+    <div class="col-md-6">
+        {{ form_label(form.date_fin_camp, 'Date et heure de fin', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.date_fin_camp, {
+            'attr': {
+                'class': 'form-control datetimepicker' ~ (form.date_fin_camp.vars.errors ? ' is-invalid' : '')
+            }
+        }) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.date_fin_camp) }}
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.statut_camp, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.statut_camp, {
+        'attr': {
+            'class': 'form-select' ~ (form.statut_camp.vars.errors ? ' is-invalid' : '')
+        }
+    }) }}
+    <div class="invalid-feedback">
+        {{ form_errors(form.statut_camp) }}
+    </div>
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.publicite, 'Publicité associée', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.publicite, {
+        'attr': {
+            'class': 'form-select' ~ (form.publicite.vars.errors ? ' is-invalid' : '')
+        }
+    }) }}
+    <div class="invalid-feedback">
+        {{ form_errors(form.publicite) }}
+    </div>
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button type="submit" class="btn btn-primary me-md-2">
+        <i class="fas fa-save me-1"></i> {{ button_label|default('Enregistrer') }}
+    </button>
+    <a href="{{ path('app_campagnes_publicitaires_index') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+    </a>
+</div>
+{{ form_end(form) }}
