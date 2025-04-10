@@ -4,8 +4,8 @@
     {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
     {{ form_widget(form.nom, {
         'attr': {
-            'class': 'form-control' ~ (form.nom.vars.errors ? ' is-invalid' : ''),
-            'placeholder': 'Nom de l\'équipement'
+            'class': 'form-control' ~ (form.nom.vars.errors|length > 0 ? ' is-invalid' : ''),
+            'placeholder': "Nom de l'équipement"
         }
     }) }}
     {{ form_errors(form.nom) }}
@@ -17,7 +17,7 @@
             {{ form_label(form.quantite_totale, 'Quantité totale', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.quantite_totale, {
                 'attr': {
-                    'class': 'form-control' ~ (form.quantite_totale.vars.errors ? ' is-invalid' : ''),
+                    'class': 'form-control' ~ (form.quantite_totale.vars.errors|length > 0 ? ' is-invalid' : ''),
                     'min': 0
                 }
             }) }}
@@ -29,7 +29,7 @@
             {{ form_label(form.quantite_dispo, 'Quantité disponible', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.quantite_dispo, {
                 'attr': {
-                    'class': 'form-control' ~ (form.quantite_dispo.vars.errors ? ' is-invalid' : ''),
+                    'class': 'form-control' ~ (form.quantite_dispo.vars.errors|length > 0 ? ' is-invalid' : ''),
                     'min': 0
                 }
             }) }}
@@ -42,9 +42,9 @@
     {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
     {{ form_widget(form.description, {
         'attr': {
-            'class': 'form-control' ~ (form.description.vars.errors ? ' is-invalid' : ''),
+            'class': 'form-control' ~ (form.description.vars.errors|length > 0 ? ' is-invalid' : ''),
             'rows': 4,
-            'placeholder': 'Description détaillée de l\'équipement'
+            'placeholder': "Description détaillée de l'équipement"
         }
     }) }}
     {{ form_errors(form.description) }}
@@ -54,7 +54,7 @@
     {{ form_label(form.statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
     {{ form_widget(form.statut, {
         'attr': {
-            'class': 'form-select' ~ (form.statut.vars.errors ? ' is-invalid' : '')
+            'class': 'form-select' ~ (form.statut.vars.errors|length > 0 ? ' is-invalid' : '')
         }
     }) }}
     {{ form_errors(form.statut) }}

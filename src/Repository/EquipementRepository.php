@@ -15,6 +15,10 @@ class EquipementRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Equipement::class);
     }
+    // src/Repository/EquipementRepository.php
+
+
+
 
     //    /**
     //     * @return Equipement[] Returns an array of Equipement objects

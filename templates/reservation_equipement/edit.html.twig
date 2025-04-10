@@ -1,0 +1,192 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Equipment Reservation{% endblock %}
+
+{% block body %}
+    <section class="ticket-section section-padding" style="
+        background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;">
+        
+        <div class="section-overlay" style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);">
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-10 mx-auto">
+                    {{ form_start(form, {
+                        'attr': {
+                            'class': 'custom-form ticket-form mb-5 mb-lg-0 needs-validation',
+                            'novalidate': true
+                        }
+                    }) }}
+
+                    <h2 class="text-center mb-4">Edit Equipment Reservation</h2>
+
+                    <div class="ticket-form-body">
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-12 input-with-error">
+                                {{ form_widget(form.date_reservation, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Reservation Date',
+                                        'data-error': form.date_reservation.vars.errors|length > 0 ? form.date_reservation.vars.errors[0].message : ''
+                                    },
+                                    'label': false
+                                }) }}
+                                {% if form.date_reservation.vars.errors|length > 0 %}
+                                    <div class="error-message">{{ form.date_reservation.vars.errors[0].message }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-12 input-with-error">
+                                {{ form_widget(form.statut, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'data-error': form.statut.vars.errors|length > 0 ? form.statut.vars.errors[0].message : ''
+                                    },
+                                    'label': false
+                                }) }}
+                                {% if form.statut.vars.errors|length > 0 %}
+                                    <div class="error-message">{{ form.statut.vars.errors[0].message }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-12 input-with-error">
+                                {{ form_widget(form.equipement, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'data-error': form.equipement.vars.errors|length > 0 ? form.equipement.vars.errors[0].message : ''
+                                    },
+                                    'label': false
+                                }) }}
+                                {% if form.equipement.vars.errors|length > 0 %}
+                                    <div class="error-message">{{ form.equipement.vars.errors[0].message }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-12 input-with-error">
+                                {{ form_widget(form.evenement, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'data-error': form.evenement.vars.errors|length > 0 ? form.evenement.vars.errors[0].message : ''
+                                    },
+                                    'label': false
+                                }) }}
+                                {% if form.evenement.vars.errors|length > 0 %}
+                                    <div class="error-message">{{ form.evenement.vars.errors[0].message }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <div class="col-lg-4 col-md-6 col-8">
+                                <button type="submit" class="form-control">Update Reservation</button>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-8">
+                                <a href="{{ path('app_reservation_equipement_index') }}" class="btn btn-outline-secondary form-control">Cancel</a>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            {{ include('reservation_equipement/_delete_form.html.twig') }}
+                        </div>
+
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .ticket-section {
+            position: relative;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-error {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .error-message {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 5px 10px;
+            border-radius: 0 0 5px 5px;
+            font-size: 0.8rem;
+            margin-top: -2px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 5px;
+            padding: 10px 15px;
+        }
+
+        .custom-form {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline-secondary {
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('[data-error]').forEach(element => {
+                if (element.dataset.error) {
+                    element.classList.add('is-invalid');
+
+                    if (element.tagName === 'INPUT' && element.type !== 'file' && !element.value) {
+                        element.value = '';
+                    }
+
+                    if (element.tagName === 'SELECT' && !element.value) {
+                        element.selectedIndex = 0;
+                    }
+                }
+            });
+
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function (e) {
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                this.classList.add('was-validated');
+            }, false);
+        });
+    </script>
+{% endblock %}

@@ -14,12 +14,15 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/equipement')]
 final class EquipementController extends AbstractController{
     #[Route(name: 'app_equipement_index', methods: ['GET'])]
+
     public function index(EquipementRepository $equipementRepository): Response
-    {
-        return $this->render('equipement/index.html.twig', [
-            'equipements' => $equipementRepository->findAll(),
-        ]);
-    }
+{
+    return $this->render('equipement/index.html.twig', [
+        'equipements' => $equipementRepository->findAll(),
+        
+    ]);
+}
+
 
     #[Route('/new', name: 'app_equipement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

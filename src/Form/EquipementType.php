@@ -32,12 +32,12 @@ public function buildForm(FormBuilderInterface $builder, array $options): void
         ->add('statut', ChoiceType::class, [
             'label' => 'Statut',
             'choices' => [
-                'Disponible' => 1,
-                'En utilisation' => 2,
-                'En maintenance' => 3,
-                'Hors service' => 4
+                'Disponible' => 'disponible',
+                'Indisponible' => 'indisponible',
+                'Maintenance' => 'maintenance'
             ]
-        ]);
+        ])
+        ;
 }
     public function configureOptions(OptionsResolver $resolver): void
     {
