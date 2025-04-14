@@ -321,9 +321,9 @@
 
 		<!-- Logistics Nav Item -->
 		<li class="nav-item">
-			<a class="nav-link" href="#">
+			<a class="nav-link" href="#equipements">
 				<i class="bi bi-truck"></i>
-				<span>Logistics</span>
+				<span>Equipement</span>
 			</a>
 		</li>
 
@@ -368,119 +368,174 @@
 				</a>
 			</div>
 
-			<!-- Events Table -->
-			<div class="card shadow mb-4">
-				<div class="card-header">
-					<h6 class="m-0 font-weight-bold">All Events</h6>
-					<div class="dropdown d-inline-block">
-						<button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-							<i class="bi bi-filter"></i>
-							Filter
-						</button>
-						<div class="dropdown-menu dropdown-menu-right">
-							<a class="dropdown-item" href="#">All Events</a>
-							<a class="dropdown-item" href="#">Upcoming</a>
-							<a class="dropdown-item" href="#">Past</a>
-						</div>
-					</div>
-				</div>
-				<div class="card-body">
-					<div class="table-responsive">
-						<table class="table" id="dataTable" width="100%" cellspacing="0">
-							<thead>
-								<tr>
-									<th>Title</th>
-									<th>Type</th>
-									<th>Date</th>
-									<th>Location</th>
-									<th>Seats</th>
-									<th>Status</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for evenement in evenements %}
-									{# Define image and color based on event type #}
-									{% set event_assets = {
-                                            'conference': {
-                                                'color': 'primary',
-                                                'icon': 'bi-mic'
-                                            },
-                                            'fête': {
-                                                'color': 'danger',
-                                                'icon': 'bi-music-note-beamed'
-                                            },
-                                            'fete': {
-                                                'color': 'danger',
-                                                'icon': 'bi-music-note-beamed'
-                                            },
-                                            'formation': {
-                                                'color': 'success',
-                                                'icon': 'bi-mortarboard'
-                                            },
-                                            'default': {
-                                                'color': 'secondary',
-                                                'icon': 'bi-calendar-event'
-                                            }
-                                        } %}
-
-									{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
-									{% set is_past = evenement.date and evenement.date < date() %}
-
-									<tr>
-										<td>
-											<i class="bi {{ current_event.icon }} me-2 text-{{ current_event.color }}"></i>
-											<strong>{{ evenement.titre }}</strong>
-										</td>
-										<td>
-											<span class="badge badge-{{ current_event.color }}">
-												{{ evenement.type }}
-											</span>
-										</td>
-										<td>{{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</td>
-										<td>{{ evenement.lieu }}</td>
-										<td>{{ evenement.nbrplaces }}</td>
-										<td>
-											{% if is_past %}
-												<span class="badge badge-secondary">Completed</span>
-											{% else %}
-												<span class="badge badge-success">Upcoming</span>
-											{% endif %}
-										</td>
-										<td>
-											<div class="action-buttons">
-												<a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-primary" title="View">
-													<i class="bi bi-eye"></i>
-												</a>
-												<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-warning" title="Edit">
-													<i class="bi bi-pencil"></i>
-												</a>
-												<form method="post" action="{{ path('app_evenement_delete', {'id': evenement.id}) }}" onsubmit="return confirm('Are you sure you want to delete this event?');" class="d-inline">
-													<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
-													<button class="btn btn-sm btn-danger" title="Delete">
-														<i class="bi bi-trash"></i>
-													</button>
-												</form>
-											</div>
-										</td>
-									</tr>
-								{% else %}
-									<tr>
-										<td colspan="7" class="text-center py-4">
-											<i class="bi bi-calendar-x fs-1 text-muted"></i>
-											<h5 class="text-muted mt-3">No events found</h5>
-											<a href="{{ path('app_evenement_new') }}" class="btn btn-primary mt-2">
-												<i class="bi bi-plus-circle"></i>
-												Create Event
-											</a>
-										</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div>
+<!-- Events Table -->
+<div id="events" class="card shadow mb-4">
+	<div class="card-header">
+		<h6 class="m-0 font-weight-bold">All Events</h6>
+		<div class="dropdown d-inline-block">
+			<button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+				<i class="bi bi-filter"></i>
+				Filter
+			</button>
+			<div class="dropdown-menu dropdown-menu-right">
+				<a class="dropdown-item" href="#">All Events</a>
+				<a class="dropdown-item" href="#">Upcoming</a>
+				<a class="dropdown-item" href="#">Past</a>
 			</div>
+		</div>
+	</div>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table class="table" id="dataTable" width="100%" cellspacing="0">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Type</th>
+						<th>Date</th>
+						<th>Location</th>
+						<th>Seats</th>
+						<th>Status</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for evenement in evenements %}
+						{% set event_assets = {
+							'conference': {'color': 'primary', 'icon': 'bi-mic'},
+							'fête': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
+							'fete': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
+							'formation': {'color': 'success', 'icon': 'bi-mortarboard'},
+							'default': {'color': 'secondary', 'icon': 'bi-calendar-event'}
+						} %}
+
+						{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
+						{% set is_past = evenement.date and evenement.date < date() %}
+
+						<tr>
+							<td><i class="bi {{ current_event.icon }} me-2 text-{{ current_event.color }}"></i><strong>{{ evenement.titre }}</strong></td>
+							<td><span class="badge badge-{{ current_event.color }}">{{ evenement.type }}</span></td>
+							<td>{{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</td>
+							<td>{{ evenement.lieu }}</td>
+							<td>{{ evenement.nbrplaces }}</td>
+							<td>
+								{% if is_past %}
+									<span class="badge badge-secondary">Completed</span>
+								{% else %}
+									<span class="badge badge-success">Upcoming</span>
+								{% endif %}
+							</td>
+							<td>
+								<div class="action-buttons">
+									<a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-primary" title="View">
+										<i class="bi bi-eye"></i>
+									</a>
+									<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-warning" title="Edit">
+										<i class="bi bi-pencil"></i>
+									</a>
+									<form method="post" action="{{ path('app_evenement_delete', {'id': evenement.id}) }}" onsubmit="return confirm('Are you sure you want to delete this event?');" class="d-inline">
+										<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
+										<button class="btn btn-sm btn-danger" title="Delete">
+											<i class="bi bi-trash"></i>
+										</button>
+									</form>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="7" class="text-center py-4">
+								<i class="bi bi-calendar-x fs-1 text-muted"></i>
+								<h5 class="text-muted mt-3">No events found</h5>
+								<a href="{{ path('app_evenement_new') }}" class="btn btn-primary mt-2">
+									<i class="bi bi-plus-circle"></i>
+									Create Event
+								</a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- Equipement Section -->
+<div id="equipements" class="mt-5 card shadow mb-4">
+	<div class="card-header d-flex justify-content-between align-items-center">
+		<h6 class="m-0 font-weight-bold">Liste des équipements</h6>
+		<div>
+			<span class="badge badge-info me-2">Total: {{ equipements|length }}</span>
+			<a href="{{ path('app_equipement_new') }}" class="btn btn-primary btn-sm">
+				<i class="bi bi-plus-circle"></i>
+				Ajouter un équipement
+			</a>
+		</div>
+	</div>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table class="table" width="100%" cellspacing="0">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Quantité totale</th>
+						<th>Quantité dispo</th>
+						<th>Description</th>
+						<th>Statut</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for equipement in equipements %}
+						<tr>
+							<td>{{ equipement.nom }}</td>
+							<td>{{ equipement.quantiteTotale }}</td>
+							<td>{{ equipement.quantiteDispo }}</td>
+							<td>{{ equipement.description }}</td>
+							<td>
+								{% if equipement.statut == 'disponible' %}
+									<span class="badge badge-success">{{ equipement.statut }}</span>
+								{% elseif equipement.statut == 'réparé' %}
+									<span class="badge badge-warning">{{ equipement.statut }}</span>
+								{% else %}
+									<span class="badge badge-danger">{{ equipement.statut }}</span>
+								{% endif %}
+							</td>
+							<td>
+								<div class="action-buttons">
+									<a href="{{ path('app_equipement_show', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-primary" title="Voir">
+										<i class="bi bi-eye"></i>
+									</a>
+									<a href="{{ path('app_equipement_edit', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-warning" title="Modifier">
+										<i class="bi bi-pencil"></i>
+									</a>
+									<form method="post" action="{{ path('app_equipement_delete', {'id_eq': equipement.id_eq}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet équipement ?');" class="d-inline">
+										<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipement.id_eq) }}">
+										<button class="btn btn-sm btn-danger" title="Supprimer">
+											<i class="bi bi-trash"></i>
+										</button>
+									</form>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="6" class="text-center py-4">
+								<i class="bi bi-box-seam fs-1 text-muted"></i>
+								<h5 class="text-muted mt-3">Aucun équipement trouvé</h5>
+								<a href="{{ path('app_equipement_new') }}" class="btn btn-primary mt-2">
+									<i class="bi bi-plus-circle"></i>
+									Ajouter un équipement
+								</a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
 		</div>
 		<!-- /.container-fluid -->
 	</div>

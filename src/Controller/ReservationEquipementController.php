@@ -80,7 +80,36 @@ final class ReservationEquipementController extends AbstractController{
             'form' => $form,
         ]);
     }
-
+    #[Route('/new/from-equipement/{id}', name: 'app_reservation_equipement_new_from_equipement', methods: ['GET', 'POST'])]
+    public function newFromEquipement(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $equipement = $entityManager->getRepository(\App\Entity\Equipement::class)->find($id);
+        
+        if (!$equipement) {
+            throw $this->createNotFoundException('Équipement introuvable');
+        }
+    
+        $reservation = new ReservationEquipement();
+        $reservation->setEquipement($equipement);
+    
+        $form = $this->createForm(ReservationEquipementType::class, $reservation);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($reservation);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_reservation_equipement_index'); // vers la liste des réservations
+        }
+    
+        return $this->render('reservation_equipement/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+    
     #[Route('/{id}', name: 'app_reservation_equipement_delete', methods: ['POST'])]
     public function delete(Request $request, ReservationEquipement $reservationEquipement, EntityManagerInterface $entityManager): Response
     {
