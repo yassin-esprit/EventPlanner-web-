@@ -23,8 +23,13 @@ class Equipement
         min: 3,
         minMessage: "Le nom doit contenir au moins {{ limit }} caractères"
     )]
+    #[Assert\Regex(
+        pattern: '/^[^*]*$/',
+        message: "Le nom ne doit pas contenir le caractère *"
+    )]
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $nom = null;
+    
 
     #[Assert\NotBlank(message: "Veuillez indiquer la quantité totale")]
     #[Assert\Positive(message: "La quantité totale doit être un entier positif (> 0)")]
@@ -35,7 +40,11 @@ class Equipement
     #[Assert\GreaterThanOrEqual(value: 0, message: "La quantité disponible ne peut pas être négative")]
     #[ORM\Column(type: 'integer', nullable: false)]
     private ?int $quantite_dispo = null;
-
+    #[Assert\Regex(
+        pattern: '/^[^*]*$/',
+        message: "La description ne doit pas contenir le caractère *"
+    )]
+    
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 

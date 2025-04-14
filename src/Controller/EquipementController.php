@@ -35,7 +35,7 @@ final class EquipementController extends AbstractController{
             $entityManager->persist($equipement);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_equipement_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_dashboard', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('equipement/new.html.twig', [
@@ -61,7 +61,7 @@ final class EquipementController extends AbstractController{
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_equipement_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_dashboard', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('equipement/edit.html.twig', [

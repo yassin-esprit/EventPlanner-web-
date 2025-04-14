@@ -217,62 +217,65 @@
 		</div>
 		
 	</section>
-		<!-- Equipment Section -->
-	<section class="py-5" style="
-		background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
-		background-size: cover;
-		background-position: center;
-		background-attachment: fixed;
-		position: relative;
-	">
-		<div class="section-overlay" style="
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.2);
-		"></div>
-		<div class="container position-relative">
-			<div class="row justify-content-center mb-5">
-				<div class="col-12 text-center">
-					<h2 class="mb-4 text-white">Available Equipments</h2>
-				</div>
-			</div>
-			<div class="row g-4">
-				{% for equipement in equipements %}
-					<div class="col-md-4 col-sm-6">
-						<div class="card shadow-sm border-0 h-100">
-							<div class="card-body">
-								<h5 class="card-title">{{ equipement.nom }}</h5>
-								<p class="card-text mb-1"><strong>Total:</strong> {{ equipement.quantiteTotale }}</p>
-								<p class="card-text mb-1"><strong>Disponible:</strong> {{ equipement.quantiteDispo }}</p>
-								<p class="card-text text-muted"><em>{{ equipement.description }}</em></p>
-							</div>
-							<div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
-								{% if equipement.statut == 'disponible' %}
-									<span class="badge bg-success">{{ equipement.statut }}</span>
-								{% elseif equipement.statut == 'réparé' %}
-									<span class="badge bg-warning text-dark">{{ equipement.statut }}</span>
-								{% else %}
-									<span class="badge bg-danger">{{ equipement.statut }}</span>
-								{% endif %}
-								<a href="{{ path('app_reservation_equipement_new_from_equipement', {'id': equipement.idEq}) }}" class="btn btn-sm btn-outline-primary"> Réserver</a>
+<!-- Equipment Section -->
+<section class="py-5" style="
+    background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;">
+    <div class="section-overlay" style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.2);">
+    </div>
 
-							</div>
-						</div>
-					</div>
-				{% else %}
-					<div class="col-12 text-center">
-						<div class="alert alert-info">
-							<i class="bi bi-info-circle me-2"></i>
-							Aucun équipement trouvé.
-						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-	</section>
+    <div class="container position-relative">
+        <div class="row justify-content-center mb-5">
+            <div class="col-12 text-center">
+                <h2 class="mb-4 text-white">Available Equipments</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            {% for equipement in equipements %}
+                <div class="col-md-4 col-sm-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ equipement.nom }}</h5>
+                            <p class="card-text mb-1"><strong>Total:</strong> {{ equipement.quantiteTotale }}</p>
+                            <p class="card-text mb-1"><strong>Disponible:</strong> {{ equipement.quantiteDispo }}</p>
+                            <p class="card-text text-muted"><em>{{ equipement.description }}</em></p>
+                        </div>
+                        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                            {% if equipement.statut == 'disponible' %}
+                                <span class="badge bg-success">{{ equipement.statut }}</span>
+                            {% elseif equipement.statut == 'réparé' %}
+                                <span class="badge bg-warning text-dark">{{ equipement.statut }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ equipement.statut }}</span>
+                            {% endif %}
+                            <div class="d-flex gap-2">
+                                <a href="{{ path('app_reservation_equipement_new_from_equipement', {'id': equipement.idEq}) }}" class="btn btn-sm btn-outline-primary">Réserver</a>
+                                <a href="{{ path('app_equipement_show', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-outline-secondary">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Aucun équipement trouvé.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 <!-- Reservations Section -->
 <section class="artists-section section-padding" id="reservations" style="
     background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
@@ -305,43 +308,44 @@
                     'default': 'rgba(108, 117, 125, 0.9)'
                 } %}
                 {% set current_color = status_colors[reservation.statut|lower] ?? status_colors['default'] %}
-                
+
                 <div class="col-lg-4 col-md-6 col-12 mb-4">
                     <div class="artists-thumb1">
                         <div class="artists-image-wrap">
                             <img src="{{ asset('assets/images/equipment/equipment-default.jpg') }}" class="artists-image img-fluid" alt="Equipment">
-                            <div class="artists-date-badge">
-                                <i class="bi bi-calendar-check me-1"></i>
-                                {{ reservation.dateReservation ? reservation.dateReservation|date('d M') : '' }}
-                            </div>
                             <div class="artists-type-badge" style="background: {{ current_color }}">
                                 {{ reservation.statut }}
                             </div>
                         </div>
-                        <div class="artists-hover" style="background: {{ current_color }}">
-                            <h4>Réservation #{{ reservation.id }}</h4>
-                            <div class="event-meta">
-                                <p>
-                                    <i class="bi bi-calendar"></i>
-                                    {{ reservation.dateReservation ? reservation.dateReservation|date('Y-m-d H:i') : '' }}
-                                </p>
-                                <p>
-                                    <i class="bi bi-gear"></i>
-                                    Équipement : {{ reservation.equipement.nom }}
-                                </p>
-                                <p>
-                                    <i class="bi bi-calendar-event"></i>
-                                    Événement : {{ reservation.evenement.titre ?? 'N/A' }}
-                                </p>
+
+                        <!-- Infos visibles -->
+                        <div class="p-3 bg-white border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted small">
+                                    <i class="bi bi-calendar-check me-1"></i>
+                                    {{ reservation.dateReservation ? reservation.dateReservation|date('d M Y') : '' }}
+                                </span>
+                                <span class="badge bg-light text-dark border" style="font-size: 0.75rem;">
+                                    {{ reservation.statut|capitalize }}
+                                </span>
                             </div>
-                            <div class="d-flex justify-content-between mt-3">
-                                <a href="{{ path('app_reservation_equipement_show', {'id': reservation.id}) }}" class="btn btn-sm btn-light">
-                                    <i class="bi bi-eye me-1"></i>Details
-                                </a>
-                                <a href="{{ path('app_reservation_equipement_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-light">
-                                    <i class="bi bi-pencil me-1"></i>Edit
-                                </a>
-                            </div>
+
+                            <h5 class="mb-1 text-truncate" title="{{ reservation.equipement.nom }}">
+                                <i class="bi bi-gear me-1"></i> {{ reservation.equipement.nom }}
+                            </h5>
+                            <p class="mb-0 text-muted text-truncate" title="{{ reservation.evenement.titre ?? 'N/A' }}">
+                                <i class="bi bi-calendar-event me-1"></i> {{ reservation.evenement.titre ?? 'N/A' }}
+                            </p>
+                        </div>
+
+                        <!-- Boutons -->
+                        <div class="d-flex justify-content-between px-3 py-2 bg-white border-top">
+                            <a href="{{ path('app_reservation_equipement_show', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>Details
+                            </a>
+                            <a href="{{ path('app_reservation_equipement_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil me-1"></i>Edit
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -360,6 +364,7 @@
         </div>
     </div>
 </section>
+
 
 {% endblock %}
 
