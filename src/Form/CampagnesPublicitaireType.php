@@ -89,16 +89,17 @@ class CampagnesPublicitaireType extends AbstractType
                 'placeholder' => 'Sélectionnez un statut',
                 'attr' => ['class' => 'form-select'],
             ])
+           
+
             ->add('publicite', EntityType::class, [
                 'class' => Publicite::class,
-                'choice_label' => 'id_pub',
-                'constraints' => [
-                    new Assert\NotNull([
-                        'message' => 'Veuillez sélectionner une publicité'
-                    ]),
-                ],
-                'attr' => ['class' => 'form-select'],
+                'choice_label' => 'titre_pub', // Afficher le titre au lieu de l'ID
+                'placeholder' => 'Select an advertisement',
+                'attr' => [
+                    'class' => 'form-select'
+                ]
             ]);
+           
     }
 
     public function configureOptions(OptionsResolver $resolver): void

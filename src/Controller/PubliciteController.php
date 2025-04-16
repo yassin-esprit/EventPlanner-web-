@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Publicite;
 use App\Form\PubliciteType;
+
 use App\Repository\PubliciteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,6 +39,7 @@ final class PubliciteController extends AbstractController{
         return $this->render('publicite/new.html.twig', [
             'publicite' => $publicite,
             'form' => $form,
+            
         ]);
     }
 

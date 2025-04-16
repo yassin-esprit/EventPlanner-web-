@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Repository\EvenementRepository;
 use App\Repository\PubliciteRepository;
+use App\Repository\CampagnesPublicitaireRepository;
+
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,36 +14,44 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\Evenement;
 use App\Entity\Publicite;
+use App\Entity\CampagnesPublicitaire;
+
 
 
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard/admin', name: 'admin_dashboard')]
     #[IsGranted('ROLE_ADMIN')]
-    public function adminDashboard(EvenementRepository $evenementRepository, PubliciteRepository $publiciteRepository): Response
+    public function adminDashboard(EvenementRepository $evenementRepository, PubliciteRepository $publiciteRepository, CampagnesPublicitaireRepository $campagneRepository): Response
     {
                  $evenements = $evenementRepository->findAll();
                  $publicites = $publiciteRepository->findAll();
+                 $campagnes = $campagneRepository->findAll();
 
 
         return $this->render('dashboard/admin/admin.html.twig', [
             'controller_name' => 'DashboardController',
             'evenements' => $evenements,
             'publicites' => $publicites,
+            'campagnes' =>$campagnes,
 
         ]);
     }
 
     #[Route('/dashboard/owner', name: 'owner_dashboard')]
     #[IsGranted('ROLE_OWNER')]
-    public function ownerDashboard(EvenementRepository $evenementRepository,PubliciteRepository $publiciteRepository ): Response
+    public function ownerDashboard(EvenementRepository $evenementRepository,PubliciteRepository $publiciteRepository ,CampagnesPublicitaireRepository $campagneRepository ): Response
     {
          $evenements = $evenementRepository->findAll();
          $publicites = $publiciteRepository->findAll();
+         $campagnes = $campagneRepository->findAll();
+
         return $this->render('dashboard/owner/owner.html.twig', [
             'controller_name' => 'DashboardController',
             'evenements' => $evenements, 
             'publicites' => $publicites,
+            'campagnes' =>$campagnes,
+
         ]);
     }
 
