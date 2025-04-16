@@ -329,9 +329,9 @@
 
 		<!-- Ads Nav Item -->
 		<li class="nav-item">
-			<a class="nav-link" href="#">
+			<a class="nav-link" href="#publicites">
 				<i class="bi bi-megaphone"></i>
-				<span>Advertisements</span>
+				<span>Publicite</span>
 			</a>
 		</li>
 
@@ -481,6 +481,81 @@
 					</div>
 				</div>
 			</div>
+			<!-- Advertisements Table -->
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <h6 class="m-0 font-weight-bold">All Advertisements</h6>
+        <a href="{{ path('app_publicite_new') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-circle"></i>
+            Add New
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Content</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for publicite in publicites %}
+                        {% set status_color = publicite.statut_pub == 'active' ? 'success' : 'secondary' %}
+                        <tr>
+                            <td>
+                                <strong>{{ publicite.titre_pub }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge badge-primary">
+                                    {{ publicite.type_pub }}
+                                </span>
+                            </td>
+                            <td>{{ publicite.contenu_pub|length > 30 ? publicite.contenu_pub|slice(0, 30) ~ '...' : publicite.contenu_pub }}</td>
+                            <td>{{ publicite.emplacement_pub }}</td>
+                            <td>
+                                <span class="badge badge-{{ status_color }}">
+                                    {{ publicite.statut_pub }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{{ path('app_publicite_show', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-primary" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ path('app_publicite_edit', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-warning" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_publicite_delete', {'id_pub': publicite.id_pub}) }}" onsubmit="return confirm('Are you sure you want to delete this advertisement?');" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ publicite.id_pub) }}">
+                                        <button class="btn btn-sm btn-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <i class="bi bi-megaphone fs-1 text-muted"></i>
+                                <h5 class="text-muted mt-3">No advertisements found</h5>
+                                <a href="{{ path('app_publicite_new') }}" class="btn btn-primary mt-2">
+                                    <i class="bi bi-plus-circle"></i>
+                                    Create Advertisement
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 		</div>
 		<!-- /.container-fluid -->
 	</div>

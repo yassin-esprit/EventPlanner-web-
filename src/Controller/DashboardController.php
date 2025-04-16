@@ -3,22 +3,32 @@
 namespace App\Controller;
 
 use App\Repository\EvenementRepository;
+use App\Repository\PubliciteRepository;
+
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\Evenement;
+use App\Entity\Publicite;
+
 
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard/admin', name: 'admin_dashboard')]
     #[IsGranted('ROLE_ADMIN')]
-    public function adminDashboard(EvenementRepository $evenementRepository): Response
+    public function adminDashboard(EvenementRepository $evenementRepository, PubliciteRepository $publiciteRepository): Response
     {
                  $evenements = $evenementRepository->findAll();
+                 $publicites = $publiciteRepository->findAll();
+
+
         return $this->render('dashboard/admin/admin.html.twig', [
             'controller_name' => 'DashboardController',
-            'evenements' => $evenements
+            'evenements' => $evenements,
+            'publicites' => $publicites,
+
         ]);
     }
 
