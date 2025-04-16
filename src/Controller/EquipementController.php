@@ -78,6 +78,6 @@ final class EquipementController extends AbstractController{
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_equipement_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_dashboard', [], Response::HTTP_SEE_OTHER);
     }
 }
