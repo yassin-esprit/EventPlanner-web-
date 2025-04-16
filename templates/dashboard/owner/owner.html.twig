@@ -216,6 +216,84 @@
 			</div>
 		</div>
 	</section>
+
+	<!-- Active Advertisements -->
+<section class="active-ads py-5">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-12 text-center">
+                <h2 class="mb-4">Active Advertisements</h2>
+                <a href="{{ path('app_publicite_index') }}" class="btn btn-outline-primary">
+                    View All Ads
+                    <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for publicite in publicites|filter(p => p.statut_pub == 'active')|slice(0, 3) %}
+                {% set ad_type_colors = {
+                    'banner': 'rgba(70, 130, 180, 0.9)',
+                    'popup': 'rgba(220, 53, 69, 0.9)',
+                    'video': 'rgba(25, 135, 84, 0.9)',
+                    'default': 'rgba(108, 117, 125, 0.9)'
+                } %}
+                
+                {% set ad_icons = {
+                    'banner': 'bi-image',
+                    'popup': 'bi-window',
+                    'video': 'bi-camera-reels',
+                    'default': 'bi-megaphone'
+                } %}
+
+                {% set current_color = ad_type_colors[publicite.type_pub|lower] ?? ad_type_colors['default'] %}
+                {% set current_icon = ad_icons[publicite.type_pub|lower] ?? ad_icons['default'] %}
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card ad-card mb-4 border-0 shadow-sm h-100">
+                        <div class="card-img-top position-relative" style="height: 200px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi {{ current_icon }} fs-1" style="color: {{ current_color }}"></i>
+                            <span class="badge position-absolute top-0 end-0 m-2" style="background: {{ current_color }}">
+                                <i class="bi {{ current_icon }} me-1"></i>
+                                {{ publicite.type_pub }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ publicite.titre_pub }}</h5>
+                            <p class="card-text text-muted">
+                                <i class="bi bi-pin-map me-2"></i>
+                                {{ publicite.emplacement_pub }}
+                            </p>
+                            <p class="card-text">
+                                {{ publicite.contenu_pub|slice(0, 100) }}
+                                {% if publicite.contenu_pub|length > 100 %}...
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                            <a href="{{ path('app_publicite_show', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>Details
+                            </a>
+                            <a href="{{ path('app_publicite_edit', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil me-1"></i>Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        No active advertisements found.
+                    </div>
+                    <a href="{{ path('app_publicite_new') }}" class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle me-1"></i> Create New Advertisement
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 {% endblock %}
 
 {% block stylesheets %}

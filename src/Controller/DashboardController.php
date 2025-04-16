@@ -34,12 +34,14 @@ class DashboardController extends AbstractController
 
     #[Route('/dashboard/owner', name: 'owner_dashboard')]
     #[IsGranted('ROLE_OWNER')]
-    public function ownerDashboard(EvenementRepository $evenementRepository): Response
+    public function ownerDashboard(EvenementRepository $evenementRepository,PubliciteRepository $publiciteRepository ): Response
     {
          $evenements = $evenementRepository->findAll();
+         $publicites = $publiciteRepository->findAll();
         return $this->render('dashboard/owner/owner.html.twig', [
             'controller_name' => 'DashboardController',
-            'evenements' => $evenements
+            'evenements' => $evenements, 
+            'publicites' => $publicites,
         ]);
     }
 

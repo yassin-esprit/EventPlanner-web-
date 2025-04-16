@@ -25,6 +25,21 @@
 			max-height: 400px;
 			overflow-y: auto;
 		}
+		 .ad-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* Background pattern for ad cards */
+        .ad-card .card-img-top {
+            background-image: radial-gradient(circle, #e0e0e0 1px, transparent 1px);
+            background-size: 15px 15px;
+        }
 	</style>
 {% endblock %}
 
