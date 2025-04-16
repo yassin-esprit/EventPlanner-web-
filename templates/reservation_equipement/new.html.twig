@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New Equipment Reservation{% endblock %}
+
+{% block body %}
+    <section class="ticket-section section-padding" style="
+            background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        ">
+        <div class="section-overlay" style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            "></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-10 mx-auto">
+                    {{ form_start(form, {
+                        'attr': {
+                            'class': 'custom-form ticket-form mb-5 mb-lg-0 needs-validation',
+                            'novalidate': true
+                        }
+                    }) }}
+
+                        <h2 class="text-center mb-4">Create New Equipment Reservation</h2>
+
+                        <div class="ticket-form-body">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_label(form.date_reservation, 'Reservation Date', {
+                                            'label_attr': {'class': 'form-label'}
+                                        }) }}
+                                        {{ form_widget(form.date_reservation, {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'data-error': form.date_reservation.vars.errors|length > 0 ? form.date_reservation.vars.errors[0].message : ''
+                                            }
+                                        }) }}
+                                        {% if form.date_reservation.vars.errors|length > 0 %}
+                                            <div class="error-message">{{ form.date_reservation.vars.errors[0].message }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_label(form.statut, 'Status', {
+                                            'label_attr': {'class': 'form-label'}
+                                        }) }}
+                                        {{ form_widget(form.statut, {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'data-error': form.statut.vars.errors|length > 0 ? form.statut.vars.errors[0].message : ''
+                                            }
+                                        }) }}
+                                        {% if form.statut.vars.errors|length > 0 %}
+                                            <div class="error-message">{{ form.statut.vars.errors[0].message }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_label(form.equipement, 'Equipment', {
+                                            'label_attr': {'class': 'form-label'}
+                                        }) }}
+                                        {{ form_widget(form.equipement, {
+                                            'attr': {
+                                                'class': 'form-select',
+                                                'data-error': form.equipement.vars.errors|length > 0 ? form.equipement.vars.errors[0].message : ''
+                                            }
+                                        }) }}
+                                        {% if form.equipement.vars.errors|length > 0 %}
+                                            <div class="error-message">{{ form.equipement.vars.errors[0].message }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_label(form.evenement, 'Event', {
+                                            'label_attr': {'class': 'form-label'}
+                                        }) }}
+                                        {{ form_widget(form.evenement, {
+                                            'attr': {
+                                                'class': 'form-select',
+                                                'data-error': form.evenement.vars.errors|length > 0 ? form.evenement.vars.errors[0].message : ''
+                                            }
+                                        }) }}
+                                        {% if form.evenement.vars.errors|length > 0 %}
+                                            <div class="error-message">{{ form.evenement.vars.errors[0].message }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6 col-8 mx-auto mt-4">
+                                <button type="submit" class="form-control">{{ button_label|default('Create Reservation') }}</button>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <a href="{{ path('app_reservation_equipement_index') }}" class="btn btn-link">Back to Reservations</a>
+                            </div>
+                        </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .ticket-section {
+            position: relative;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-error {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            padding: 5px 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 0 0 5px 5px;
+            font-size: 0.8rem;
+            z-index: 10;
+            margin-top: -2px;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+            margin-bottom: 0;
+        }
+
+        .custom-form {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control, .form-select {
+            border-radius: 5px;
+            padding: 10px 15px;
+        }
+
+        .btn-link {
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-error]').forEach(element => {
+                if (element.dataset.error) {
+                    element.classList.add('is-invalid');
+
+                    if (element.tagName === 'INPUT' && element.type !== 'file') {
+                        element.value = '';
+                    }
+
+                    if (element.tagName === 'SELECT') {
+                        element.selectedIndex = 0;
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

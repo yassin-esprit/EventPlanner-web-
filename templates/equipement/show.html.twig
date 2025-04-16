@@ -1,0 +1,246 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ equipement.nom }} Details{% endblock %}
+
+{% block body %}
+    <section class="equipment-details-section section-padding" style="
+            background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        ">
+        <div class="section-overlay" style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            "></div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-12">
+                    <div class="custom-form equipment-details-card">
+                        <div class="equipment-header text-center mb-4">
+                            <h2 class="equipment-title">{{ equipement.nom }}</h2>
+                            <div class="equipment-meta">
+                                <span class="equipment-status-badge" style="background-color: {{ equipement.statut == 'Available' ? '#28a745' : (equipement.statut == 'In Use' ? '#007bff' : (equipement.statut == 'Maintenance' ? '#ffc107' : '#dc3545')) }}">
+                                    {{ equipement.statut }}
+                                </span>
+                                <span class="equipment-quantity">
+                                    <i class="bi bi-box-seam me-1"></i>
+                                    {{ equipement.quantiteDispo }} / {{ equipement.quantiteTotale }} available
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="equipment-body">
+                            <div class="equipment-description mb-4">
+                                <h4 class="section-title">Description</h4>
+                                <p>{{ equipement.description }}</p>
+                            </div>
+
+                            <div class="equipment-details-grid">
+                                <div class="detail-item">
+                                    <i class="bi bi-box-seam-fill"></i>
+                                    <div>
+                                        <h5>Total Quantity</h5>
+                                        <p>{{ equipement.quantiteTotale }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <div>
+                                        <h5>Available Quantity</h5>
+                                        <p>{{ equipement.quantiteDispo }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    <div>
+                                        <h5>Status</h5>
+                                        <p>{{ equipement.statut }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <i class="bi bi-tags-fill"></i>
+                                    <div>
+                                        <h5>Equipment ID</h5>
+                                        <p>{{ equipement.idEq }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="equipment-actions mt-5">
+                            <div class="d-flex flex-wrap justify-content-center gap-3">
+                                <a href="{{ path('app_equipement_index') }}" class="btn btn-outline-light">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                                </a>
+                                <a href="{{ path('app_equipement_edit', {'id_eq': equipement.idEq}) }}" class="btn btn-primary">
+                                    <i class="bi bi-pencil-square me-2"></i>Edit Equipment
+                                </a>
+                                {{ include('equipement/_delete_form.html.twig') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .equipment-details-section {
+            position: relative;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .equipment-details-card {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .equipment-header {
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .equipment-title {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .equipment-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .equipment-status-badge {
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .equipment-quantity {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #3498db;
+        }
+
+        .equipment-description p {
+            color: #495057;
+            line-height: 1.7;
+        }
+
+        .equipment-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .detail-item i {
+            font-size: 1.5rem;
+            color: #3498db;
+            margin-top: 3px;
+        }
+
+        .detail-item h5 {
+            color: #2c3e50;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .detail-item p {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .btn-outline-light {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        /* Delete button style to match the design */
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        /* Responsive adjustments */
+        @media(max-width: 767.98px) {
+            .equipment-details-card {
+                padding: 30px 20px;
+            }
+
+            .equipment-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .equipment-actions .d-flex {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .equipment-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,47 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+
+<div class="mb-3">
+    {{ form_label(form.date_reservation, 'Date de réservation', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.date_reservation, {
+        'attr': {
+            'class': 'form-control' ~ (form.date_reservation.vars.errors|length > 0 ? ' is-invalid' : '')
+        }
+    }) }}
+    {{ form_errors(form.date_reservation) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.statut, {
+        'attr': {
+            'class': 'form-control' ~ (form.statut.vars.errors|length > 0 ? ' is-invalid' : '')
+        }
+    }) }}
+    {{ form_errors(form.statut) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.equipement, 'Équipement', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.equipement, {
+        'attr': {
+            'class': 'form-select' ~ (form.equipement.vars.errors|length > 0 ? ' is-invalid' : '')
+        }
+    }) }}
+    {{ form_errors(form.equipement) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.evenement, 'Événement', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.evenement, {
+        'attr': {
+            'class': 'form-select' ~ (form.evenement.vars.errors|length > 0 ? ' is-invalid' : '')
+        }
+    }) }}
+    {{ form_errors(form.evenement) }}
+</div>
+
+<div class="text-center">
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+</div>
+
+{{ form_end(form) }}

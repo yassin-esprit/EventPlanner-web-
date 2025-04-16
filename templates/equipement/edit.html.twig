@@ -1,0 +1,269 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'équipement{% endblock %}
+
+{% block body %}
+    <section class="ticket-section section-padding" style="
+            background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        ">
+        <div class="section-overlay" style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            "></div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-10 mx-auto">
+                    <div class="custom-form ticket-form mb-5 mb-lg-0">
+                        <h2 class="text-center mb-4">Modifier l'équipement</h2>
+
+                        <div class="ticket-form-body">
+                            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_widget(form.nom, {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'placeholder': 'Nom de l\'équipement',
+                                                'data-error': form.nom.vars.errors|length > 0 ? form.nom.vars.errors[0].message : ''
+                                            },
+                                            'label': false
+                                        }) }}
+                                        {% if form.nom.vars.errors|length > 0 %}
+                                            <div class="error-message">{{ form.nom.vars.errors[0].message }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_widget(form.quantite_totale, {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'placeholder': 'Quantité totale',
+                                                'data-error': form.quantite_totale.vars.errors|length > 0 ? form.quantite_totale.vars.errors[0].message : ''
+                                            },
+                                            'label': false
+                                        }) }}
+                                        {% if form.quantite_totale.vars.errors|length > 0 %}
+                                            <div class="error-message">{{ form.quantite_totale.vars.errors[0].message }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_widget(form.quantite_dispo, {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'placeholder': 'Quantité disponible',
+                                                'data-error': form.quantite_dispo.vars.errors|length > 0 ? form.quantite_dispo.vars.errors[0].message : ''
+                                            },
+                                            'label': false
+                                        }) }}
+                                        {% if form.quantite_dispo.vars.errors|length > 0 %}
+                                            <div class="error-message">{{ form.quantite_dispo.vars.errors[0].message }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-with-error">
+                                {{ form_widget(form.description, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Description',
+                                        'rows': 4,
+                                        'data-error': form.description.vars.errors|length > 0 ? form.description.vars.errors[0].message : ''
+                                    },
+                                    'label': false
+                                }) }}
+                                {% if form.description.vars.errors|length > 0 %}
+                                    <div class="error-message">{{ form.description.vars.errors[0].message }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="input-with-error">
+                                {{ form_label(form.statut, form.statut.vars.errors|length > 0 ? form.statut.vars.errors[0].message : 'Statut', {
+                                    'label_attr': {'class': 'form-label'}
+                                }) }}
+                                {{ form_widget(form.statut, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'data-error': form.statut.vars.errors|length > 0 ? form.statut.vars.errors[0].message : ''
+                                    }
+                                }) }}
+                                {% if form.statut.vars.errors|length > 0 %}
+                                    <div class="error-message">{{ form.statut.vars.errors[0].message }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <div class="col-lg-4 col-md-6 col-8">
+                                    <button type="submit" class="btn btn-primary form-control">
+                                        <i class="bi bi-save me-2"></i>Mettre à jour
+                                    </button>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-8">
+                                    <a href="{{ path('app_equipement_index') }}" class="btn btn-outline-secondary form-control">
+                                        <i class="bi bi-arrow-left me-2"></i>Annuler
+                                    </a>
+                                </div>
+                            </div>
+
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <form method="post" action="{{ path('app_equipement_delete', {'id_eq': equipement.id_eq}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet équipement ?');" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipement.id_eq) }}">
+                            <button class="btn btn-delete">
+                                <i class="bi bi-trash me-2"></i>Supprimer l'équipement
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .ticket-section {
+            position: relative;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-form {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .ticket-form h2 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .form-control, .form-select {
+            height: 45px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3498db;
+            box-shadow: none;
+        }
+
+        textarea.form-control {
+            height: auto;
+            min-height: 120px;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .input-with-error {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            padding: 5px 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 0 0 5px 5px;
+            font-size: 0.8rem;
+            z-index: 10;
+            margin-top: -20px;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+            margin-bottom: 0;
+        }
+
+        .btn-delete {
+            background-color: transparent;
+            border: none;
+            color: #dc3545;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete:hover {
+            color: #c82333;
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Clear invalid input and show error messages
+            document.querySelectorAll('[data-error]').forEach(element => {
+                if (element.dataset.error) {
+                    element.classList.add('is-invalid');
+
+                    // For text inputs, clear only if invalid
+                    if (element.tagName === 'INPUT' && element.type !== 'file' && !element.value) {
+                        element.value = '';
+                    }
+
+                    // For selects, reset to placeholder if invalid
+                    if (element.tagName === 'SELECT' && !element.value) {
+                        element.selectedIndex = 0;
+                    }
+                }
+            });
+
+            // Special handling for edit form - preserve valid values
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function (e) {
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                this.classList.add('was-validated');
+            }, false);
+        });
+    </script>
+{% endblock %}
