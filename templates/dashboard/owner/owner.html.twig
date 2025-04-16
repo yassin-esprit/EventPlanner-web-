@@ -215,7 +215,157 @@
 				{% endfor %}
 			</div>
 		</div>
+		
 	</section>
+<!-- Equipment Section -->
+<section class="py-5" style="
+    background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;">
+    <div class="section-overlay" style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.2);">
+    </div>
+
+    <div class="container position-relative">
+        <div class="row justify-content-center mb-5">
+            <div class="col-12 text-center">
+                <h2 class="mb-4 text-white">Available Equipments</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            {% for equipement in equipements %}
+                <div class="col-md-4 col-sm-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ equipement.nom }}</h5>
+                            <p class="card-text mb-1"><strong>Total:</strong> {{ equipement.quantiteTotale }}</p>
+                            <p class="card-text mb-1"><strong>Disponible:</strong> {{ equipement.quantiteDispo }}</p>
+                            <p class="card-text text-muted"><em>{{ equipement.description }}</em></p>
+                        </div>
+                        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                            {% if equipement.statut == 'disponible' %}
+                                <span class="badge bg-success">{{ equipement.statut }}</span>
+                            {% elseif equipement.statut == 'réparé' %}
+                                <span class="badge bg-warning text-dark">{{ equipement.statut }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ equipement.statut }}</span>
+                            {% endif %}
+                            <div class="d-flex gap-2">
+                                <a href="{{ path('app_reservation_equipement_new_from_equipement', {'id': equipement.idEq}) }}" class="btn btn-sm btn-outline-primary">Réserver</a>
+                                <a href="{{ path('app_equipement_show', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-outline-secondary">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Aucun équipement trouvé.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Reservations Section -->
+<section class="artists-section section-padding" id="reservations" style="
+    background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;">
+    
+    <div class="section-overlay" style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(231, 228, 228, 0.5);">
+    </div>
+
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-12 text-center mb-5">
+                <h2 class="mb-4">Vos Réservations</h2>
+            </div>
+
+            {% for reservation in reservation_equipements %}
+                {% set status_colors = {
+                    'pending': 'rgba(255, 193, 7, 0.9)',
+                    'confirmed': 'rgba(40, 167, 69, 0.9)',
+                    'cancelled': 'rgba(220, 53, 69, 0.9)',
+                    'completed': 'rgba(23, 162, 184, 0.9)',
+                    'default': 'rgba(108, 117, 125, 0.9)'
+                } %}
+                {% set current_color = status_colors[reservation.statut|lower] ?? status_colors['default'] %}
+
+                <div class="col-lg-4 col-md-6 col-12 mb-4">
+                    <div class="artists-thumb1">
+                        <div class="artists-image-wrap">
+                            <img src="{{ asset('assets/images/equipment/equipment-default.jpg') }}" class="artists-image img-fluid" alt="Equipment">
+                            <div class="artists-type-badge" style="background: {{ current_color }}">
+                                {{ reservation.statut }}
+                            </div>
+                        </div>
+
+                        <!-- Infos visibles -->
+                        <div class="p-3 bg-white border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted small">
+                                    <i class="bi bi-calendar-check me-1"></i>
+                                    {{ reservation.dateReservation ? reservation.dateReservation|date('d M Y') : '' }}
+                                </span>
+                                <span class="badge bg-light text-dark border" style="font-size: 0.75rem;">
+                                    {{ reservation.statut|capitalize }}
+                                </span>
+                            </div>
+
+                            <h5 class="mb-1 text-truncate" title="{{ reservation.equipement.nom }}">
+                                <i class="bi bi-gear me-1"></i> {{ reservation.equipement.nom }}
+                            </h5>
+                            <p class="mb-0 text-muted text-truncate" title="{{ reservation.evenement.titre ?? 'N/A' }}">
+                                <i class="bi bi-calendar-event me-1"></i> {{ reservation.evenement.titre ?? 'N/A' }}
+                            </p>
+                        </div>
+
+                        <!-- Boutons -->
+                        <div class="d-flex justify-content-between px-3 py-2 bg-white border-top">
+                            <a href="{{ path('app_reservation_equipement_show', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>Details
+                            </a>
+                            <a href="{{ path('app_reservation_equipement_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil me-1"></i>Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <div class="alert alert-info py-4">
+                        <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
+                        <h4>Aucune réservation trouvée</h4>
+                        <p class="mb-0">Ajoutez une réservation pour commencer !</p>
+                        <a href="{{ path('app_reservation_equipement_new') }}" class="btn btn-primary mt-3">
+                            <i class="bi bi-plus-circle me-1"></i>Créer Réservation
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
 {% endblock %}
 
 {% block stylesheets %}
@@ -238,7 +388,15 @@
 			height: 100%;
 			background: rgba(0, 0, 0, 0.5);
 		}
-
+		.card {
+			transition: transform 0.3s ease;
+			border-radius: 12px;
+			overflow: hidden;
+		}
+		.card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+		}
 		.video-wrap {
 			position: absolute;
 			top: 0;
@@ -296,5 +454,81 @@
 				height: 40vh;
 			}
 		}
+		<style>
+    /* Artists/Reservation Cards */
+    .artists-thumb1 {
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        height: 350px; /* Hauteur fixe ajustable */
+    }
+
+    .artists-image-wrap {
+        position: relative;
+        height: 100%;
+    }
+
+    .artists-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.3s ease;
+    }
+
+    .artists-hover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 20px;
+        color: white;
+        opacity: 0;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .artists-thumb:hover .artists-hover {
+        opacity: 1;
+    }
+
+    .artists-thumb:hover .artists-image {
+        transform: scale(1.05);
+    }
+
+    .artists-date-badge {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+
+    .artists-type-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+
+    .event-meta p {
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .artists-hover h4 {
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
 	</style>
 {% endblock %}
