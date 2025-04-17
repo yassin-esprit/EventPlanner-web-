@@ -6,6 +6,7 @@
 parameters:
 
 services:
+
   App\EventListener\LoginSuccessListener:
     tags:
       - {

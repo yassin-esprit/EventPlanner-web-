@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Sponsor{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .form-container {
+            max-width: 750px;
+            margin: 2rem auto;
+        }
+        .form-card {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.08);
+        }
+        .form-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="form-container">
+        <div class="form-card">
+            <h1 class="form-title">Créer un nouveau Sponsor</h1>
+
+            {{ form_start(form) }}
+                {{ form_errors(form) }}
+
+                <div class="mb-3">
+                    {{ form_row(form.nom) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.logo) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.site_web) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.contact_email) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.contact_telephone) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.adresse) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.secteur_activite) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.date_inscription) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.statut) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.user) }}
+                </div>
+
+                <button class="btn btn-primary">✅ Enregistrer</button>
+            {{ form_end(form) }}
+
+            <a href="{{ path('app_sponsor_c_index') }}" class="back-link">← Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}

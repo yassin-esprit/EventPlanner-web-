@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contrat{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .contrat-card {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #f0f0f0);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .contrat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .contrat-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .contrat-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .contrat-info table {
+            width: 100%;
+        }
+
+        .contrat-info th {
+            text-align: left;
+            padding-right: 1rem;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .contrat-info td {
+            font-weight: 500;
+        }
+
+        .btn-group {
+            margin-top: 1.5rem;
+        }
+
+        .btn-group a,
+        .btn-group form button {
+            margin-right: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div id="sidebar" class="col-md-3 bg-dark text-white min-vh-100 sidebar p-0">
+            <ul class="navbar-nav sidebar sidebar-dark accordion">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="#">
+                    <div class="sidebar-brand-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-2">Admin Panel</div>
+                </a>
+
+                <hr class="sidebar-divider my-0 bg-light">
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="dashboard">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider bg-light">
+
+                <div class="sidebar-heading text-light">
+                    Management
+                </div>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="events">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Events</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="sponsors">
+                        <i class="bi bi-award"></i>
+                        <span>Sponsors</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="equipements">
+                        <i class="bi bi-truck"></i>
+                        <span>Equipement</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="ads">
+                        <i class="bi bi-megaphone"></i>
+                        <span>Advertisements</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="merchandise">
+                        <i class="bi bi-shop"></i>
+                        <span>Merchandise</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="users">
+                        <i class="bi bi-people"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- End Sidebar -->
+
+        <!-- Content -->
+        <div id="content" class="col-md-9">
+            <div class="contrat-card">
+                <div class="contrat-header">
+                    <div class="contrat-title">Contrat #{{ contrat.getId_contrat }}</div>
+                </div>
+
+                <div class="contrat-info mt-4">
+                    <table class="table">
+                        <tbody>
+                            <tr><th>Type de contrat</th><td>{{ contrat.getTypecontrat }}</td></tr>
+                            <tr><th>Montant</th><td>{{ contrat.getMontant }}</td></tr>
+                            <tr><th>Description</th><td>{{ contrat.getDescription }}</td></tr>
+                            <tr><th>Date de début</th><td>{{ contrat.getDatedebut ? contrat.getDatedebut|date('Y-m-d') : 'N/A' }}</td></tr>
+                            <tr><th>Date de fin</th><td>{{ contrat.getDatefin ? contrat.getDatefin|date('Y-m-d') : 'N/A' }}</td></tr>
+                            <tr><th>Statut</th><td>{{ contrat.getStatut }}</td></tr>
+                            <tr><th>Mode de paiement</th><td>{{ contrat.getModepaiement }}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="btn-group">
+                    <a href="{{ path('app_contrat_index') }}" class="btn btn-secondary">⬅ Retour</a>
+                    <a href="{{ path('app_contrat_edit', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-primary">✏️ Modifier</a>
+                    {{ include('contrat/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+        <!-- End Content -->
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Contrats{% endblock %}
+
+{% block body %}
+<style>
+ .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div id="sidebar" class="col-md-3 bg-dark text-white min-vh-100 sidebar p-0">
+            <ul class="navbar-nav sidebar sidebar-dark accordion">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="#">
+                    <div class="sidebar-brand-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-2">Admin Panel</div>
+                </a>
+
+                <hr class="sidebar-divider my-0 bg-light">
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="dashboard">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider bg-light">
+
+                <div class="sidebar-heading text-light">
+                    Management
+                </div>
+
+                <li class="nav-item">
+                    <a class="nav-link active text-white" href="#" data-section="events">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Events</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="sponsors">
+                        <i class="bi bi-award"></i>
+                        <span>Sponsors</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="equipements">
+                        <i class="bi bi-truck"></i>
+                        <span>Equipement</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="ads">
+                        <i class="bi bi-megaphone"></i>
+                        <span>Advertisements</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="merchandise">
+                        <i class="bi bi-shop"></i>
+                        <span>Merchandise</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="users">
+                        <i class="bi bi-people"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- End Sidebar -->
+
+        <!-- Content -->
+        <div id="content" class="col-md-9">
+            <header class="admin-header py-3 border-bottom mb-3">
+                <div class="container">
+                    <div class="welcome-container d-flex justify-content-between align-items-center">
+                        <p class="welcome-message mb-0">
+                            <i class="bi-person custom-icon me-2"></i>
+                            <strong class="text-dark">
+                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                    Welcome back, {{ app.user.firstName ?? app.user.email }}
+                                {% endif %}
+                            </strong>
+                        </p>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <a href="{{ path('app_logout') }}" class="btn btn-outline-danger btn-sm">
+                                <i class="bi-box-arrow-right"></i> Logout
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </header>
+
+            <div class="container mt-4">
+                <h1 class="mb-4">Liste des Contrats</h1>
+
+                <!-- Barre de recherche -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un contrat...">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liste des contrats -->
+                <div class="row" id="contratCards">
+                    {% for contrat in contrats %}
+                        <div class="col-md-4 mb-4 contrat-card">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ contrat.description }}</h5>
+                                    <p class="card-text">
+                                        <strong>Sponsor:</strong> {{ contrat.sponsor.nom }}<br>
+                                        <strong>Date de début:</strong> {{ contrat.datedebut|date('d/m/Y') }}<br>
+                                        <strong>Date de fin:</strong> {{ contrat.datefin|date('d/m/Y') }}<br>
+                                        <strong>Montant:</strong> {{ contrat.montant }} €<br>
+                                        <strong>Statut:</strong> 
+                                        <span class="badge {% if contrat.statut == 'Actif' %}bg-success{% else %}bg-danger{% endif %}">
+                                            {{ contrat.statut }}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ path('app_contrat_show', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i> Voir
+                                        </a>
+                                        <a href="{{ path('app_contrat_edit', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-12">
+                            <div class="alert alert-info">Aucun contrat trouvé</div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-center mt-4">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            {% for i in 1..totalPages %}
+                                <li class="page-item {% if currentPage == i %}active{% endif %}">
+                                    <a class="page-link" href="{{ path('app_contrat_index', {'page': i}) }}">{{ i }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- End Content -->
+    </div>
+                <a href="{{ path('app_contrat_new') }}" class="back-link"> ajouter un nouveau contrat par ici -></a>
+
+</div>
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const contratCards = document.querySelectorAll('.contrat-card');
+
+    function filterContrats() {
+        const searchTerm = searchInput.value.toLowerCase();
+        contratCards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    }
+
+    searchInput.addEventListener('input', filterContrats);
+});
+</script>
+{% endblock %}
+{% endblock %}

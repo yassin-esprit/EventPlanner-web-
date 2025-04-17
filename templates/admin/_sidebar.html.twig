@@ -1,0 +1,70 @@
+{# Sidebar Admin #}
+<div class="admin-sidebar">
+    <div class="sidebar-header">
+        <img src="{{ asset('images/admin-logo.png') }}" alt="Admin Logo" class="admin-logo">
+        <h3>Admin Dashboard</h3>
+    </div>
+
+    <div class="sidebar-menu">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="{{ path('app_admin_dashboard') }}" class="nav-link active">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Tableau de bord</span>
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a href="{{ path('app_sponsor_c_index') }}" class="nav-link">
+                    <i class="bi bi-building"></i>
+                    <span>Sponsors</span>
+                    <span class="badge bg-primary">{{ totalSponsors ?? 0 }}</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('app_contrat_index') }}" class="nav-link">
+                    <i class="bi bi-file-text"></i>
+                    <span>Contrats</span>
+                    <span class="badge bg-info">{{ totalContrats ?? 0 }}</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('app_evenement_index') }}" class="nav-link">
+                    <i class="bi bi-calendar-event"></i>
+                    <span>Événements</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('app_user_index') }}" class="nav-link">
+                    <i class="bi bi-people"></i>
+                    <span>Utilisateurs</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('app_admin_settings') }}" class="nav-link">
+                    <i class="bi bi-gear"></i>
+                    <span>Paramètres</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <img src="{{ app.user.avatar ? asset('uploads/avatars/' ~ app.user.avatar) : asset('images/default-avatar.png') }}" 
+                 alt="User Avatar" class="user-avatar">
+            <div class="user-details">
+                <span class="user-name">{{ app.user.username }}</span>
+                <span class="user-role">Administrateur</span>
+            </div>
+        </div>
+        <a href="{{ path('app_logout') }}" class="logout-btn">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Déconnexion</span>
+        </a>
+    </div>
+</div> 

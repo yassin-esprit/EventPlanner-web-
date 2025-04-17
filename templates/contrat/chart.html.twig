@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques des Contrats{% endblock %}
+
+{% block body %}
+    <h1>Statistiques des Contrats</h1>
+
+    <!-- Conteneur pour les deux graphiques -->
+    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+
+        <!-- Graphique 1 : Sponsors par secteur -->
+        <div style="width: 48%; min-height: 400px;">
+            <canvas id="chartSecteur"></canvas>
+        </div>
+
+        <!-- Graphique 2 : Intervalles de contrats -->
+        <div style="width: 48%; min-height: 400px;">
+            <canvas id="chartContrats"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> <!-- Ajouter l'adaptateur de date -->
+    <script>
+        // Graphique 1 : Sponsors par secteur
+        const secteurs = {{ sponsorsBySecteur|keys|json_encode|raw }};
+        const nombres = {{ sponsorsBySecteur|map(v => v|length)|json_encode|raw }};
+        const labelsSponsors = {{ sponsorsBySecteur|map(v => v|join(', '))|json_encode|raw }};
+        
+        // Vérification des données
+        console.log(secteurs);
+        console.log(nombres);
+
+        new Chart(document.getElementById('chartSecteur'), {
+            type: 'bar',
+            data: {
+                labels: secteurs,
+                datasets: [{
+                    label: 'Nombre de sponsors',
+                    data: nombres,
+                    backgroundColor: 'rgba(78, 32, 157, 0.6)',
+                    borderColor: 'rgb(183, 17, 238)',
+                    borderWidth: 1,
+                    barThickness: 30 // Ajuste cette valeur si nécessaire
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(context) {
+                                return 'Sponsors: ' + labelsSponsors[context.dataIndex];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }
+            }
+        });
+
+        // Graphique 2 : Intervalles de contrats
+        const contractIntervals = {{ contractIntervals|json_encode|raw }};
+        
+        // Si contractIntervals est vide ou incorrecte, retour d'un message d'erreur
+        if (contractIntervals.length === 0) {
+            console.error("Aucun contrat disponible pour afficher le graphique.");
+        }
+
+        const contractLabels = contractIntervals.map(item => item.sponsor).filter((value, index, self) => self.indexOf(value) === index);  // Liste unique des sponsors
+
+        // Générer les données pour les intervalles de contrats
+        const contractData = contractIntervals.map(interval => ({
+            sponsor: interval.sponsor,
+            start: new Date(interval.start).getTime(),
+            end: new Date(interval.end).getTime()
+        }));
+
+        // Vérification des données avant de tracer le graphique
+        if (contractData.length > 0) {
+            new Chart(document.getElementById('chartContrats'), {
+                type: 'scatter',
+                data: {
+                    datasets: contractData.map(contract => ({
+                        label: contract.sponsor,
+                        data: [{
+                            x: contract.start,
+                            y: contract.sponsor,
+                            x2: contract.end
+                        }],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'll'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Sponsor'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    const startDate = new Date(tooltipItem.raw.x);
+                                    const endDate = new Date(tooltipItem.raw.x2);
+                                    return `${tooltipItem.dataset.label}: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            console.error("Aucune donnée valide pour afficher le graphique des intervalles de contrats.");
+        }
+    </script>
+{% endblock %}

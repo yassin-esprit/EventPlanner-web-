@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Sponsor{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .form-container {
+            max-width: 100%;
+            margin: 2rem auto;
+        }
+        .form-card {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.08);
+        }
+        .form-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+        .form-row {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .form-row .col-md-6 {
+            padding: 0 15px;
+            width: 50%;
+        }
+        .form-error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div id="sidebar" class="col-md-3 bg-dark text-white min-vh-100 sidebar p-0">
+            <ul class="navbar-nav sidebar sidebar-dark accordion">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="#">
+                    <div class="sidebar-brand-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-2">Admin Panel</div>
+                </a>
+
+                <hr class="sidebar-divider my-0 bg-light">
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="dashboard">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider bg-light">
+
+                <div class="sidebar-heading text-light">
+                    Management
+                </div>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="events">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Events</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="sponsors">
+                        <i class="bi bi-award"></i>
+                        <span>Sponsors</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="equipements">
+                        <i class="bi bi-truck"></i>
+                        <span>Equipement</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="ads">
+                        <i class="bi bi-megaphone"></i>
+                        <span>Advertisements</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="merchandise">
+                        <i class="bi bi-shop"></i>
+                        <span>Merchandise</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" data-section="users">
+                        <i class="bi bi-people"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- End Sidebar -->
+
+        <!-- Content -->
+        <div id="content" class="col-md-9">
+            {# TOASTS #}
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="toast align-items-center text-bg-{{ label == 'success' ? 'success' : 'danger' }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    {{ message }}
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            <div class="form-container">
+                <div class="form-card">
+                    <h1 class="form-title">Créer un nouveau Sponsor</h1>
+
+                    {{ form_start(form) }}
+
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="nom" class="form-label">Nom</label>
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.nom) }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="logo" class="form-label">Logo</label>
+                            {{ form_widget(form.logo, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.logo) }}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="site_web" class="form-label">Site Web</label>
+                            {{ form_widget(form.site_web, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.site_web) }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="contact_email" class="form-label">Email</label>
+                            {{ form_widget(form.contact_email, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.contact_email) }}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="contact_telephone" class="form-label">Téléphone</label>
+                            {{ form_widget(form.contact_telephone, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.contact_telephone) }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="adresse" class="form-label">Adresse</label>
+                            {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.adresse) }}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="secteur_activite" class="form-label">Secteur d'activité</label>
+                            {{ form_widget(form.secteur_activite, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.secteur_activite) }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="date_inscription" class="form-label">Date d'inscription</label>
+                            {{ form_widget(form.date_inscription, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.date_inscription) }}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="statut" class="form-label">Statut</label>
+                            {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.statut) }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="user" class="form-label">Utilisateur</label>
+                            {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.user) }}
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary">✅ Enregistrer</button>
+                    {{ form_end(form) }}
+
+                    <a href="{{ path('app_sponsor_c_index') }}" class="back-link">← Retour à la liste</a>
+                </div>
+            </div>
+        </div>
+        <!-- End Content -->
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.querySelectorAll('.toast').forEach(toastEl => {
+            new bootstrap.Toast(toastEl).show();
+        });
+    </script>
+{% endblock %}
