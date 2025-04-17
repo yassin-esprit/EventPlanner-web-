@@ -5,644 +5,883 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<style>:root
-	{
-		--sidebar-width: 250px;
-		--primary-color: #f8cb2e;
-		--secondary-color: #ee5007;
-		--section-bg-color: #f0f8ff;
-		--custom-btn-bg-color: #ee5007;
-		--custom-btn-bg-hover-color: #c01f27;
-		--dark-color: #000000;
-		--p-color: #717275;
-		--border-color: #7fffd4;
-		--link-hover-color: #b22727;
-	}
+	<style>
+		/* Import Google Fonts - Outfit for body text */
+		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;400;700&display=swap');:root {
+			--sidebar-width: 250px;
+			--white-color: #ffffff;
+			--primary-color: #f8cb2e;
+			--secondary-color: #ee5007;
+			--section-bg-color: #f0f8ff;
+			--custom-btn-bg-color: #ee5007;
+			--custom-btn-bg-hover-color: #c01f27;
+			--dark-color: #000000;
+			--p-color: #717275;
+			--border-color: rgba(248, 248, 248, 0);
+			--link-hover-color: #b22727;
 
-	/* Main Layout */
-	#wrapper {
-		display: flex;
-		min-height: 100vh;
-		background-color: #f8f9fa;
-	}
-
-	/* Sidebar */
-	#sidebar {
-		width: var(--sidebar-width);
-		background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
-		color: white;
-		position: fixed;
-		height: 100vh;
-		transition: all 0.3s;
-		z-index: 1000;
-		box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-	}
-
-	.sidebar-brand {
-		height: 80px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-weight: 800;
-		font-size: 1.2rem;
-		background: rgba(0, 0, 0, 0.2);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.sidebar-brand-icon {
-		color: var(--primary-color);
-		margin-right: 10px;
-	}
-
-	.sidebar-divider {
-		border-top: 1px solid rgba(255, 255, 255, 0.15);
-		margin: 1rem 0;
-	}
-
-	.nav-item {
-		position: relative;
-	}
-
-	.nav-link {
-		color: rgba(255, 255, 255, 0.8);
-		padding: 12px 20px;
-		display: flex;
-		align-items: center;
-		transition: all 0.3s;
-	}
-
-	.nav-link:hover,
-	.nav-link.active {
-		color: white;
-		background: rgba(255, 255, 255, 0.1);
-	}
-
-	.nav-link.active {
-		border-left: 4px solid var(--primary-color);
-	}
-
-	.nav-link i {
-		margin-right: 10px;
-		font-size: 1.1rem;
-		color: var(--primary-color);
-		width: 24px;
-		text-align: center;
-	}
-
-	/* Content */
-	#content {
-		width: calc(100% - var(--sidebar-width));
-		margin-left: var(--sidebar-width);
-		min-height: 100vh;
-		background: #f8f9fc;
-	}
-
-	/* Main Content */
-	.container-fluid {
-		padding: 2rem;
-	}
-
-	.card {
-		border: none;
-		border-radius: 10px;
-		box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-		margin-bottom: 2rem;
-		background: white;
-	}
-
-	.card-header {
-		background: white;
-		border-bottom: 1px solid #e3e6f0;
-		padding: 1.25rem 1.5rem;
-		font-weight: 700;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		border-radius: 10px 10px 0 0 !important;
-	}
-
-	.card-body {
-		padding: 1.5rem;
-	}
-
-	/* Page Heading */
-	.page-heading {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 2rem;
-		padding-bottom: 1rem;
-		border-bottom: 1px solid #eee;
-	}
-
-	/* Buttons */
-	.btn {
-		font-weight: 600;
-		padding: 0.5rem 1rem;
-		border-radius: 5px;
-		transition: all 0.3s;
-	}
-
-	.btn-primary {
-		background-color: var(--custom-btn-bg-color);
-		border-color: var(--custom-btn-bg-color);
-	}
-
-	.btn-primary:hover {
-		background-color: var(--custom-btn-bg-hover-color);
-		border-color: var(--custom-btn-bg-hover-color);
-	}
-
-	.btn-outline-primary {
-		color: var(--custom-btn-bg-color);
-		border-color: var(--custom-btn-bg-color);
-	}
-
-	.btn-outline-primary:hover {
-		background-color: var(--custom-btn-bg-color);
-		color: white;
-	}
-
-	.btn-sm {
-		padding: 0.35rem 0.75rem;
-		font-size: 0.875rem;
-	}
-
-	/* Tables */
-	.table {
-		width: 100%;
-		margin-bottom: 1rem;
-		color: #212529;
-		border-collapse: separate;
-		border-spacing: 0;
-	}
-
-	.table th {
-		background: #f8f9fc;
-		border-bottom: 2px solid #e3e6f0;
-		vertical-align: middle;
-		padding: 1rem;
-		font-weight: 600;
-		color: var(--dark-color);
-	}
-
-	.table td {
-		vertical-align: middle;
-		padding: 1rem;
-		border-top: 1px solid #e3e6f0;
-	}
-
-	.table tr:first-child td {
-		border-top: none;
-	}
-
-	.table tr:hover td {
-		background-color: rgba(248, 203, 46, 0.05);
-	}
-
-	.table-responsive {
-		display: block;
-		width: 100%;
-		overflow-x: auto;
-		-webkit-overflow-scrolling: touch;
-	}
-
-	/* Action Buttons */
-	.action-buttons {
-		display: flex;
-		gap: 0.5rem;
-	}
-
-	.action-buttons .btn {
-		min-width: 36px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	/* Badges */
-	.badge {
-		font-weight: 600;
-		padding: 0.5em 0.8em;
-		font-size: 0.75em;
-		border-radius: 50px;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-	}
-
-	.badge-primary {
-		background-color: var(--custom-btn-bg-color);
-	}
-
-	.badge-secondary {
-		background-color: #6c757d;
-	}
-
-	.badge-success {
-		background-color: #28a745;
-	}
-
-	.badge-warning {
-		background-color: #ffc107;
-		color: #212529;
-	}
-
-	.badge-danger {
-		background-color: #dc3545;
-	}
-
-	/* Responsive */
-	@media(max-width: 768px) {
-		#sidebar {
-			margin-left: -250px;
+			/* Typography Variables */
+			--font-body: 'Outfit', sans-serif;
+			--font-base-size: 18px;
+			--line-height-base: 1.6;
+			--text-color: #000000;
+			--text-light: #717275;
 		}
-		#sidebar.active {
-			margin-left: 0;
+
+		/* Remove default navbar and old welcome section */
+		.navbar,
+		.site-header:not(.admin-header) {
+			display: none !important;
 		}
-		#content {
+
+		/* Base Typography */
+		body {
+			font-family: var(--font-body);
+			font-size: var(--font-base-size);
+			line-height: var(--line-height-base);
+			color: var(--text-color);
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			background-color: var(--white-color);
+			padding-top: 0 !important;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			font-family: var(--font-body);
+			font-weight: 700;
+			color: var(--dark-color);
+		}
+
+		h1 {
+			font-size: 74px;
+		}
+		h2 {
+			font-size: 46px;
+		}
+		h3 {
+			font-size: 32px;
+		}
+		h4 {
+			font-size: 28px;
+		}
+		h5 {
+			font-size: 24px;
+		}
+		h6 {
+			font-size: 22px;
+		}
+
+		/* New admin header styling */
+		.admin-header {
+			background-color: var(--primary-color);
+			padding: 12px 0;
+			position: sticky;
+			top: 0;
+			z-index: 999;
+		}
+
+		.welcome-container {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			width: 100%;
-			margin-left: 0;
 		}
-		#content.active {
-			margin-left: 250px;
-			width: calc(100% - 250px);
+
+		.welcome-message {
+			font-family: var(--font-body);
+			font-weight: 400;
+			color: var(--dark-color);
+			margin: 0;
+			display: flex;
+			align-items: center;
 		}
-	}
-</style>{% endblock %}{% block body %}
-<div
-	id="wrapper">
-	<!-- Sidebar -->
-	<ul
-		id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
-		<!-- Sidebar - Brand -->
-		<a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-			<div class="sidebar-brand-icon">
-				<i class="bi bi-shield-lock"></i>
-			</div>
-			<div class="sidebar-brand-text mx-2">Admin Panel</div>
-		</a>
 
-		<!-- Divider -->
-		<hr
-		class="sidebar-divider my-0">
+		.welcome-message i {
+			margin-right: 0.5rem;
+			color: var(--secondary-color);
+		}
 
-		<!-- Nav Items -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-speedometer2"></i>
-				<span>Dashboard</span>
-			</a>
-		</li>
+		.logout-btn {
+			background: var(--custom-btn-bg-color);
+			border: 2px solid transparent;
+			border-radius: 100px;
+			color: var(--white-color);
+			font-size: 14px;
+			font-weight: 700;
+			transition: all 0.3s;
+			padding: 10px 20px;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			text-decoration: none;
+		}
 
-		<!-- Divider -->
-		<hr
-		class="sidebar-divider">
+		.logout-btn:hover {
+			background: var(--custom-btn-bg-hover-color);
+			color: var(--white-color);
+		}
 
-		<!-- Heading -->
-		<div class="sidebar-heading">
-			Management
-		</div>
+		/* Main Layout */
+		#wrapper {
+			display: flex;
+			min-height: 100vh;
+		}
 
-		<!-- Events Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link active" href="#events">
-				<i class="bi bi-calendar-event"></i>
-				<span>Events</span>
-			</a>
-		</li>
+		/* Sidebar - Made static (not fixed) */
+		#sidebar {
+			width: var(--sidebar-width);
+			background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
+			color: white;
+			height: 100vh;
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+			overflow-y: auto;
+		}
 
-		<!-- Sponsors Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-award"></i>
-				<span>Sponsors</span>
-			</a>
-		</li>
+		.sidebar-brand {
+			height: 80px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 700;
+			font-size: 24px;
+			background: rgba(0, 0, 0, 0.2);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		}
 
-		<!-- Logistics Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-truck"></i>
-				<span>Logistics</span>
-			</a>
-		</li>
+		.sidebar-brand-icon {
+			color: var(--primary-color);
+			margin-right: 10px;
+		}
 
-		<!-- Ads Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#publicites">
-				<i class="bi bi-megaphone"></i>
-				<span>Publicite</span>
-			</a>
-		</li>
+		.sidebar-divider {
+			border-top: 1px solid rgba(255, 255, 255, 0.15);
+			margin: 1rem 0;
+		}
 
-		<!-- campagne Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#campagnes">
-				<i class="bi bi-shop"></i>
-				<span>Merchandise</span>
-			</a>
-		</li>
+		.nav-item {
+			position: relative;
+		}
 
-		<!-- Users Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-people"></i>
-				<span>Users</span>
-			</a>
-		</li>
-	</ul>
-	<!-- End of Sidebar -->
+		.nav-link {
+			color: rgba(255, 255, 255, 0.8);
+			padding: 12px 20px;
+			display: flex;
+			align-items: center;
+			transition: all 0.3s;
+			font-family: var(--font-body);
+			font-weight: 400;
+			font-size: 18px;
+		}
 
-	<!-- Content Wrapper -->
+		.nav-link:hover,
+		.nav-link.active {
+			color: white;
+			background: rgba(255, 255, 255, 0.1);
+		}
+
+		.nav-link.active {
+			border-left: 4px solid var(--primary-color);
+		}
+
+		.nav-link i {
+			margin-right: 10px;
+			font-size: 1.1rem;
+			color: var(--primary-color);
+			width: 24px;
+			text-align: center;
+		}
+
+		/* Content */
+		#content {
+			width: calc(100% - var(--sidebar-width));
+			min-height: 100vh;
+			background: var(--white-color);
+		}
+
+		/* Main Content */
+		.container-fluid {
+			padding: 2rem;
+		}
+
+		/* Cards */
+		.card {
+			border: none;
+			border-radius: 20px;
+			box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.1);
+			margin-bottom: 2rem;
+			background: var(--white-color);
+			overflow: hidden;
+		}
+
+		.card-header {
+			background: var(--white-color);
+			border-bottom: 1px solid var(--border-color);
+			padding: 1.25rem 1.5rem;
+			font-family: var(--font-body);
+			font-weight: 700;
+			font-size: 22px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-radius: 20px 20px 0 0 !important;
+		}
+
+		.card-body {
+			padding: 1.5rem;
+		}
+
+		/* Page Heading */
+		.page-heading {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 2rem;
+			padding-bottom: 1rem;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Tables */
+		.table {
+			width: 100%;
+			margin-bottom: 1rem;
+			color: var(--text-color);
+			border-collapse: separate;
+			border-spacing: 0;
+			font-family: var(--font-body);
+		}
+
+		.table th {
+			background: var(--section-bg-color);
+			border-bottom: 2px solid var(--border-color);
+			vertical-align: middle;
+			padding: 1rem;
+			font-family: var(--font-body);
+			font-weight: 700;
+			font-size: 18px;
+			text-transform: uppercase;
+			color: var(--dark-color);
+		}
+
+		.table td {
+			vertical-align: middle;
+			padding: 1rem;
+			border-top: 1px solid var(--border-color);
+			font-size: 18px;
+			background-color: var(--white-color);
+		}
+
+		.table tr:first-child td {
+			border-top: none;
+		}
+
+		.table tr:hover td {
+			background-color: rgba(248, 203, 46, 0.05);
+		}
+
+		.table-striped tbody tr:nth-of-type(odd) {
+			background-color: rgba(0, 0, 0, 0.02);
+		}
+
+		.table-responsive {
+			display: block;
+			width: 100%;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+		}
+
+		/* Buttons */
+		.btn {
+			font-family: var(--font-body);
+			font-weight: 700;
+			padding: 10px 20px;
+			border-radius: 100px;
+			transition: all 0.3s;
+			font-size: 14px;
+		}
+
+		.btn-primary {
+			background: var(--custom-btn-bg-color);
+			border: 2px solid transparent;
+			color: var(--white-color);
+		}
+
+		.btn-primary:hover {
+			background: var(--custom-btn-bg-hover-color);
+			color: var(--white-color);
+		}
+
+		.btn-outline-primary {
+			background: transparent;
+			border: 2px solid var(--custom-btn-bg-color);
+			color: var(--custom-btn-bg-color);
+		}
+
+		.btn-outline-primary:hover {
+			background: var(--custom-btn-bg-color);
+			color: var(--white-color);
+		}
+
+		.btn-sm {
+			padding: 0.35rem 0.75rem;
+			font-size: 14px;
+		}
+
+		/* Action Buttons */
+		.action-buttons {
+			display: flex;
+			gap: 0.5rem;
+		}
+
+		.action-buttons .btn {
+			min-width: 36px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		/* Badges */
+		.badge {
+			font-family: var(--font-body);
+			font-weight: 700;
+			padding: 0.5em 0.8em;
+			font-size: 0.75em;
+			border-radius: 50px;
+			text-transform: uppercase;
+		}
+
+		.badge-primary {
+			background-color: var(--custom-btn-bg-color);
+		}
+
+		.badge-secondary {
+			background-color: #6c757d;
+		}
+
+		.badge-success {
+			background-color: #28a745;
+		}
+
+		.badge-warning {
+			background-color: #ffc107;
+			color: #212529;
+		}
+
+		.badge-danger {
+			background-color: #dc3545;
+		}
+
+		/* Content Sections */
+		.content-section {
+			display: none;
+		}
+
+		.content-section.active {
+			display: block;
+		}
+
+		/* Responsive */
+		@media(max-width: 991px) {
+			h1 {
+				font-size: 62px;
+			}
+			h2 {
+				font-size: 36px;
+			}
+			h3 {
+				font-size: 32px;
+			}
+			h4 {
+				font-size: 28px;
+			}
+			h5 {
+				font-size: 20px;
+			}
+			h6 {
+				font-size: 18px;
+			}
+		}
+
+		@media(max-width: 768px) {
+			#sidebar {
+				position: fixed;
+				margin-left: -250px;
+				z-index: 1000;
+			}
+			#sidebar.active {
+				margin-left: 0;
+			}
+			#content {
+				width: 100%;
+			}
+			#content.active {
+				margin-left: 250px;
+				width: calc(100% - 250px);
+			}
+
+			h1 {
+				font-size: 52px;
+			}
+			h2 {
+				font-size: 28px;
+			}
+			h3 {
+				font-size: 26px;
+			}
+			h4 {
+				font-size: 22px;
+			}
+			h5 {
+				font-size: 20px;
+			}
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
 	<div
-		id="content">
-		<!-- Begin Page Content -->
-		<div
-			class="container-fluid">
-			<!-- Page Heading -->
-			<div class="page-heading">
-				<h1 class="h3 mb-0 text-gray-800">Events Management</h1>
-				<a href="{{ path('app_evenement_new') }}" class="btn btn-primary">
-					<i class="bi bi-plus-circle"></i>
-					Create New Event
+		id="wrapper">
+		<!-- Sidebar -->
+		<ul
+			id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
+			<!-- Sidebar - Brand -->
+			<a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+				<div class="sidebar-brand-icon">
+					<i class="bi bi-shield-lock"></i>
+				</div>
+				<div class="sidebar-brand-text mx-2">Admin Panel</div>
+			</a>
+
+			<!-- Divider -->
+			<hr
+			class="sidebar-divider my-0">
+
+			<!-- Nav Items -->
+			<li class="nav-item">
+				<a class="nav-link" href="#" data-section="dashboard">
+					<i class="bi bi-speedometer2"></i>
+					<span>Dashboard</span>
 				</a>
+			</li>
+
+			<!-- Divider -->
+			<hr
+			class="sidebar-divider">
+
+			<!-- Heading -->
+			<div class="sidebar-heading">
+				Management
 			</div>
 
-			<!-- Events Table -->
-			<div class="card shadow mb-4">
-				<div class="card-header">
-					<h6 class="m-0 font-weight-bold">All Events</h6>
-					<div class="dropdown d-inline-block">
-						<button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-							<i class="bi bi-filter"></i>
-							Filter
-						</button>
-						<div class="dropdown-menu dropdown-menu-right">
-							<a class="dropdown-item" href="#">All Events</a>
-							<a class="dropdown-item" href="#">Upcoming</a>
-							<a class="dropdown-item" href="#">Past</a>
+			<!-- Events Nav Item -->
+			<li class="nav-item">
+				<a class="nav-link active" href="#" data-section="events">
+					<i class="bi bi-calendar-event"></i>
+					<span>Events</span>
+				</a>
+			</li>
+
+			<!-- Sponsors Nav Item -->
+			<li class="nav-item">
+				<a class="nav-link" href="#" data-section="sponsors">
+					<i class="bi bi-award"></i>
+					<span>Sponsors</span>
+				</a>
+			</li>
+
+			<!-- Logistics Nav Item -->
+			<li class="nav-item">
+				<a class="nav-link" href="#" data-section="equipements">
+					<i class="bi bi-truck"></i>
+					<span>Equipement</span>
+				</a>
+			</li>
+
+			<!-- Ads Nav Item -->
+			<li class="nav-item">
+				<a class="nav-link" href="#" data-section="ads">
+					<i class="bi bi-megaphone"></i>
+					<span>Advertisements</span>
+				</a>
+			</li>
+
+			<!-- Merchandise Nav Item -->
+			<li class="nav-item">
+				<a class="nav-link" href="#" data-section="merchandise">
+					<i class="bi bi-shop"></i>
+					<span>Merchandise</span>
+				</a>
+			</li>
+
+			<!-- Users Nav Item -->
+			<li class="nav-item">
+				<a class="nav-link" href="#" data-section="users">
+					<i class="bi bi-people"></i>
+					<span>Users</span>
+				</a>
+			</li>
+		</ul>
+		<!-- End of Sidebar -->
+
+		<!-- Content Wrapper -->
+		<div
+			id="content">
+			<!-- New Welcome Header with Logout -->
+			<header class="admin-header">
+				<div class="container">
+					<div class="welcome-container">
+						<p class="welcome-message mb-0">
+							<i class="bi-person custom-icon me-2"></i>
+							<strong class="text-dark">
+								{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+									Welcome back,
+									{{ app.user.firstName ?? app.user.email }}
+								{% endif %}
+							</strong>
+						</p>
+						{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+							<a href="{{ path('app_logout') }}" class="logout-btn">
+								<i class="bi-box-arrow-right"></i>Logout
+							</a>
+						{% endif %}
+					</div>
+				</div>
+			</header>
+
+			<!-- Begin Page Content -->
+			<div
+				class="container-fluid">
+				<!-- Page Heading - Dynamic based on section -->
+				<div class="page-heading">
+					<h1 class="h3 mb-0 text-gray-800" id="section-title">Events Management</h1>
+					<a href="#" class="btn btn-primary" id="section-create-button">
+						<i class="bi bi-plus-circle"></i>
+						Create New Event
+					</a>
+				</div>
+
+				<!-- Dashboard Section -->
+				<div id="dashboard-section" class="content-section">
+					<div class="card shadow mb-4">
+						<div class="card-header">
+							<h6 class="m-0 font-weight-bold">Dashboard Overview</h6>
+						</div>
+						<div class="card-body">
+							<p>Welcome to the admin dashboard. Select a section from the sidebar to manage.</p>
 						</div>
 					</div>
 				</div>
-				<div class="card-body">
-					<div class="table-responsive">
-						<table class="table" id="dataTable" width="100%" cellspacing="0">
-							<thead>
-								<tr>
-									<th>Title</th>
-									<th>Type</th>
-									<th>Date</th>
-									<th>Location</th>
-									<th>Seats</th>
-									<th>Status</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for evenement in evenements %}
-									{# Define image and color based on event type #}
-									{% set event_assets = {
-                                            'conference': {
-                                                'color': 'primary',
-                                                'icon': 'bi-mic'
-                                            },
-                                            'fête': {
-                                                'color': 'danger',
-                                                'icon': 'bi-music-note-beamed'
-                                            },
-                                            'fete': {
-                                                'color': 'danger',
-                                                'icon': 'bi-music-note-beamed'
-                                            },
-                                            'formation': {
-                                                'color': 'success',
-                                                'icon': 'bi-mortarboard'
-                                            },
-                                            'default': {
-                                                'color': 'secondary',
-                                                'icon': 'bi-calendar-event'
-                                            }
+
+				<!-- Events Section -->
+				<div id="events-section" class="content-section active">
+					<div class="card shadow mb-4">
+						<div class="card-header">
+							<h6 class="m-0 font-weight-bold">All Events</h6>
+							<div class="dropdown d-inline-block">
+								<button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+									<i class="bi bi-filter"></i>
+									Filter
+								</button>
+								<div class="dropdown-menu dropdown-menu-right">
+									<a class="dropdown-item" href="#">All Events</a>
+									<a class="dropdown-item" href="#">Upcoming</a>
+									<a class="dropdown-item" href="#">Past</a>
+								</div>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Title</th>
+											<th>Type</th>
+											<th>Date</th>
+											<th>Location</th>
+											<th>Seats</th>
+											<th>Status</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for evenement in evenements %}
+											{% set event_assets = {
+                                            'conference': {'color': 'primary', 'icon': 'bi-mic'},
+                                            'fête': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
+                                            'fete': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
+                                            'formation': {'color': 'success', 'icon': 'bi-mortarboard'},
+                                            'default': {'color': 'secondary', 'icon': 'bi-calendar-event'}
                                         } %}
 
-									{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
-									{% set is_past = evenement.date and evenement.date < date() %}
+											{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
+											{% set is_past = evenement.date and evenement.date < date() %}
 
-									<tr>
-										<td>
-											<i class="bi {{ current_event.icon }} me-2 text-{{ current_event.color }}"></i>
-											<strong>{{ evenement.titre }}</strong>
-										</td>
-										<td>
-											<span class="badge badge-{{ current_event.color }}">
-												{{ evenement.type }}
-											</span>
-										</td>
-										<td>{{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</td>
-										<td>{{ evenement.lieu }}</td>
-										<td>{{ evenement.nbrplaces }}</td>
-										<td>
-											{% if is_past %}
-												<span class="badge badge-secondary">Completed</span>
-											{% else %}
-												<span class="badge badge-success">Upcoming</span>
-											{% endif %}
-										</td>
-										<td>
-											<div class="action-buttons">
-												<a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-primary" title="View">
-													<i class="bi bi-eye"></i>
-												</a>
-												<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-warning" title="Edit">
-													<i class="bi bi-pencil"></i>
-												</a>
-												<form method="post" action="{{ path('app_evenement_delete', {'id': evenement.id}) }}" onsubmit="return confirm('Are you sure you want to delete this event?');" class="d-inline">
-													<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
-													<button class="btn btn-sm btn-danger" title="Delete">
-														<i class="bi bi-trash"></i>
-													</button>
-												</form>
-											</div>
-										</td>
-									</tr>
-								{% else %}
-									<tr>
-										<td colspan="7" class="text-center py-4">
-											<i class="bi bi-calendar-x fs-1 text-muted"></i>
-											<h5 class="text-muted mt-3">No events found</h5>
-											<a href="{{ path('app_evenement_new') }}" class="btn btn-primary mt-2">
-												<i class="bi bi-plus-circle"></i>
-												Create Event
-											</a>
-										</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
+											<tr>
+												<td>
+													<i class="bi {{ current_event.icon }} me-2 text-{{ current_event.color }}"></i>
+													<strong>{{ evenement.titre }}</strong>
+												</td>
+												<td>
+													<span class="badge badge-{{ current_event.color }}">{{ evenement.type }}</span>
+												</td>
+												<td>{{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</td>
+												<td>{{ evenement.lieu }}</td>
+												<td>{{ evenement.nbrplaces }}</td>
+												<td>
+													{% if is_past %}
+														<span class="badge badge-secondary">Completed</span>
+													{% else %}
+														<span class="badge badge-success">Upcoming</span>
+													{% endif %}
+												</td>
+												<td>
+													<div class="action-buttons">
+														<a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-primary" title="View">
+															<i class="bi bi-eye"></i>
+														</a>
+														<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-warning" title="Edit">
+															<i class="bi bi-pencil"></i>
+														</a>
+														<form method="post" action="{{ path('app_evenement_delete', {'id': evenement.id}) }}" onsubmit="return confirm('Are you sure you want to delete this event?');" class="d-inline">
+															<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
+															<button class="btn btn-sm btn-danger" title="Delete">
+																<i class="bi bi-trash"></i>
+															</button>
+														</form>
+													</div>
+												</td>
+											</tr>
+										{% else %}
+											<tr>
+												<td colspan="7" class="text-center py-4">
+													<i class="bi bi-calendar-x fs-1 text-muted"></i>
+													<h5 class="text-muted mt-3">No events found</h5>
+													<a href="{{ path('app_evenement_new') }}" class="btn btn-primary mt-2">
+														<i class="bi bi-plus-circle"></i>
+														Create Event
+													</a>
+												</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Equipement Section -->
+				<div id="equipements-section" class="content-section">
+					<div class="card shadow mb-4">
+						<div class="card-header d-flex justify-content-between align-items-center">
+							<h6 class="m-0 font-weight-bold">Liste des équipements</h6>
+							<div>
+								<span class="badge badge-info me-2">Total:
+									{{ equipements|length }}</span>
+								<a href="{{ path('app_equipement_new') }}" class="btn btn-primary btn-sm">
+									<i class="bi bi-plus-circle"></i>
+									Ajouter un équipement
+								</a>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="table table-striped" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Nom</th>
+											<th>Quantité totale</th>
+											<th>Quantité dispo</th>
+											<th>Description</th>
+											<th>Statut</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for equipement in equipements %}
+											<tr>
+												<td>{{ equipement.nom }}</td>
+												<td>{{ equipement.quantiteTotale }}</td>
+												<td>{{ equipement.quantiteDispo }}</td>
+												<td>{{ equipement.description }}</td>
+												<td>
+													{% if equipement.statut == 'disponible' %}
+														<span class="badge badge-success">{{ equipement.statut }}</span>
+													{% elseif equipement.statut == 'réparé' %}
+														<span class="badge badge-warning">{{ equipement.statut }}</span>
+													{% else %}
+														<span class="badge badge-danger">{{ equipement.statut }}</span>
+													{% endif %}
+												</td>
+												<td>
+													<div class="action-buttons">
+														<a href="{{ path('app_equipement_show', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-primary" title="Voir">
+															<i class="bi bi-eye"></i>
+														</a>
+														<a href="{{ path('app_equipement_edit', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-warning" title="Modifier">
+															<i class="bi bi-pencil"></i>
+														</a>
+														<form method="post" action="{{ path('app_equipement_delete', {'id_eq': equipement.id_eq}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet équipement ?');" class="d-inline">
+															<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipement.id_eq) }}">
+															<button class="btn btn-sm btn-danger" title="Supprimer">
+																<i class="bi bi-trash"></i>
+															</button>
+														</form>
+													</div>
+												</td>
+											</tr>
+										{% else %}
+											<tr>
+												<td colspan="6" class="text-center py-4">
+													<i class="bi bi-box-seam fs-1 text-muted"></i>
+													<h5 class="text-muted mt-3">Aucun équipement trouvé</h5>
+													<a href="{{ path('app_equipement_new') }}" class="btn btn-primary mt-2">
+														<i class="bi bi-plus-circle"></i>
+														Ajouter un équipement
+													</a>
+												</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Placeholder sections for other management areas -->
+				<div id="sponsors-section" class="content-section">
+					<div class="card shadow mb-4">
+						<div class="card-header">
+							<h6 class="m-0 font-weight-bold">Sponsors Management</h6>
+						</div>
+						<div class="card-body">
+							<p>Sponsors content will be displayed here.</p>
+						</div>
+					</div>
+				</div>
+
+				<div id="ads-section" class="content-section">
+					<div class="card shadow mb-4">
+						<div class="card-header">
+							<h6 class="m-0 font-weight-bold">Advertisements Management</h6>
+						</div>
+						<div class="card-body">
+							<p>Advertisements content will be displayed here.</p>
+						</div>
+					</div>
+				</div>
+
+				<div id="merchandise-section" class="content-section">
+					<div class="card shadow mb-4">
+						<div class="card-header">
+							<h6 class="m-0 font-weight-bold">Merchandise Management</h6>
+						</div>
+						<div class="card-body">
+							<p>Merchandise content will be displayed here.</p>
+						</div>
+					</div>
+				</div>
+
+				<div id="users-section" class="content-section">
+					<div class="card shadow mb-4">
+						<div class="card-header">
+							<h6 class="m-0 font-weight-bold">Users Management</h6>
+						</div>
+						<div class="card-body">
+							<p>Users content will be displayed here.</p>
+						</div>
 					</div>
 				</div>
 			</div>
-			<!-- Advertisements Table -->
-<div class="card shadow mb-4">
-    <div class="card-header">
-        <h6 class="m-0 font-weight-bold">All Advertisements</h6>
-        <a href="{{ path('app_publicite_new') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-circle"></i>
-            Add New
-        </a>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Type</th>
-                        <th>Content</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for publicite in publicites %}
-                        {% set status_color = publicite.statut_pub == 'active' ? 'success' : 'secondary' %}
-                        <tr>
-                            <td>
-                                <strong>{{ publicite.titre_pub }}</strong>
-                            </td>
-                            <td>
-                                <span class="badge badge-primary">
-                                    {{ publicite.type_pub }}
-                                </span>
-                            </td>
-                            <td>{{ publicite.contenu_pub|length > 30 ? publicite.contenu_pub|slice(0, 30) ~ '...' : publicite.contenu_pub }}</td>
-                            <td>{{ publicite.emplacement_pub }}</td>
-                            <td>
-                                <span class="badge badge-{{ status_color }}">
-                                    {{ publicite.statut_pub }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <a href="{{ path('app_publicite_show', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-primary" title="View">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="{{ path('app_publicite_edit', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-warning" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form method="post" action="{{ path('app_publicite_delete', {'id_pub': publicite.id_pub}) }}" onsubmit="return confirm('Are you sure you want to delete this advertisement?');" class="d-inline">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ publicite.id_pub) }}">
-                                        <button class="btn btn-sm btn-danger" title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center py-4">
-                                <i class="bi bi-megaphone fs-1 text-muted"></i>
-                                <h5 class="text-muted mt-3">No advertisements found</h5>
-                                <a href="{{ path('app_publicite_new') }}" class="btn btn-primary mt-2">
-                                    <i class="bi bi-plus-circle"></i>
-                                    Create Advertisement
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Advertising Campaigns Section -->
-<section class="campaigns-section py-5 bg-light">
-    <div class="container">
-        <div class="row justify-content-center mb-5">
-            <div class="col-12 text-center">
-                <h2 class="mb-4">Advertising Campaigns</h2>
-                <a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-2"></i>Create New Campaign
-                </a>
-            </div>
-        </div>
-
-        <div class="row">
-            {% for campagne in campagnes %}
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card campaign-card h-100 border-0 shadow-sm">
-                        <div class="card-header bg-white">
-                            <h5 class="card-title mb-0">{{ campagne.nomCamp }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="campaign-meta mb-3">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Budget:</span>
-                                    <strong>{{ campagne.budgetCamp }} TND</strong>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Status:</span>
-                                    <span class="badge bg-{{ campagne.statutCamp == 'en_cours' ? 'success' : 
-                                          (campagne.statutCamp == 'planifiée' ? 'info' : 
-                                          (campagne.statutCamp == 'terminée' ? 'secondary' : 'danger')) }}">
-                                        {{ campagne.statutCamp }}
-                                    </span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Start:</span>
-                                    <span>{{ campagne.dateDebutCamp|date('d M Y') }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span class="text-muted">End:</span>
-                                    <span>{{ campagne.dateFinCamp|date('d M Y') }}</span>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="campaign-ad">
-                                <h6 class="text-muted mb-2">Associated Ad:</h6>
-                                <p class="mb-1"><strong>{{ campagne.publicite.titrePub }}</strong></p>
-                                <p class="small text-muted">{{ campagne.publicite.typePub|capitalize }} - {{ campagne.publicite.emplacementPub }}</p>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-white d-flex justify-content-between">
-                            <a href="{{ path('app_campagnes_publicitaire_show', {'id_camp': campagne.idCamp}) }}" 
-                               class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> View
-                            </a>
-                            <a href="{{ path('app_campagnes_publicitaire_edit', {'id_camp': campagne.idCamp}) }}" 
-                               class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="col-12 text-center">
-                    <div class="alert alert-info py-4">
-                        <i class="bi bi-megaphone fs-1 d-block mb-3"></i>
-                        <h4>No campaigns found</h4>
-                        <p class="mb-0">Create your first advertising campaign</p>
-                        <a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary mt-3">
-                            <i class="bi bi-plus-circle me-2"></i>New Campaign
-                        </a>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+			<!-- /.container-fluid -->
 		</div>
-		<!-- /.container-fluid -->
+		<!-- End of Content Wrapper -->
 	</div>
-	<!-- End of Content Wrapper -->
-</div>{% endblock %}{% block javascripts %}
-{{ parent() }}
-<script>
-	// Toggle sidebar
-document.getElementById('sidebarToggle').addEventListener('click', function () {
-document.getElementById('sidebar').classList.toggle('active');
-document.getElementById('content').classList.toggle('active');
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Get all sidebar links
+const sidebarLinks = document.querySelectorAll('#sidebar .nav-link');
+
+// Get all content sections
+const contentSections = document.querySelectorAll('.content-section');
+
+// Get the title and create button elements
+const sectionTitle = document.getElementById('section-title');
+const sectionCreateButton = document.getElementById('section-create-button');
+
+// Create button paths for different sections
+const createButtonPaths = {
+'events': "{{ path('app_evenement_new') }}",
+'equipements': "{{ path('app_equipement_new') }}",
+// Add paths for other sections as needed
+};
+
+// Section titles
+const sectionTitles = {
+'dashboard': 'Dashboard Overview',
+'events': 'Events Management',
+'equipements': 'Equipment Management',
+'sponsors': 'Sponsors Management',
+'ads': 'Advertisements Management',
+'merchandise': 'Merchandise Management',
+'users': 'Users Management'
+};
+
+// Function to switch between sections
+function switchSection(sectionId) { // Update active state in sidebar
+sidebarLinks.forEach(link => {
+link.classList.remove('active');
+if (link.dataset.section === sectionId) {
+link.classList.add('active');
+}
 });
-</script>{% endblock %}
+
+// Show/hide content sections
+contentSections.forEach(section => {
+section.classList.remove('active');
+if (section.id === `${sectionId}-section`) {
+section.classList.add('active');
+}
+});
+
+// Update title
+sectionTitle.textContent = sectionTitles[sectionId] || 'Management';
+
+// Update create button
+if (createButtonPaths[sectionId]) {
+sectionCreateButton.href = createButtonPaths[sectionId];
+sectionCreateButton.style.display = 'inline-block';
+} else {
+sectionCreateButton.style.display = 'none';
+}
+}
+
+// Add click event listeners to sidebar links
+sidebarLinks.forEach(link => {
+link.addEventListener('click', function (e) {
+e.preventDefault();
+const sectionId = this.dataset.section;
+switchSection(sectionId);
+
+// Update URL hash
+window.location.hash = sectionId;
+});
+});
+
+// Check URL hash on page load
+const initialSection = window.location.hash.substring(1) || 'events';
+switchSection(initialSection);
+});
+	</script>
+{% endblock %}
