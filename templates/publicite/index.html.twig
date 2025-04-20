@@ -37,14 +37,7 @@
             height: 100%;
             background-color: rgba(231, 228, 228, 0.5);">
         </div>
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12 text-center mb-5">
-                    <h2 class="mb-4">Our Ads</h2>
-                    <a href="{{ path('app_publicite_new') }}" class="btn custom-btn">
-                        <i class="bi bi-plus-circle me-2"></i>Create New Ad
-                    </a>
-                </div>
+       
 
   <!-- Publicité Section -->
 <section class="artists-section section-padding" id="ads" style="
@@ -69,7 +62,7 @@
                     <i class="bi bi-plus-circle me-2"></i>Create New Ad
                 </a>
             </div>
-
+            
             {% for publicite in publicites %}
                 {# Create a mapping of ad titles to image paths #}
                 {% set ad_images = {

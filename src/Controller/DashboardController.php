@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\User;
 use App\Entity\Evenement;
 use App\Entity\Equipement;
 use App\Repository\EvenementRepository;
@@ -50,7 +50,10 @@ class DashboardController extends AbstractController
         $evenements            = $evenementRepository->findAll();
         $equipements           = $equipementRepository->findAll();
         $reservationEquipements = $reservationEquipementRepository->findAll();
-        $publicites            = $publiciteRepository->findAll();
+     $publicites            = $publiciteRepository->findAll();
+    #$user = $this->getUser(); 
+    #$publicites = $publiciteRepository->findBy(['user' => $user]);
+
         $campagnes             = $campagneRepository->findAll();
 
         return $this->render('dashboard/owner/owner.html.twig', [
@@ -82,4 +85,6 @@ class DashboardController extends AbstractController
             'evenement' => $evenement,
         ]);
     }
+
+    
 }
