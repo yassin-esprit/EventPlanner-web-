@@ -53,7 +53,35 @@ final class ReservationEquipementController extends AbstractController{
         ]);
     }
     
-    
+     #[Route( name:'app_reservation_search', methods: ['GET'])]
+ 
+public function searchReservations(Request $request): Response
+{
+    $searchTerm = $request->query->get('q');
+    $status = $request->query->get('statut');
+
+    $queryBuilder = $this->getDoctrine()
+        ->getRepository(ReservationEquipement::class)
+        ->createQueryBuilder('r')
+        ->leftJoin('r.equipement', 'e')
+        ->leftJoin('r.evenement', 'ev');
+
+    if ($searchTerm) {
+        $queryBuilder->andWhere('e.nom LIKE :term OR ev.titre LIKE :term')
+            ->setParameter('term', '%'.$searchTerm.'%');
+    }
+
+    if ($status && $status !== 'all') {
+        $queryBuilder->andWhere('r.statut = :status')
+            ->setParameter('status', $status);
+    }
+
+    $reservations = $queryBuilder->getQuery()->getResult();
+
+    return $this->render('dashboard/admin/admin.html.twig', [
+        'reservations' => $reservations
+    ]);
+}
 
     #[Route('/{id}', name: 'app_reservation_equipement_show', methods: ['GET'])]
     public function show(ReservationEquipement $reservationEquipement): Response

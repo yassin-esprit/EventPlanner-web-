@@ -50,8 +50,8 @@ class Equipement
 
     #[Assert\NotBlank(message: "Le statut est requis")]
     #[Assert\Choice(
-        choices: ['disponible', 'indisponible'],
-        message: "Le statut doit être 'disponible' ou 'indisponible'"
+        choices: ['disponible', 'indisponible', 'maintenance'],
+        message: "Le statut doit être 'disponible' ou 'indisponible' ou 'maintenance'"
     )]
     #[ORM\Column(type: 'string', length: 20)]
     private ?string $statut = null;

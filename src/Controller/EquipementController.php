@@ -24,6 +24,34 @@ final class EquipementController extends AbstractController{
 }
 
 
+
+  #[Route(name:'app_equipement_search', methods:['GET'])]
+ 
+public function search(Request $request): Response
+{
+    $searchTerm = $request->query->get('q');
+    $status = $request->query->get('statut');
+
+    $queryBuilder = $this->getDoctrine()
+        ->getRepository(Equipement::class)
+        ->createQueryBuilder('e');
+
+    if ($searchTerm) {
+        $queryBuilder->andWhere('e.nom LIKE :term OR e.description LIKE :term')
+            ->setParameter('term', '%'.$searchTerm.'%');
+    }
+
+    if ($status && $status !== 'all') {
+        $queryBuilder->andWhere('e.statut = :status')
+            ->setParameter('status', $status);
+    }
+
+    $equipements = $queryBuilder->getQuery()->getResult();
+
+    return $this->render('dashboard/admin/admin.html.twig', [
+        'equipements' => $equipements
+    ]);
+}
     #[Route('/new', name: 'app_equipement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

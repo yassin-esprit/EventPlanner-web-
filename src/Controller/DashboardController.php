@@ -22,19 +22,30 @@ class DashboardController extends AbstractController
         EvenementRepository $evenementRepository,
         EquipementRepository $equipementRepository,
         PubliciteRepository $publiciteRepository,
+        ReservationEquipementRepository $reservationEquipementRepository,
         CampagnesPublicitaireRepository $campagneRepository
     ): Response {
         $evenements   = $evenementRepository->findAll();
         $equipements  = $equipementRepository->findAll();
         $publicites   = $publiciteRepository->findAll();
+        $reservationEquipements = $reservationEquipementRepository->findAll();
         $campagnes    = $campagneRepository->findAll();
 
+        // ✅ Statistiques équipements par statut
+        $stats = [
+            'disponible'   => $equipementRepository->count(['statut' => 'disponible']),
+            'maintenance'  => $equipementRepository->count(['statut' => 'maintenance']),
+            'indisponible' => $equipementRepository->count(['statut' => 'indisponible']),
+        ];
+
         return $this->render('dashboard/admin/admin.html.twig', [
-            'controller_name' => 'DashboardController',
-            'evenements'      => $evenements,
-            'equipements'     => $equipements,
-            'publicites'      => $publicites,
-            'campagnes'       => $campagnes,
+            'controller_name'        => 'DashboardController',
+            'evenements'             => $evenements,
+            'equipements'            => $equipements,
+            'publicites'             => $publicites,
+            'campagnes'              => $campagnes,
+            'reservation_equipements'=> $reservationEquipements,
+            'stats'                  => $stats, // 👈 Ajout des statistiques
         ]);
     }
 

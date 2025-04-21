@@ -39,8 +39,6 @@ class ReservationEquipement
     #[ORM\Column(type: 'string', length: 20)]
     private ?string $statut = null;
 
-    // === Getters et Setters ===
-
     public function getId(): ?int
     {
         return $this->id;
@@ -88,5 +86,9 @@ class ReservationEquipement
     {
         $this->statut = $statut;
         return $this;
+    }
+    public function __construct()
+    {
+    $this->statut = 'attente';
     }
 }
