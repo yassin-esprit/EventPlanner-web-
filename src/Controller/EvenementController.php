@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Service\BadgeService;
 
 use App\Entity\Evenement;
 use App\Form\EvenementType;
@@ -142,7 +143,8 @@ final class EvenementController extends AbstractController
         #[Route('/participant/dashboard/ajax', name: 'participant_dashboard_ajax')]
 public function participantDashboardAjax(
     EvenementRepository $evenementRepository,
-    Request $request
+    Request $request,
+    BadgeService $badgeService
 ): Response {
     // Get search and sort parameters
     $search = $request->query->get('search');
@@ -158,7 +160,8 @@ public function participantDashboardAjax(
 
     return $this->render('dashboard/participant/_events_list.html.twig', [
         'evenements' => $evenements,
-        'search' => $search
+        'search' => $search,
+        'badge_service' => $badgeService, 
     ]);
 }
 

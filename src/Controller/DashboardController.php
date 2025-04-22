@@ -13,6 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\Request;
+use App\Service\BadgeService;
 
 class DashboardController extends AbstractController
 {
@@ -66,12 +68,24 @@ class DashboardController extends AbstractController
     #[Route('/dashboard/participant', name: 'participant_dashboard')]
     #[IsGranted('ROLE_PARTICIPANT')]
     public function participantDashboard(
-        EvenementRepository $evenementRepository
+        EvenementRepository $evenementRepository,
+        Request $request,
+        BadgeService $badgeService
     ): Response {
         $evenements = $evenementRepository->findAll();
 
+        // Example of handling search and sort functionality
+        $search = $request->query->get('search', '');
+        $sort = $request->query->get('sort', 'name'); // Default sort field
+        $direction = $request->query->get('direction', 'asc'); // Default sort direction
+
+        // Pass the badge service to the view
         return $this->render('dashboard/participant/participant.html.twig', [
             'evenements' => $evenements,
+            'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
+            'badge_service' => $badgeService,
         ]);
     }
 

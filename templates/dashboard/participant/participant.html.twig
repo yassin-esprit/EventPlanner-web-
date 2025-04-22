@@ -29,20 +29,20 @@
 
 	<!-- Events Section -->
 	<section class="artists-section section-padding" id="events" style="
-			        background-image: url('{{ asset('images/nicholas-green-unsplash-blur.jpg') }}');
-			        background-size: cover;
-			        background-position: center;
-			        background-attachment: fixed;
-			        position: relative;
-			    ">
+						        background-image: url('{{ asset('images/nicholas-green-unsplash-blur.jpg') }}');
+						        background-size: cover;
+						        background-position: center;
+						        background-attachment: fixed;
+						        position: relative;
+						    ">
 		<div class="section-overlay" style="
-			            position: absolute;
-			            top: 0;
-			            left: 0;
-			            width: 100%;
-			            height: 100%;
-			            background-color: rgba(255, 255, 255, 0.79);
-			        "></div>
+						            position: absolute;
+						            top: 0;
+						            left: 0;
+						            width: 100%;
+						            height: 100%;
+						            background-color: rgba(255, 255, 255, 0.79);
+						        "></div>
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-12 text-center mb-5">
@@ -118,6 +118,45 @@
 {% block stylesheets %}
 	{{ parent() }}
 	<style>
+		/* Add to your stylesheet */
+		.badge {
+			font-size: 0.8rem;
+			padding: 0.5rem 0.75rem;
+			border-radius: 50px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s ease;
+		}
+
+		.badge:hover {
+			transform: scale(1.05);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+		}
+
+		/* Specific badge colors */
+		.badge-bg-secondary {
+			background-color: #6c757d;
+			color: white;
+		}
+
+		.badge-bg-primary {
+			background-color: #0d6efd;
+			color: white;
+		}
+
+		.badge-bg-danger {
+			background-color: #dc3545;
+			color: white;
+		}
+
+		.badge-bg-warning {
+			background-color: #ffc107;
+			color: #212529;
+		}
+
+		.badge-bg-success {
+			background-color: #198754;
+			color: white;
+		}
 		/* Hero Section */
 		.hero-section {
 			position: relative;
@@ -447,6 +486,7 @@ if (currentSort === 'title')
 sortText = 'Title';
  else if (currentSort === 'type') 
 sortText = 'Type';
+
 
 
 sortDropdown.innerHTML = `Sort by: ${sortText} (${
