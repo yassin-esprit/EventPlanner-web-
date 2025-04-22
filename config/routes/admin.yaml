@@ -1,0 +1,13 @@
+admin_merchandise:
+    path: /admin/merchandise
+    controller: App\Controller\AdminController::merchandiseList
+
+admin_add_merchandise:
+    path: /admin/merchandise/add
+    controller: App\Controller\AdminController::addMerchandise
+
+admin_delete_merchandise:
+    path: /admin/merchandise/delete/{id}
+    controller: App\Controller\AdminController::deleteMerchandise
+    requirements:
+        id: '\d+'

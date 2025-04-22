@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('auth') }}
+{% endblock %}
+
+{% block title %}Reset Password{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card auth-container">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h3 mb-0">Reset Your Password</h1>
+                </div>
+                <div class="card-body">
+                    {% for flash_error in app.flashes('error') %}
+                        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                    {% endfor %}
+
+                    <form method="post" class="needs-validation" novalidate>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('reset_password') }}">
+                        <div class="form-floating mb-3 password-field">
+                            <input type="password" name="password" id="inputPassword" class="form-control" 
+                                required minlength="8" 
+                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$">
+                            <label for="inputPassword">New Password</label>
+                            <span class="password-toggle" onclick="togglePassword('inputPassword')">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                            <div class="invalid-feedback">
+                                Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3 password-field">
+                            <input type="password" name="confirm_password" id="confirmPassword" class="form-control" 
+                                required>
+                            <label for="confirmPassword">Confirm Password</label>
+                            <span class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                            <div class="invalid-feedback">
+                                Passwords do not match
+                            </div>
+                        </div>
+
+                        <button class="btn btn-lg btn-primary w-100" type="submit">Reset Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.parentElement.querySelector('.password-toggle i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        (function () {
+            'use strict'
+            const form = document.querySelector('form')
+            const password = document.getElementById('inputPassword')
+            const confirmPassword = document.getElementById('confirmPassword')
+
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                if (password.value !== confirmPassword.value) {
+                    event.preventDefault()
+                    confirmPassword.setCustomValidity('Passwords do not match')
+                } else {
+                    confirmPassword.setCustomValidity('')
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+
+            confirmPassword.addEventListener('input', function() {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Passwords do not match')
+                } else {
+                    confirmPassword.setCustomValidity('')
+                }
+            })
+        })()
+    </script>
+{% endblock %}

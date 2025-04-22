@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('auth') }}
+{% endblock %}
+
+{% block title %}Reset Password{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card auth-container">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h3 mb-0">Reset Your Password</h1>
+                </div>
+                <div class="card-body">
+                    {% for flash_error in app.flashes('error') %}
+                        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                    {% endfor %}
+                    
+                    <p class="mb-4">Enter your email address and we will send you a link to reset your password.</p>
+
+                    <form method="post" class="needs-validation" novalidate>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('reset_password_request') }}">
+                        <div class="form-floating mb-3">
+                            <input type="email" name="email" id="inputEmail" class="form-control" 
+                                required autofocus pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                            <label for="inputEmail">Email address</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid email address
+                            </div>
+                        </div>
+
+                        <button class="btn btn-lg btn-primary w-100" type="submit">
+                            Send Reset Link
+                        </button>
+                    </form>
+
+                    <div class="mt-3 text-center">
+                        <a href="{{ path('app_login') }}" class="text-decoration-none">
+                            <i class="fas fa-arrow-left me-1"></i> Back to login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+{% endblock %}

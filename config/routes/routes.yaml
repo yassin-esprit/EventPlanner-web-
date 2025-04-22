@@ -1,0 +1,51 @@
+# Main routes configuration
+app_home:
+    path: /
+    controller: App\Controller\HomeController::index
+
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+
+app_logout:
+    path: /logout
+    controller: App\Controller\SecurityController::logout
+
+app_register:
+    path: /register
+    controller: App\Controller\RegistrationController::register
+
+app_reset_password:
+    path: /reset-password
+    controller: App\Controller\ResetPasswordController::request
+
+user_merchandise_list:
+    path: /merchandise
+    controller: App\Controller\UserController::merchandiseList
+
+user_buy_merchandise:
+    path: /user/merchandise/buy/{id}
+    controller: App\Controller\UserController::buyMerchandise
+    requirements:
+        id: '\d+'
+
+admin_merchandise:
+    path: /admin/merchandise
+    controller: App\Controller\AdminController::merchandiseList
+
+admin_add_merchandise:
+    path: /admin/merchandise/add
+    controller: App\Controller\AdminController::addMerchandise
+
+admin_delete_merchandise:
+    path: /admin/merchandise/delete/{id}
+    controller: App\Controller\AdminController::deleteMerchandise
+    requirements:
+        id: '\d+'
+
+app_admin_process_role_request:
+    path: /admin/role-request/{id}/process
+    controller: App\Controller\AdminController::processRoleRequest
+    methods: [POST]
+    requirements:
+        id: '\d+'

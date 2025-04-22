@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Role Request Update - Mythos Planner</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <h1 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">Role Request Update</h1>
+        
+        <p>Dear {{ roleRequest.user.firstName }},</p>
+        
+        <div style="background-color: {% if roleRequest.status == 'approved' %}#e8f5e9{% else %}#ffebee{% endif %}; padding: 15px; border-radius: 4px; margin: 20px 0;">
+            <p style="margin: 0;">Your request to change your role to <strong>{{ roleRequest.requestedRole|replace({'ROLE_': ''}) }}</strong> has been <strong>{{ roleRequest.status }}</strong>.</p>
+        </div>
+        
+        {% if roleRequest.status == 'approved' %}
+            <p style="color: #2e7d32;">Congratulations! Your new role is now active. You can log in to access your new privileges.</p>
+        {% else %}
+            <p style="color: #c62828;">Unfortunately, your request has been denied.</p>
+            {% if roleRequest.reason %}
+                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; margin: 20px 0;">
+                    <p style="margin: 0;"><strong>Reason:</strong> {{ roleRequest.reason }}</p>
+                </div>
+            {% endif %}
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ baseUrl }}/login" 
+               style="background-color: #1976d2; 
+                      color: white; 
+                      padding: 12px 24px; 
+                      text-decoration: none; 
+                      border-radius: 4px; 
+                      display: inline-block;">
+                Log in to Mythos Planner
+            </a>
+        </div>
+        
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666; text-align: center;">
+            <p>This is an automated message. If you did not request this role change, please contact our support team immediately.</p>
+            <p>© {{ "now"|date("Y") }} Mythos Planner. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

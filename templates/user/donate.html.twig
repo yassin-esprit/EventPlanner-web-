@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Donate{% endblock %}
+
+{% block body %}
+<h1>Donate</h1>
+
+<form method="post" action="{{ path('user_donate') }}">
+    <div class="form-group">
+        <label for="amount">Donation Amount</label>
+        <input type="number" id="amount" name="amount" class="form-control" step="0.01" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Submit Donation</button>
+</form>
+{% endblock %}

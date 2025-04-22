@@ -1,0 +1,35 @@
+<!-- Modal for processing role request -->
+<div class="modal fade" id="processRequestModal{{ request.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Process Role Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{{ path('app_admin_process_role_request', {id: request.id}) }}" id="roleRequestForm{{ request.id }}">
+                <div class="modal-body">
+                    <p><strong>User:</strong> {{ request.user.firstName }} {{ request.user.lastName }}</p>
+                    <p><strong>Requested Role:</strong> {{ request.requestedRole|replace({'ROLE_': ''}) }}</p>
+                    <p><strong>Reason:</strong> {{ request.reason }}</p>
+
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="accepted">Accept</option>
+                            <option value="denied">Deny</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Comment</label>
+                        <textarea id="comment" name="comment" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
