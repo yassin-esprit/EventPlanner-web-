@@ -21,38 +21,71 @@ class Contrat
     #[Assert\NotNull(message: "Le sponsor est obligatoire.")]
     private ?Sponsor $sponsor = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(type: 'string', length: 50, nullable: false)]
     #[Assert\NotBlank(message: "Le type de contrat est obligatoire.")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "Le type de contrat doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le type de contrat ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s\-]+$/",
+        message: "Le type de contrat ne peut contenir que des lettres, des espaces et des tirets."
+    )]
+  
     private ?string $type_contrat = null;
 
-    #[ORM\Column(type: 'decimal', nullable: false)]
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: false)]
     #[Assert\NotNull(message: "Le montant est obligatoire.")]
     #[Assert\GreaterThan(value: 0, message: "Le montant doit être supérieur à 0.")]
+    #[Assert\LessThan(value: 1000000, message: "Le montant ne peut pas dépasser 1 000 000 TND.")]
+    #[Assert\Regex(
+        pattern: "/^\d+(\.\d{1,2})?$/",
+        message: "Le montant doit être un nombre valide avec au plus 2 décimales."
+    )]
     private ?float $montant = null;
 
     #[ORM\Column(type: 'text', nullable: false)]
     #[Assert\NotBlank(message: "La description est obligatoire.")]
+    #[Assert\Length(
+        min: 10,
+        max: 1000,
+        minMessage: "La description doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "La description ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $description = null;
 
     #[ORM\Column(type: 'date', nullable: false)]
     #[Assert\NotNull(message: "La date de début est obligatoire.")]
-    #[Assert\GreaterThan("today", message: "La date de début doit être supérieure à la date d'aujourd'hui.")]
+    #[Assert\GreaterThanOrEqual(
+        "today",
+        message: "La date de début doit être supérieure ou égale à la date d'aujourd'hui."
+    )]
     private ?\DateTimeInterface $date_debut = null;
 
     #[ORM\Column(type: 'date', nullable: false)]
     #[Assert\NotNull(message: "La date de fin est obligatoire.")]
     #[Assert\Expression(
         "this.getDateFin() > this.getDateDebut()",
-        message: "La date de fin doit être postérieure à la date de début."
+        message: "La date de fin doit être strictement postérieure à la date de début."
     )]
     private ?\DateTimeInterface $date_fin = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(type: 'string', length: 20, nullable: false)]
     #[Assert\NotBlank(message: "Le statut est obligatoire.")]
+    #[Assert\Choice(
+        choices: ['en attente', 'validé', 'expiré'],
+        message: "Le statut doit être 'En attente', 'Validé' ou 'Expiré'."
+    )]
     private ?string $statut = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(type: 'string', length: 50, nullable: false)]
     #[Assert\NotBlank(message: "Le mode de paiement est obligatoire.")]
+    #[Assert\Choice(
+        choices: ['espèce', 'virement', 'chéque'],
+        message: "Le mode de paiement doit être 'espèce', 'virement', 'chéque'."
+    )]
     private ?string $mode_paiement = null;
 
     // Getters/Setters (tu peux garder les tiens actuels)
@@ -161,3 +194,5 @@ class Contrat
         return $this;
     }
 }
+
+    // ... existing getters and setters ...

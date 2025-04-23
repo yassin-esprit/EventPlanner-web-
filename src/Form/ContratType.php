@@ -17,10 +17,15 @@ class ContratType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('type_contrat', TextType::class, [
+            ->add('type_contrat', ChoiceType::class, [
                 'label' => 'Type de Contrat',
+                'choices' => [
+                    'financier' => 'financier',
+                    'matériel' => 'matériel',
+                    'media' => 'media'
+                ],
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-select'
                 ]
             ])
             ->add('montant', NumberType::class, [
@@ -53,17 +58,23 @@ class ContratType extends AbstractType
             ->add('statut', ChoiceType::class, [
                 'label' => 'Statut',
                 'choices' => [
-                    'Actif' => 'Actif',
-                    'Inactif' => 'Inactif',
+                    'en attente' => 'en attente',
+                    'validé' => 'validé',
+                    'expiré' => 'expiré'
                 ],
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-select'
                 ]
             ])
-            ->add('mode_paiement', TextType::class, [
+            ->add('mode_paiement', ChoiceType::class, [
                 'label' => 'Mode de Paiement',
+                'choices' => [
+                    'virement' => 'virement',
+                    'espèce' => 'espèce',
+                    'chéque' => 'chéque'
+                ],
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-select'
                 ]
             ])
             ->add('sponsor', EntityType::class, [

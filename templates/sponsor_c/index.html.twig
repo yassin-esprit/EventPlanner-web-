@@ -7,7 +7,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="search-container">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom, email ou secteur...">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom, email, téléphone ou secteur..." autocomplete="off">
                 </div>
             </div>
         </div>
@@ -23,9 +23,13 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" id="sponsorList">
             {% for sponsor in sponsors %}
-                <div class="col-md-4 mb-4 sponsor-card">
+                <div class="col-md-4 mb-4 sponsor-card" 
+                     data-name="{{ sponsor.nom|lower }}" 
+                     data-email="{{ sponsor.contactemail|lower }}" 
+                     data-phone="{{ sponsor.contacttelephone|lower }}" 
+                     data-sector="{{ sponsor.secteuractivite|lower }}">
                     <div class="card h-100">
                         <div class="card-body text-center">
                             <img src="{{ sponsor.logo ? asset('uploads/sponsors/' ~ sponsor.logo) : asset('images/default-logo.png') }}"
@@ -121,11 +125,18 @@
         .search-container input {
             padding-left: 40px;
             border-radius: 20px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-container input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
         }
 
         .search-container::before {
             content: "\f002";
             font-family: "Font Awesome 5 Free";
+            font-weight: 900;
             position: absolute;
             left: 15px;
             top: 50%;
@@ -164,6 +175,13 @@
             background-color: #e9ecef;
             border-color: #dee2e6;
         }
+
+        .no-results {
+            display: none;
+            text-align: center;
+            color: #6c757d;
+            margin-top: 20px;
+        }
     </style>
 {% endblock %}
 
@@ -172,23 +190,60 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
+            const sponsorList = document.getElementById('sponsorList');
             const sponsorCards = document.querySelectorAll('.sponsor-card');
+            
+            // Create no results message
+            const noResultsMessage = document.createElement('div');
+            noResultsMessage.className = 'no-results';
+            noResultsMessage.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>Aucun sponsor correspond à votre recherche</div>';
+            sponsorList.appendChild(noResultsMessage);
 
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
+            function filterSponsors() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let hasResults = false;
 
                 sponsorCards.forEach(card => {
-                    const title = card.querySelector('.card-title').textContent.toLowerCase();
-                    const email = card.querySelector('.text-muted:nth-of-type(1)').textContent.toLowerCase();
-                    const secteur = card.querySelector('.secteur-badge').textContent.toLowerCase();
+                    const name = card.dataset.name;
+                    const email = card.dataset.email;
+                    const phone = card.dataset.phone;
+                    const sector = card.dataset.sector;
 
-                    if (title.includes(searchTerm) || email.includes(searchTerm) || secteur.includes(searchTerm)) {
-                        card.style.display = '';
-                    } else {
-                        card.style.display = 'none';
-                    }
+                    const matches = (
+                        name.includes(searchTerm) ||
+                        email.includes(searchTerm) ||
+                        phone.includes(searchTerm) ||
+                        sector.includes(searchTerm)
+                    );
+
+                    card.style.display = matches ? '' : 'none';
+                    if (matches) hasResults = true;
                 });
+
+                // Show/hide no results message
+                noResultsMessage.style.display = hasResults ? 'none' : 'block';
+            }
+
+            // Real-time search
+            searchInput.addEventListener('input', filterSponsors);
+
+            // Debounce function to prevent excessive filtering
+            let debounceTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(filterSponsors, 300);
             });
+
+            // Clear search when clicking escape
+            searchInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    searchInput.value = '';
+                    filterSponsors();
+                }
+            });
+
+            // Focus on search input when page loads
+            searchInput.focus();
         });
     </script>
-{% endblock %} 
+{% endblock %}
