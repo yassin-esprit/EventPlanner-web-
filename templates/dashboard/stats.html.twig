@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord - Statistiques{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+<br/>
+<br/>
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Total Sponsors</div>
+                <div class="card-body">
+                    <h3 class="card-title">
+                        {{ sponsorsBySector|reduce((carry, item) => carry + item.count, 0) }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Total Contrats</div>
+                <div class="card-body">
+                    <h3 class="card-title">
+                        {{ contractsByStatus|reduce((carry, item) => carry + item.count, 0) }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Montant Total Contrats (TND)</div>
+                <div class="card-body">
+                    <h3 class="card-title">
+                        {{ totalMontantByType|reduce((carry, item) => carry + item.totalMontant, 0) | number_format(2, ',', ' ') }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card p-3" style="height: 350px;">
+            <h5>Nombre de Sponsors par Secteur d'Activité</h5>
+            <canvas id="sponsorsBySectorChart" style="max-height: 250px;"></canvas>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card p-3" style="height: 350px;">
+            <h5>Nombre de Contrats par Statut</h5>
+            <canvas id="contractsByStatusChart" style="max-height: 250px;"></canvas>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card p-3" style="height: 350px;">
+            <h5>Montant Total des Contrats par Type</h5>
+            <canvas id="totalMontantByTypeChart" style="max-height: 250px;"></canvas>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const sponsorsBySectorData = {{ sponsorsBySector|json_encode|raw }};
+    const contractsByStatusData = {{ contractsByStatus|json_encode|raw }};
+    const totalMontantByTypeData = {{ totalMontantByType|json_encode|raw }};
+
+    function extractLabelsAndValues(data, labelKey, valueKey) {
+        const labels = data.map(item => item[labelKey] || 'Inconnu');
+        const values = data.map(item => Number(item[valueKey]));
+        return { labels, values };
+    }
+
+    const sponsorsSector = extractLabelsAndValues(sponsorsBySectorData, 'sector', 'count');
+    const ctx1 = document.getElementById('sponsorsBySectorChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: sponsorsSector.labels,
+            datasets: [{
+                label: 'Nombre de Sponsors',
+                data: sponsorsSector.values,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    const contractsStatus = extractLabelsAndValues(contractsByStatusData, 'status', 'count');
+    const ctx2 = document.getElementById('contractsByStatusChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: contractsStatus.labels,
+            datasets: [{
+                label: 'Nombre de Contrats',
+                data: contractsStatus.values,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'right' }
+            }
+        }
+    });
+
+    const montantByType = extractLabelsAndValues(totalMontantByTypeData, 'type', 'totalMontant');
+    const ctx3 = document.getElementById('totalMontantByTypeChart').getContext('2d');
+    new Chart(ctx3, {
+        type: 'line',
+        data: {
+            labels: montantByType.labels,
+            datasets: [{
+                label: 'Montant Total (TND)',
+                data: montantByType.values,
+                fill: false,
+                borderColor: 'rgba(153, 102, 255, 1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            },
+            plugins: {
+                legend: { display: true }
+            }
+        }
+    });
+</script>
+{% endblock %}

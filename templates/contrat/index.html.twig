@@ -2,14 +2,44 @@
 
 {% block title %}Liste des Contrats{% endblock %}
 
-{% block body %}
-<style>
- .back-link {
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .back-link {
             display: block;
             text-align: center;
             margin-top: 1.5rem;
         }
-</style>
+        .sponsor-info-modal .modal-content {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .sponsor-info-modal .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 15px 15px 0 0;
+        }
+        .sponsor-info-modal .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .sponsor-info-modal .modal-footer {
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 15px 15px;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner.active {
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
@@ -147,6 +177,21 @@
                                         <a href="{{ path('app_contrat_edit', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i> Modifier
                                         </a>
+                                        {# Debug information #}
+                                        <div style="display: none;">
+                                            Debug: 
+                                            Sponsor ID: {{ contrat.sponsor.id_sponsor|default('non défini') }}
+                                            Sponsor Name: {{ contrat.sponsor.nom|default('non défini') }}
+                                        </div>
+                                        {% if contrat.sponsor is defined and contrat.sponsor.id_sponsor is defined and contrat.sponsor.id_sponsor is not null %}
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="getSponsorInfo({{ contrat.sponsor.id_sponsor }})">
+                                                <i class="fas fa-info-circle"></i> Infos
+                                            </button>
+                                        {% else %}
+                                            <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                                <i class="fas fa-info-circle"></i> Pas de sponsor
+                                            </button>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -178,22 +223,99 @@
 
 </div>
 
+<!-- Modal pour les informations du sponsor -->
+<div class="modal fade sponsor-info-modal" id="sponsorInfoModal" tabindex="-1" aria-labelledby="sponsorInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sponsorInfoModalLabel">Informations sur le Sponsor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-2">Chargement des informations...</p>
+                </div>
+                <div id="sponsorInfoContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% block javascripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    const contratCards = document.querySelectorAll('.contrat-card');
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const contratCards = document.querySelectorAll('.contrat-card');
 
-    function filterContrats() {
-        const searchTerm = searchInput.value.toLowerCase();
-        contratCards.forEach(card => {
-            const text = card.textContent.toLowerCase();
-            card.style.display = text.includes(searchTerm) ? '' : 'none';
+            function filterContrats() {
+                const searchTerm = searchInput.value.toLowerCase();
+                contratCards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            }
+
+            searchInput.addEventListener('input', filterContrats);
         });
-    }
 
-    searchInput.addEventListener('input', filterContrats);
-});
-</script>
+        function getSponsorInfo(sponsorId) {
+            if (!sponsorId) {
+                console.error('ID du sponsor manquant');
+                return;
+            }
+
+            console.log('Fetching info for sponsor ID:', sponsorId); // Debug log
+            
+            const modal = new bootstrap.Modal(document.getElementById('sponsorInfoModal'));
+            const loadingSpinner = document.querySelector('.loading-spinner');
+            const contentDiv = document.getElementById('sponsorInfoContent');
+            
+            modal.show();
+            loadingSpinner.classList.add('active');
+            contentDiv.innerHTML = '';
+
+            fetch(`/sponsor/c/info/${sponsorId}`)
+                .then(response => {
+                    console.log('Response status:', response.status); // Debug log
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Received data:', data); // Debug log
+                    loadingSpinner.classList.remove('active');
+                    if (data.success) {
+                        contentDiv.innerHTML = `
+                            <div class="alert alert-success">
+                                <h4 class="alert-heading">Informations sur le Sponsor</h4>
+                                <p>${data.info}</p>
+                            </div>`;
+                    } else {
+                        contentDiv.innerHTML = `
+                            <div class="alert alert-danger">
+                                <h4 class="alert-heading">Erreur</h4>
+                                <p>${data.error}</p>
+                            </div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error details:', error); // Debug log
+                    loadingSpinner.classList.remove('active');
+                    contentDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4 class="alert-heading">Erreur de connexion</h4>
+                            <p>Une erreur est survenue lors de la récupération des informations.</p>
+                        </div>`;
+                });
+        }
+    </script>
 {% endblock %}
 {% endblock %}

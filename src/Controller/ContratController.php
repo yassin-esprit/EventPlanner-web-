@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Contrat;
 use App\Form\ContratType;
 use App\Repository\ContratRepository;
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/contrat')]
 final class ContratController extends AbstractController
 {
+    private $emailService;
+    private $logger;
+
+    public function __construct(EmailService $emailService, \Psr\Log\LoggerInterface $logger)
+    {
+        $this->emailService = $emailService;
+        $this->logger = $logger;
+    }
+
     #[Route('/', name: 'app_contrat_index', methods: ['GET'])]
     public function index(ContratRepository $contratRepository, Request $request): Response
     {
@@ -39,39 +49,67 @@ final class ContratController extends AbstractController
             'totalMontant' => $totalMontant,
         ]);
     }
-
     #[Route('/new', name: 'app_contrat_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $contrat = new Contrat();
         $form = $this->createForm(ContratType::class, $contrat);
         $form->handleRequest($request);
-
-        if ($form->isSubmitted()) {
-            if (!$form->isValid()) {
-                $this->addFlash('error', 'Veuillez corriger les erreurs dans le formulaire.');
-                return $this->render('contrat/new.html.twig', [
-                    'contrat' => $contrat,
-                    'form' => $form,
-                ]);
-            }
-
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($contrat);
+            $entityManager->flush();
+    
+            // Préparer les données du contrat
+            $sponsor = $contrat->getSponsor();
+            $contratDetails = [
+                'type_contrat' => $contrat->getTypeContrat(),
+                'montant' => $contrat->getMontant(),
+                'description' => $contrat->getDescription(),
+                'date_debut' => $contrat->getDateDebut(),
+                'date_fin' => $contrat->getDateFin(),
+                'statut' => $contrat->getStatut(),
+                'mode_paiement' => $contrat->getModePaiement()
+            ];
+    
             try {
-                $entityManager->persist($contrat);
-                $entityManager->flush();
-                $this->addFlash('success', 'Le contrat a été créé avec succès.');
-                return $this->redirectToRoute('app_contrat_index', [], Response::HTTP_SEE_OTHER);
+                $this->logger->debug('Avant envoi email notification contrat', [
+                    'sponsorEmail' => $sponsor->getContactemail(),
+                    'sponsorName' => $sponsor->getNom(),
+                    'contratDetails' => $contratDetails
+                ]);
+                $emailSent = $this->emailService->sendContratNotification(
+                    $sponsor->getContactemail(),
+                    $sponsor->getNom(),
+                    $contratDetails
+                );
+                $this->logger->debug('Après envoi email notification contrat', [
+                    'emailSent' => $emailSent
+                ]);
+    
+                if ($emailSent) {
+                    $this->addFlash('success', 'Le contrat a été créé avec succès et une notification a été envoyée au sponsor.');
+                } else {
+                    $this->addFlash('warning', 'Le contrat a été créé, mais l\'envoi de la notification a échoué (retour FALSE).');
+                    // Log ici si besoin
+                }
             } catch (\Exception $e) {
-                $this->addFlash('error', 'Une erreur est survenue lors de la création du contrat.');
+                // En cas d'exception lors de l'envoi
+                $this->addFlash('danger', 'Le contrat a été créé mais une erreur est survenue lors de l\'envoi de la notification : ' . $e->getMessage());
+                
+                // Si tu veux logger l'erreur :
+                $this->logger->error('Erreur d\'envoi d\'email de notification pour le contrat ID '.$contrat->getId().': '.$e->getMessage());
             }
+    
+            return $this->redirectToRoute('app_contrat_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('contrat/new.html.twig', [
             'contrat' => $contrat,
             'form' => $form,
         ]);
     }
-
+    
     #[Route('/{id_contrat}', name: 'app_contrat_show', methods: ['GET'])]
     public function show(Contrat $contrat): Response
     {

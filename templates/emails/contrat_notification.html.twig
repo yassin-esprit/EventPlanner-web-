@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau Contrat - Event Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Nouveau Contrat - Event Planner</h1>
+        </div>
+        
+        <div class="content">
+            <p>Cher(e) {{ sponsorName }},</p>
+            
+            <p>Nous sommes ravis de vous informer qu'un nouveau contrat a été créé pour vous dans notre système.</p>
+            
+            <div class="details">
+                <h2>Détails du Contrat</h2>
+                <ul>
+                    <li><strong>Type de Contrat:</strong> {{ contratDetails.type_contrat }}</li>
+                    <li><strong>Montant:</strong> {{ contratDetails.montant }} TND</li>
+                    <li><strong>Description:</strong> {{ contratDetails.description }}</li>
+                    <li><strong>Date de Début:</strong> {{ contratDetails.date_debut|date('d/m/Y') }}</li>
+                    <li><strong>Date de Fin:</strong> {{ contratDetails.date_fin|date('d/m/Y') }}</li>
+                    <li><strong>Statut:</strong> {{ contratDetails.statut }}</li>
+                    <li><strong>Mode de Paiement:</strong> {{ contratDetails.mode_paiement }}</li>
+                </ul>
+            </div>
+            
+            <p>Si vous avez des questions concernant ce contrat, n'hésitez pas à nous contacter.</p>
+            
+            <p>Cordialement,<br>L'équipe Event Planner</p>
+        </div>
+        
+        <div class="footer">
+            <p>Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+        </div>
+    </div>
+</body>
+</html> 

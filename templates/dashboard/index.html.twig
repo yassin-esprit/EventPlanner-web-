@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+    <h1>Dashboard</h1>
+
+    <div class="statistics">
+        <h2>Sponsor Statistics</h2>
+        <ul>
+            <li>Total Sponsors: {{ totalSponsors }}</li>
+            <li>Active Sponsors: {{ activeSponsors }}</li>
+            <li>Inactive Sponsors: {{ inactiveSponsors }}</li>
+        </ul>
+
+        <h2>Contract Statistics</h2>
+        <ul>
+            <li>Total Contracts: {{ totalContrats }}</li>
+            <li>Active Contracts: {{ activeContrats }}</li>
+            <li>Inactive Contracts: {{ inactiveContrats }}</li>
+        </ul>
+    </div>
+{% endblock %}

@@ -47,6 +47,9 @@
                                    class="btn btn-warning">
                                     <i class="bi bi-pencil me-1"></i>Modifier
                                 </a>
+<button class="btn btn-secondary openai-info-btn" data-sponsor-name="{{ sponsor.nom }}" data-sponsor-id="{{ sponsor.id_sponsor }}">
+    <i class="bi bi-search me-1"></i>Infos
+</button>
                             </div>
                         </div>
                     </div>
@@ -66,9 +69,6 @@
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
                             {% if currentPage > 1 %}
-                                <li class="page-item">
-                                    <a class="page-link" href="{{ path('app_sponsor_c_index', {'page': currentPage - 1}) }}">
-                                        <i class="bi bi-chevron-left"></i>
                                     </a>
                                 </li>
                             {% endif %}
@@ -97,6 +97,24 @@
                 </div>
             </div>
         {% endif %}
+    </div>
+
+    <!-- Modal Structure -->
+    <div class="modal fade" id="sponsorInfoModal" tabindex="-1" aria-labelledby="sponsorInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sponsorInfoModalLabel">Informations sur le Sponsor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="sponsorInfoContent">Chargement des informations...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -183,9 +201,7 @@
             margin-top: 20px;
         }
     </style>
-{% endblock %}
-
-{% block javascripts %}
+{% endblock %}{% block javascripts %}
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -193,7 +209,6 @@
             const sponsorList = document.getElementById('sponsorList');
             const sponsorCards = document.querySelectorAll('.sponsor-card');
             
-            // Create no results message
             const noResultsMessage = document.createElement('div');
             noResultsMessage.className = 'no-results';
             noResultsMessage.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>Aucun sponsor correspond à votre recherche</div>';
@@ -220,21 +235,14 @@
                     if (matches) hasResults = true;
                 });
 
-                // Show/hide no results message
                 noResultsMessage.style.display = hasResults ? 'none' : 'block';
             }
 
-            // Real-time search
-            searchInput.addEventListener('input', filterSponsors);
-
-            // Debounce function to prevent excessive filtering
-            let debounceTimeout;
             searchInput.addEventListener('input', function() {
-                clearTimeout(debounceTimeout);
-                debounceTimeout = setTimeout(filterSponsors, 300);
+                clearTimeout(this.debounceTimeout);
+                this.debounceTimeout = setTimeout(filterSponsors, 300);
             });
 
-            // Clear search when clicking escape
             searchInput.addEventListener('keydown', function(event) {
                 if (event.key === 'Escape') {
                     searchInput.value = '';
@@ -242,8 +250,46 @@
                 }
             });
 
-            // Focus on search input when page loads
             searchInput.focus();
+
+            // Gestion du bouton "Infos"
+            const infoButtons = document.querySelectorAll('.openai-info-btn');
+            const modal = new bootstrap.Modal(document.getElementById('sponsorInfoModal'));
+            const modalContent = document.getElementById('sponsorInfoContent');
+
+            infoButtons.forEach(button => {
+                button.addEventListener('click', async function() {
+                    const sponsorId = this.getAttribute('data-sponsor-id');
+                    modalContent.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div><p>Chargement...</p></div>';
+                    modal.show();
+
+                    try {
+                        const response = await fetch(`/sponsor/c/info/${sponsorId}`);
+                        const data = await response.json();
+
+                        if (data.success) {
+                            const info = data.info;
+                            modalContent.innerHTML = `
+                                <div class="text-center mb-3">
+                                    ${info.image ? `<img src="${info.image}" alt="${info.title}" class="img-fluid rounded mb-3" style="max-height: 200px;">` : ''}
+                                    <h4>${info.title}</h4>
+                                    <p class="text-muted">${info.description || ''}</p>
+                                </div>
+                                <p>${info.summary}</p>
+                                ${info.url ? `<div class="mt-4 text-center">
+                                    <small class="text-muted">
+                                        Source : <a href="${info.url}" target="_blank" class="text-decoration-underline">Wikipedia</a>
+                                    </small>
+                                </div>` : ''}
+                            `;
+                        } else {
+                            modalContent.innerHTML = '<div class="alert alert-warning">Aucune information disponible.</div>';
+                        }
+                    } catch (error) {
+                        modalContent.innerHTML = '<div class="alert alert-danger">Erreur lors de la récupération des informations.</div>';
+                    }
+                });
+            });
         });
     </script>
 {% endblock %}
