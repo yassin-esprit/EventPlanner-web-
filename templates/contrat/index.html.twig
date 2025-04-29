@@ -177,6 +177,9 @@
                                         <a href="{{ path('app_contrat_edit', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i> Modifier
                                         </a>
+                                        <a href="{{ path('app_contrat_print', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-success btn-sm" target="_blank">
+                                            <i class="fas fa-print"></i> Imprimer
+                                        </a>
                                         {# Debug information #}
                                         <div style="display: none;">
                                             Debug: 
@@ -315,6 +318,11 @@
                             <p>Une erreur est survenue lors de la récupération des informations.</p>
                         </div>`;
                 });
+        }
+
+        // Function to handle PDF printing
+        function printContract(id) {
+            window.open(`/contrat/${id}/print`, '_blank');
         }
     </script>
 {% endblock %}

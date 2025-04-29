@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 #[Route('/contrat')]
 final class ContratController extends AbstractController
@@ -63,6 +65,7 @@ final class ContratController extends AbstractController
             // Préparer les données du contrat
             $sponsor = $contrat->getSponsor();
             $contratDetails = [
+                'id_contrat' => $contrat->getId_contrat(),
                 'type_contrat' => $contrat->getTypeContrat(),
                 'montant' => $contrat->getMontant(),
                 'description' => $contrat->getDescription(),
@@ -98,7 +101,7 @@ final class ContratController extends AbstractController
                 $this->addFlash('danger', 'Le contrat a été créé mais une erreur est survenue lors de l\'envoi de la notification : ' . $e->getMessage());
                 
                 // Si tu veux logger l'erreur :
-                $this->logger->error('Erreur d\'envoi d\'email de notification pour le contrat ID '.$contrat->getId().': '.$e->getMessage());
+                $this->logger->error('Erreur d\'envoi d\'email de notification pour le contrat ID '.$contrat->getId_contrat().': '.$e->getMessage());
             }
     
             return $this->redirectToRoute('app_contrat_index', [], Response::HTTP_SEE_OTHER);
@@ -196,5 +199,47 @@ final class ContratController extends AbstractController
         }
 
         return $this->redirectToRoute('app_contrat_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id_contrat}/print', name: 'app_contrat_print')]
+    public function print(Contrat $contrat): Response
+    {
+        // Configure Dompdf
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+        $options->set('isRemoteEnabled', true);
+
+        $dompdf = new Dompdf($options);
+
+        // Generate HTML content
+        $html = $this->renderView('contrat/print.html.twig', [
+            'contrat' => $contrat,
+        ]);
+
+        // Load HTML into Dompdf
+        $dompdf->loadHtml($html);
+
+        // Set paper size and orientation
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render PDF
+        $dompdf->render();
+
+        // Generate filename
+        $filename = sprintf('contrat_%s_%s.pdf', 
+            $contrat->getSponsor()->getNom(),
+            date('Y-m-d')
+        );
+
+        // Return PDF as response
+        return new Response(
+            $dompdf->output(),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $filename . '"'
+            ]
+        );
     }
 }
