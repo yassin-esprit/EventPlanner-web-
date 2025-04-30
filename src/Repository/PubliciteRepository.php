@@ -16,6 +16,7 @@ class PubliciteRepository extends ServiceEntityRepository
         parent::__construct($registry, Publicite::class);
     }
 
+  
     //    /**
     //     * @return Publicite[] Returns an array of Publicite objects
     //     */
