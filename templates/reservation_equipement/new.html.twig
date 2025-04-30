@@ -108,8 +108,7 @@
                             </div>
 
                             <div class="text-center mt-3">
-                                <a href="{{ path('app_reservation_equipement_index') }}" class="btn btn-link">Back to Reservations</a>
-                            </div>
+                                <a href="{{ path('app_reservation_equipement_index', {'userId': userId}) }}" class="btn btn-outline-light">                            </div>
                         </div>
 
                     {{ form_end(form) }}

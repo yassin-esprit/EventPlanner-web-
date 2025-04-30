@@ -52,6 +52,7 @@ class DashboardController extends AbstractController
     #[Route('/dashboard/owner', name: 'owner_dashboard')]
     #[IsGranted('ROLE_OWNER')]
     public function ownerDashboard(
+        
         EvenementRepository $evenementRepository,
         EquipementRepository $equipementRepository,
         ReservationEquipementRepository $reservationEquipementRepository,
@@ -60,17 +61,20 @@ class DashboardController extends AbstractController
     ): Response {
         $evenements            = $evenementRepository->findAll();
         $equipements           = $equipementRepository->findAll();
-        $reservationEquipements = $reservationEquipementRepository->findAll();
         $publicites            = $publiciteRepository->findAll();
         $campagnes             = $campagneRepository->findAll();
 
+         // Get the current user
+    $user = $this->getUser();
         return $this->render('dashboard/owner/owner.html.twig', [
             'controller_name'        => 'DashboardController',
             'evenements'             => $evenements,
             'equipements'            => $equipements,
-            'reservation_equipements'=> $reservationEquipements,
+            'reservation_equipements' => $reservationEquipementRepository->findBy(['user' => $user]),
+
             'publicites'             => $publicites,
             'campagnes'              => $campagnes,
+            'userId' => $user->getUserId()
         ]);
     }
 

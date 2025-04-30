@@ -15,6 +15,15 @@ class ReservationEquipementRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ReservationEquipement::class);
     }
+   
+    public function findByUser(int $userId)
+{
+    return $this->createQueryBuilder('r')
+        ->andWhere('r.user = :userId')
+        ->setParameter('userId', $userId)
+        ->getQuery()
+        ->getResult();
+}
 
     //    /**
     //     * @return ReservationEquipement[] Returns an array of ReservationEquipement objects

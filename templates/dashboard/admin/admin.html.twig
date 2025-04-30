@@ -643,6 +643,10 @@
                     <i class="bi bi-plus-circle"></i>
                     Ajouter un equipement
                 </a>
+
+                <a href="{{ path('app_equipement_pdf') }}" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-file-pdf"></i> Télécharger PDF
+                </a>
             </div>
         </div>
         <div class="card-body">
@@ -692,6 +696,8 @@
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
+
+                                       
                                     </div>
                                 </td>
                             </tr>
@@ -704,6 +710,7 @@
                                         <i class="bi bi-plus-circle"></i>
                                         Ajouter un équipement
                                     </a>
+                                   
                                 </td>
                             </tr>
                         {% endfor %}

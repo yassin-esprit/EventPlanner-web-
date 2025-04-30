@@ -5,11 +5,23 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
   openweathermap.api_key: "%env(OPENWEATHERMAP_API_KEY)%"
+  google_calendar_credentials_path: '%kernel.project_dir%%env(GOOGLE_CALENDAR_API_KEY)%'
+  app.gemini_api_key: '%env(GEMINI_API_KEY)%'
 
 services:
   App\Service\WeatherService:
     arguments:
       $openWeatherMapApiKey: "%openweathermap.api_key%"
+
+  App\Service\GoogleCalendarService:
+    arguments:
+      $apiKey: '%google_calendar.api_key%'
+
+  App\Service\AIService:
+    arguments:
+      $apiKey: '%app.gemini_api_key%'
+      
+
   App\EventListener\LoginSuccessListener:
     tags:
       - {

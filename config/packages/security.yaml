@@ -48,6 +48,9 @@ security:
     - { path: ^/, roles: PUBLIC_ACCESS }
     - { path: ^/evenement/\d+/participate, roles: ROLE_USER }
     - { path: ^/rating/event/\d+/rate, roles: ROLE_PARTICIPANT }
+
+    - { path: ^/equipement/\d+/add-calendar, roles: IS_AUTHENTICATED_FULLY }
+
 when@test:
   security:
     password_hashers:

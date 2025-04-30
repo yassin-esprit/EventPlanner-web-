@@ -86,8 +86,18 @@
                                     <i class="bi bi-pencil-square me-2"></i>Edit Equipment
                                 </a>
                                 {{ include('equipement/_delete_form.html.twig') }}
+                            {# Add this button in your equipment show template where appropriate #}
+                                <a href="{{ path('app_equipment_qr_code_card', {'id': equipement.idEq}) }}" class="btn btn-info">
+                                    <i class="fas fa-qrcode"></i> Generate QR Code
+                                </a>
+                           
                             </div>
+
+
                         </div>
+
+                        
+                        
                     </div>
                 </div>
             </div>

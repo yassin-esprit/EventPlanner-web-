@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+ namespace App\Controller;
 
 use App\Entity\Equipement;
 use App\Form\EquipementType;
@@ -10,6 +10,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+
+use App\Service\GoogleCalendarService;
+use Google\Service\Calendar\Event;
+use Google\Service\Calendar\EventDateTime;
+use Google\Service\Calendar\Calendar;
+
+
+
+use App\Controller\EquipmentQrCodeController;
+
+use Dompdf\Dompdf;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 #[Route('/equipement')]
 final class EquipementController extends AbstractController{
@@ -108,4 +120,41 @@ public function search(Request $request): Response
 
         return $this->redirectToRoute('admin_dashboard', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+    //bundle pdf 
+    #[Route('/equipement/pdf', name: 'app_equipement_pdf')]
+    public function generatePdf(EquipementRepository $equipementRepository): Response
+    {
+        // Fetch all equipment from the repository
+        $equipements = $equipementRepository->findAll();
+
+        // Render the Twig template as HTML
+        $html = $this->renderView('equipement/pdf.html.twig', [
+            'equipements' => $equipements,
+        ]);
+
+        // Initialize Dompdf
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        // Generate the PDF content
+        $pdfContent = $dompdf->output();
+
+        // Create a response with the PDF
+        $response = new Response($pdfContent);
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'equipment_list.pdf'
+        );
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
+    }
+
+
 }

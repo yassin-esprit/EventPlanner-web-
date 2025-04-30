@@ -113,6 +113,80 @@
                     </div>
                 {% endfor %}
             </div>
+
+
+            <!-- Chatbot Widget -->
+        <div id="chatbot-widget" style="position: fixed; bottom: 20px; right: 20px; width: 350px; z-index: 1000;">
+            <button id="chatbot-toggle" class="btn btn-primary rounded-circle" style="position: absolute; top: -40px; right: 0;">
+                <i class="bi bi-chat-dots"></i>
+            </button>
+            <div id="chatbot-container" class="card d-none" style="height: 400px;">
+                <div class="card-header bg-primary text-white">
+                    Equipment Chatbot
+                    <button id="chatbot-close" class="btn btn-sm btn-light float-end">X</button>
+                </div>
+                <div id="chat-messages" class="card-body" style="height: 320px; overflow-y: scroll; background: #f8f9fa;"></div>
+                <form id="chat-form" class="card-footer">
+                    <div class="input-group">
+                        <input type="text" id="chat-input" class="form-control" placeholder="Ask about equipment..." required>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle chatbot visibility
+        const toggleButton = document.getElementById('chatbot-toggle');
+        const closeButton = document.getElementById('chatbot-close');
+        const chatbotContainer = document.getElementById('chatbot-container');
+
+        toggleButton.addEventListener('click', () => {
+            chatbotContainer.classList.toggle('d-none');
+        });
+
+        closeButton.addEventListener('click', () => {
+            chatbotContainer.classList.add('d-none');
+        });
+
+        // Handle chat form submission
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            const messages = document.getElementById('chat-messages');
+            messages.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+            input.value = '';
+
+            // Scroll to bottom
+            messages.scrollTop = messages.scrollHeight;
+
+            // Send message to server
+            try {
+                const response = await fetch('{{ path('app_chatbot') }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `message=${encodeURIComponent(message)}`
+                });
+                const data = await response.json();
+
+                if (data.response) {
+                    messages.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+                } else {
+                    messages.innerHTML += `<div><strong>Bot:</strong> Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                messages.innerHTML += `<div><strong>Bot:</strong> Sorry, something went wrong!</div>`;
+            }
+
+            // Scroll to bottom again
+            messages.scrollTop = messages.scrollHeight;
+        });
+    </script>
         </div>
     </section>
 {% endblock %}

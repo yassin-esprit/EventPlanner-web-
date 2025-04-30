@@ -95,7 +95,7 @@
                                 <button type="submit" class="form-control">Update Reservation</button>
                             </div>
                             <div class="col-lg-4 col-md-6 col-8">
-                                <a href="{{ path('app_reservation_equipement_index') }}" class="btn btn-outline-secondary form-control">Cancel</a>
+                            <a href="{{ path('app_reservation_equipement_index', {'userId': app.user.userId}) }}" class="btn btn-primary mt-3">
                             </div>
                         </div>
 

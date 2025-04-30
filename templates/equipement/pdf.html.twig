@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Equipment List</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .badge-success { background-color: #28a745; color: white; padding: 4px 8px; border-radius: 4px; }
+        .badge-warning { background-color: #ffc107; color: black; padding: 4px 8px; border-radius: 4px; }
+        .badge-danger { background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; }
+        h1 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Equipment List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>NOM</th>
+                <th>QUANTITÉ TOTALE</th>
+                <th>QUANTITÉ DISPO</th>
+                <th>DESCRIPTION</th>
+                <th>STATUT</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipement in equipements %}
+                <tr>
+                    <td>{{ equipement.nom }}</td>
+                    <td>{{ equipement.quantiteTotale }}</td>
+                    <td>{{ equipement.quantiteDispo }}</td>
+                    <td>{{ equipement.description }}</td>
+                    <td>
+                        {% if equipement.statut == 'disponible' %}
+                            <span class="badge-success">DISPONIBLE</span>
+                        {% elseif equipement.statut == 'maintenance' %}
+                            <span class="badge-warning">MAINTENANCE</span>
+                        {% else %}
+                            <span class="badge-danger">INDISPONIBLE</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">Aucun équipement trouvé</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
