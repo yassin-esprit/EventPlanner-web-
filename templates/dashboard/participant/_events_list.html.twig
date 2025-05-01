@@ -1,7 +1,5 @@
 <div class="container">
-	<div
-		class="row justify-content-center">
-		{# Define event type assets at the top #}
+	<div class="row justify-content-center">
 		{% set event_assets = {
             'conference': {
                 'image': 'conference.jpg',
@@ -34,25 +32,21 @@
 			{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
 			{% set participant_badge = badge_service.getBadgeForEvent(evenement) %}
 
-			<div class="col-lg-4 col-md-6 col-12 mb-4">
+			<div class="col-lg-4 col-md-6 col-12 mb-4 animate-card">
 				<div class="artists-thumb position-relative">
 					<div class="artists-image-wrap position-relative overflow-hidden rounded shadow-sm">
-						<img
-						src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="artists-image img-fluid" alt="{{ evenement.titre }}" onerror="this.src='{{ asset('assets/images/events/event-default.jpg') }}'">
+						<img src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="artists-image img-fluid" alt="{{ evenement.titre }}" onerror="this.src='{{ asset('assets/images/events/event-default.jpg') }}'">
 
-						{# Date Badge #}
-						<div class="artists-date-badge badge-3d">
+						<div class="artists-date-badge badge-3d hover-effect">
 							<i class="bi {{ current_event.icon }}"></i>
 							{{ evenement.date ? evenement.date|date('d M') : '' }}
 						</div>
 
-						{# Type Badge #}
-						<div class="artists-type-badge badge-3d" style="background: {{ current_event.color }}">
+						<div class="artists-type-badge badge-3d hover-effect" style="background: {{ current_event.color }}">
 							{{ evenement.type }}
 						</div>
 
-						{# Participant Count Badge #}
-						<div class="artists-participant-badge badge-3d bg-{{ participant_badge.color }}">
+						<div class="artists-participant-badge badge-3d static-badge bg-{{ participant_badge.color }}">
 							<i class="bi {{ participant_badge.icon }}"></i>
 							{{ participant_badge.name }}
 							<span class="ms-1">({{ evenement.users.count }})</span>
@@ -89,12 +83,12 @@
 
 							{% if app.user %}
 								{% if evenement.nbrplaces <= evenement.users.count %}
-									<span class="badge-3d bg-danger d-flex align-items-center">
+									<span class="badge-3d static-badge bg-danger d-flex align-items-center">
 										<i class="bi bi-x-circle me-1"></i>
 										Sold Out
 									</span>
 								{% elseif evenement.users.contains(app.user) %}
-									<span class="badge-3d bg-success d-flex align-items-center">
+									<span class="badge-3d static-badge bg-success d-flex align-items-center">
 										<i class="bi bi-check-circle me-1"></i>
 										Registered
 									</span>
@@ -141,34 +135,60 @@
 </div>
 
 <style>
-	/* 3D badge base style */
+	/* Entrance Animation */
+	@keyframes fadeInSlideUp {
+		0% {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		100% {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-card {
+		animation: fadeInSlideUp 0.6s ease both;
+	}
+
+	/* 3D Badges */
 	.badge-3d {
-		padding: 10px 18px;
+		padding: 12px 20px;
 		font-size: 0.95rem;
 		font-weight: 600;
 		border-radius: 30px;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
-		position: relative;
-		z-index: 2;
+		box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
 		background-color: white;
 		color: #212529;
+		transition: all 0.25s ease;
 	}
 
-	.badge-3d:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+	/* Static Badge (no hover animation) */
+	.static-badge {
+		transition: none !important;
+		transform: none !important;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 	}
 
-	/* Specific badge positions */
+	/* Hover effect only for hover-enabled badges */
+	.hover-effect:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+	}
+
+	.badge-3d i {
+		margin-right: 6px;
+	}
+
+	/* Badge placement */
 	.artists-date-badge {
 		position: absolute;
 		top: 15px;
 		right: 15px;
-		background: rgba(0, 0, 0, 0.7);
+		background: rgba(0, 0, 0, 0.75);
 		color: white;
 	}
 
@@ -183,13 +203,12 @@
 	.artists-participant-badge {
 		position: absolute;
 		bottom: 15px;
-		left: 50%;
+		left: 60%;
 		transform: translateX(-50%);
-		white-space: nowrap;
 		color: white;
 	}
 
-	/* Bootstrap color overrides for 3D badges */
+	/* Color overrides */
 	.bg-danger {
 		background-color: #dc3545 !important;
 		color: #fff !important;
@@ -209,10 +228,5 @@
 	.bg-secondary {
 		background-color: #6c757d !important;
 		color: #fff !important;
-	}
-
-	/* Extra polish */
-	.badge-3d i {
-		margin-right: 6px;
 	}
 </style>
