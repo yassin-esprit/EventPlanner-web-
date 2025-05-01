@@ -33,20 +33,20 @@
 
 	<!-- Events Section -->
 	<section class="artists-section section-padding" id="events" style="
-												            background-image: url('{{ asset('images/nicholas-green-unsplash-blur.jpg') }}');
-												            background-size: cover;
-												            background-position: center;
-												            background-attachment: fixed;
-												            position: relative;
-												        ">
+																		            background-image: url('{{ asset('images/nicholas-green-unsplash-blur.jpg') }}');
+																		            background-size: cover;
+																		            background-position: center;
+																		            background-attachment: fixed;
+																		            position: relative;
+																		        ">
 		<div class="section-overlay" style="
-												                position: absolute;
-												                top: 0;
-												                left: 0;
-												                width: 100%;
-												                height: 100%;
-												                background-color: rgba(255, 255, 255, 0.79);
-												            "></div>
+																		                position: absolute;
+																		                top: 0;
+																		                left: 0;
+																		                width: 100%;
+																		                height: 100%;
+																		                background-color: rgba(255, 255, 255, 0.79);
+																		            "></div>
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-12 text-center mb-5">
@@ -72,13 +72,13 @@
 					</div>
 					<div class="col-md-6">
 						<div class="dropdown float-md-end">
-							<button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+							<button class="btn custom-sort-btn dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 								Sort by:
 								{% if sort is defined %}
 									{% for field, direction in sort %}
-										{{ field == 'title' ? 'Title' : 
-                                           field == 'type' ? 'Type' : 
-                                           field == 'places' ? 'Places' : 'Date' }}
+										{{ field == 'title' ? 'Title' :
+               field == 'type' ? 'Type' :
+               field == 'places' ? 'Places' : 'Date' }}
 										({{ direction == 'asc' ? 'Asc' : 'Desc' }})
 										{% if not loop.last %},
 										{% endif %}
@@ -87,6 +87,7 @@
 									Date (Asc)
 								{% endif %}
 							</button>
+
 							<ul class="dropdown-menu" aria-labelledby="sortDropdown">
 								<li>
 									<a class="dropdown-item sort-option {% if sort.date is defined %}active{% endif %}" href="#" data-sort="date" data-direction="{{ sort.date is defined and sort.date == 'asc' ? 'desc' : 'asc' }}">
@@ -295,6 +296,50 @@
 			line-height: 1.5;
 			color: #000;
 		}
+		.custom-sort-btn {
+			background-color: #f6388a;
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 50px;
+			font-weight: 600;
+			font-size: 1rem;
+			transition: all 0.3s ease;
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.custom-sort-btn:hover,
+		.custom-sort-btn:focus {
+			background-color: #e4317d;
+			color: white;
+			box-shadow: 0 5px 15px rgba(246, 56, 138, 0.3);
+		}
+
+		/* Refined dropdown menu */
+		.dropdown-menu {
+			border-radius: 10px;
+			border: none;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			padding: 0.5rem 0;
+		}
+
+		/* Refined dropdown items */
+		.dropdown-item {
+			padding: 0.6rem 1.2rem;
+			font-size: 0.95rem;
+			transition: background-color 0.2s;
+		}
+
+		.dropdown-item:hover {
+			background-color: rgba(246, 56, 138, 0.1);
+			color: #f6388a;
+		}
+
+		.dropdown-item.active {
+			background-color: #f6388a;
+			color: white;
+		}
 
 		/* Badge styles */
 		.badge {
@@ -388,7 +433,7 @@
 {% block javascripts %}
 	{{ parent() }}
 	console.log('URL:', url);
-		console.log('Params:', params.toString());
+				console.log('Params:', params.toString());
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
