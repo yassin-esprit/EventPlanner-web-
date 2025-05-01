@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Knp\Bundle\TimeBundle\DateTimeFormatter;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -257,4 +257,13 @@ class Evenement
         return $this;
     }
 
+
+    public function getTimeUntilStart(DateTimeFormatter $formatter): string
+{
+    $now = new \DateTime();
+    if ($this->date > $now) {
+        return 'Starts ' . $formatter->formatDiff($this->date, $now);
+    }
+    return 'Started ' . $formatter->formatDiff($this->date, $now);
+}
 }

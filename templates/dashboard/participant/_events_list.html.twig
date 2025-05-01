@@ -39,7 +39,8 @@
 
 						<div class="artists-date-badge badge-3d hover-effect">
 							<i class="bi {{ current_event.icon }}"></i>
-							{{ evenement.date ? evenement.date|date('d M') : '' }}
+							{# {{ evenement.date ? evenement.date|date('d M') : '' }} #}
+							{{ evenement.date ? evenement.date|ago : '' }}
 						</div>
 
 						<div class="artists-type-badge badge-3d hover-effect" style="background: {{ current_event.color }}">
@@ -67,7 +68,9 @@
 								seats</p>
 							<p>
 								<i class="bi bi-calendar-check"></i>
-								{{ evenement.date ? evenement.date|date('F j, Y') : '' }}</p>
+								{# {{ evenement.date ? evenement.date|date('F j, Y') : '' }}</p> #}
+								{{ evenement.date ? evenement.date|ago : '' }}
+								({{ evenement.date|date('F j, Y') }})</p>
 							<p class="event-description text-white">
 								{{ evenement.description|slice(0, 120) }}
 								{% if evenement.description|length > 120 %}...
