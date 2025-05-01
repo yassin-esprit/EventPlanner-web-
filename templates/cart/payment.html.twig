@@ -1,0 +1,254 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4">Payment</h1>
+
+    <div id="payment-container">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<template id="payment-template">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="order-items">
+                                <!-- Order items will be inserted here -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                    <td id="order-total"><strong>$0.00</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Payment Details</h5>
+                </div>
+                <div class="card-body">
+                    <form id="payment-form">
+                        <div class="mb-3">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cardName" class="form-label">Name on Card</label>
+                            <input type="text" class="form-control" id="cardName" name="cardName" placeholder="John Doe" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100" id="pay-button">
+                            Pay $<span id="pay-amount">0.00</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ path('cart_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Cart
+        </a>
+    </div>
+</template>
+
+<template id="order-item-template">
+    <tr>
+        <td>
+            <div class="d-flex align-items-center">
+                <img src="" alt="" class="me-3 product-image" style="width: 50px; height: 50px; object-fit: cover;">
+                <div>
+                    <h6 class="mb-0 product-name"></h6>
+                    <small class="text-muted product-description"></small>
+                </div>
+            </div>
+        </td>
+        <td class="product-price">$0.00</td>
+        <td class="product-quantity">1</td>
+        <td class="item-total">$0.00</td>
+    </tr>
+</template>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentContainer = document.getElementById('payment-container');
+    const paymentTemplate = document.getElementById('payment-template');
+    const orderItemTemplate = document.getElementById('order-item-template');
+    const paymentForm = document.getElementById('payment-form');
+    const payButton = document.getElementById('pay-button');
+
+    // Load cart data
+    loadCart();
+
+    async function loadCart() {
+        try {
+            const response = await fetch('/cart/api');
+            const data = await response.json();
+            
+            if (data.cartItems.length === 0) {
+                window.location.href = '/cart';
+                return;
+            }
+
+            showPaymentForm(data);
+        } catch (error) {
+            console.error('Error loading cart:', error);
+            showError('Failed to load cart. Please try again.');
+        }
+    }
+
+    function showPaymentForm(data) {
+        paymentContainer.innerHTML = paymentTemplate.innerHTML;
+        const orderItemsContainer = document.getElementById('order-items');
+        const orderTotal = document.getElementById('order-total');
+        const payAmount = document.getElementById('pay-amount');
+        
+        // Clear existing items
+        orderItemsContainer.innerHTML = '';
+        
+        // Add each item to the order summary
+        data.cartItems.forEach(item => {
+            const itemElement = createOrderItemElement(item);
+            orderItemsContainer.appendChild(itemElement);
+        });
+        
+        // Update total
+        orderTotal.textContent = `$${data.total.toFixed(2)}`;
+        payAmount.textContent = data.total.toFixed(2);
+        
+        // Add event listeners
+        setupEventListeners();
+    }
+
+    function createOrderItemElement(item) {
+        const element = document.importNode(orderItemTemplate.content, true);
+        
+        // Set item data
+        element.querySelector('.product-image').src = `/uploads/merchandise/${item.merchandise.image}`;
+        element.querySelector('.product-image').alt = item.merchandise.name;
+        element.querySelector('.product-name').textContent = item.merchandise.name;
+        element.querySelector('.product-description').textContent = item.merchandise.description;
+        element.querySelector('.product-price').textContent = `$${item.merchandise.price.toFixed(2)}`;
+        element.querySelector('.product-quantity').textContent = item.quantity;
+        element.querySelector('.item-total').textContent = `$${item.total.toFixed(2)}`;
+        
+        return element;
+    }
+
+    function setupEventListeners() {
+        // Format card number input
+        const cardNumber = document.getElementById('cardNumber');
+        cardNumber.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})/g, '$1 ').trim();
+            e.target.value = value;
+        });
+
+        // Format expiry date input
+        const expiryDate = document.getElementById('expiryDate');
+        expiryDate.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0,2) + '/' + value.slice(2);
+            }
+            e.target.value = value;
+        });
+
+        // Format CVV input
+        const cvv = document.getElementById('cvv');
+        cvv.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Handle form submission
+        paymentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Disable the pay button
+            payButton.disabled = true;
+            payButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+            
+            try {
+                const response = await fetch('/cart/api/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cardNumber: cardNumber.value,
+                        expiryDate: expiryDate.value,
+                        cvv: cvv.value,
+                        cardName: document.getElementById('cardName').value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    window.location.href = '/cart/success';
+                } else {
+                    showError(data.error || 'Payment failed. Please try again.');
+                    payButton.disabled = false;
+                    payButton.textContent = `Pay $${document.getElementById('pay-amount').textContent}`;
+                }
+            } catch (error) {
+                console.error('Error processing payment:', error);
+                showError('Payment failed. Please try again.');
+                payButton.disabled = false;
+                payButton.textContent = `Pay $${document.getElementById('pay-amount').textContent}`;
+            }
+        });
+    }
+
+    function showError(message) {
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger alert-dismissible fade show';
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        paymentContainer.insertBefore(alert, paymentContainer.firstChild);
+    }
+});
+</script>
+{% endblock %} 

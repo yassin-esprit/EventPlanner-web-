@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update Merchandise{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Update Merchandise</h1>
+
+    <form action="{{ path('admin_update_merchandise', {id: merchandise.id}) }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name *</label>
+            <input type="text" 
+                   class="form-control" 
+                   id="name" 
+                   name="name" 
+                   value="{{ merchandise.name }}"
+                   required 
+                   minlength="3" 
+                   maxlength="100"
+                   pattern="[A-Za-zÀ-ÿ\s]+"
+                   title="Name can only contain letters and spaces">
+            <div class="invalid-feedback">
+                Please provide a valid name (3-100 characters, letters and spaces only).
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            {% if merchandise.image %}
+                <div class="mb-2">
+                    <img src="{{ asset('uploads/merchandise/' ~ merchandise.image) }}" 
+                         alt="{{ merchandise.name }}" 
+                         style="max-width: 200px; max-height: 200px;">
+                </div>
+            {% endif %}
+            <input type="file" 
+                   class="form-control" 
+                   id="image" 
+                   name="image" 
+                   accept="image/jpeg,image/png,image/gif">
+            <div class="invalid-feedback">
+                Please select a valid image file (JPEG, PNG, or GIF).
+            </div>
+            <div class="form-text">Supported formats: JPEG, PNG, GIF. Maximum size: 2MB. Leave empty to keep current image.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description *</label>
+            <textarea class="form-control" 
+                      id="description" 
+                      name="description" 
+                      rows="3" 
+                      required 
+                      minlength="10" 
+                      maxlength="500">{{ merchandise.description }}</textarea>
+            <div class="invalid-feedback">
+                Please provide a description (10-500 characters).
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label">Price *</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" 
+                       class="form-control" 
+                       id="price" 
+                       name="price" 
+                       value="{{ merchandise.price }}"
+                       step="0.01" 
+                       min="0.01" 
+                       max="9999.99" 
+                       required>
+            </div>
+            <div class="invalid-feedback">
+                Please enter a valid price (between $0.01 and $9999.99).
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Quantity *</label>
+            <input type="number" 
+                   class="form-control" 
+                   id="quantity" 
+                   name="quantity" 
+                   value="{{ merchandise.quantity }}"
+                   min="0" 
+                   max="9999" 
+                   required>
+            <div class="invalid-feedback">
+                Please enter a valid quantity (between 0 and 9999).
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Update Merchandise</button>
+            <a href="{{ path('admin_merchandise') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+// Form validation
+(function() {
+    'use strict';
+    
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        }, false);
+    });
+
+    // Name field validation
+    const nameInput = document.getElementById('name');
+    nameInput.addEventListener('input', function() {
+        // Remove any numbers or special characters
+        this.value = this.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '');
+    });
+
+    // Image file validation
+    const imageInput = document.getElementById('image');
+    imageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            // Check file type
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                this.setCustomValidity('Please select a valid image file (JPEG, PNG, or GIF).');
+                return;
+            }
+
+            // Check file size (2MB max)
+            if (file.size > 2 * 1024 * 1024) {
+                this.setCustomValidity('File size must be less than 2MB.');
+                return;
+            }
+
+            this.setCustomValidity('');
+        }
+    });
+})();
+</script>
+{% endblock %}
+{% endblock %} 

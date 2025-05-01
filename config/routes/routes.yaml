@@ -1,3 +1,125 @@
+# This file contains the routes for the application
+# The routes are automatically loaded by the framework
+
+# User routes
+user_donate:
+    path: /donate
+    controller: App\Controller\UserController::submitDonation
+
+# User merchandise routes
+user_merchandise_list:
+    path: /user/merchandise
+    controller: App\Controller\MerchandiseController::userIndex
+
+user_buy_merchandise:
+    path: /user/merchandise/buy/{id}
+    controller: App\Controller\MerchandiseController::buyMerchandise
+    requirements:
+        id: '\d+'
+
+# Cart routes
+shop_cart_index:
+    path: /shop/cart
+    controller: App\Controller\CartController::index
+    methods: [GET]
+
+shop_cart_add:
+    path: /shop/cart/add/{id}
+    controller: App\Controller\CartController::add
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+shop_cart_remove:
+    path: /shop/cart/remove/{id}
+    controller: App\Controller\CartController::remove
+    methods: [DELETE]
+    requirements:
+        id: '\d+'
+
+shop_cart_checkout:
+    path: /shop/cart/checkout
+    controller: App\Controller\CartController::checkout
+    methods: [POST]
+
+# Donation routes
+app_donations_my:
+    path: /donations/my
+    controller: App\Controller\DonationController::myDonations
+    methods: [GET]
+
+app_donations_admin:
+    path: /donations/admin
+    controller: App\Controller\DonationController::adminDonations
+    methods: [GET]
+
+app_donations_accept:
+    path: /donations/admin/{id}/accept
+    controller: App\Controller\DonationController::acceptDonation
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+app_donations_deny:
+    path: /donations/admin/{id}/deny
+    controller: App\Controller\DonationController::denyDonation
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+# Admin routes
+admin_donations:
+    path: /admin/donations
+    controller: App\Controller\AdminController::donations
+
+admin_accept_donation:
+    path: /admin/donations/accept/{id}
+    controller: App\Controller\AdminController::acceptDonation
+
+admin_deny_donation:
+    path: /admin/donations/deny/{id}
+    controller: App\Controller\AdminController::denyDonation
+
+# Admin merchandise routes
+admin_merchandise:
+    path: /admin/merchandise
+    controller: App\Controller\AdminController::merchandiseList
+
+admin_add_merchandise:
+    path: /admin/merchandise/add
+    controller: App\Controller\AdminController::addMerchandise
+
+admin_delete_merchandise:
+    path: /admin/merchandise/delete/{id}
+    controller: App\Controller\AdminController::deleteMerchandise
+
+admin_update_merchandise:
+    path: /admin/merchandise/update/{id}
+    controller: App\Controller\AdminController::updateMerchandise
+    requirements:
+        id: '\d+'
+
+# API routes
+api_register:
+    path: /api/register
+    controller: App\Controller\ApiController::register
+    methods: [POST]
+
+api_profile:
+    path: /api/profile
+    controller: App\Controller\ApiController::profile
+    methods: [GET]
+
+api_profile_update:
+    path: /api/profile/update
+    controller: App\Controller\ApiController::updateProfile
+    methods: [PUT]
+
+api_api_docs:
+    path: /api/docs
+    controller: App\Controller\ApiController::apiDocs
+    methods: [GET]
+
 # Main routes configuration
 app_home:
     path: /
@@ -18,30 +140,6 @@ app_register:
 app_reset_password:
     path: /reset-password
     controller: App\Controller\ResetPasswordController::request
-
-user_merchandise_list:
-    path: /merchandise
-    controller: App\Controller\UserController::merchandiseList
-
-user_buy_merchandise:
-    path: /user/merchandise/buy/{id}
-    controller: App\Controller\UserController::buyMerchandise
-    requirements:
-        id: '\d+'
-
-admin_merchandise:
-    path: /admin/merchandise
-    controller: App\Controller\AdminController::merchandiseList
-
-admin_add_merchandise:
-    path: /admin/merchandise/add
-    controller: App\Controller\AdminController::addMerchandise
-
-admin_delete_merchandise:
-    path: /admin/merchandise/delete/{id}
-    controller: App\Controller\AdminController::deleteMerchandise
-    requirements:
-        id: '\d+'
 
 app_admin_process_role_request:
     path: /admin/role-request/{id}/process

@@ -84,12 +84,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: RoleRequest::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $roleRequests;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Donation::class)]
+    private Collection $donations;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->roles = ['ROLE_USER'];
         $this->isVerified = false;
         $this->roleRequests = new ArrayCollection();
+        $this->donations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -240,6 +244,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
 
+        return $this;
+    }
+
+    public function getDonations(): Collection
+    {
+        return $this->donations;
+    }
+
+    public function addDonation(Donation $donation): static
+    {
+        if (!$this->donations->contains($donation)) {
+            $this->donations->add($donation);
+            $donation->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeDonation(Donation $donation): static
+    {
+        if ($this->donations->removeElement($donation)) {
+            if ($donation->getUser() === $this) {
+                $donation->setUser(null);
+            }
+        }
         return $this;
     }
 }

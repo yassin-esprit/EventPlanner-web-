@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Shopping Cart</h1>
+    <div id="cart-items" class="mt-4">
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cartContainer = document.getElementById('cart-items');
+    
+    function loadCart() {
+        fetch('/api/cart')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load cart');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.length === 0) {
+                    cartContainer.innerHTML = '<div class="alert alert-info">Your cart is empty</div>';
+                    return;
+                }
+
+                let total = 0;
+                const table = `
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(item => {
+                                const subtotal = item.merchandise.price * item.quantity;
+                                total += subtotal;
+                                return `
+                                    <tr>
+                                        <td>
+                                            <img src="${item.merchandise.image || '/images/placeholder.jpg'}" 
+                                                 alt="${item.merchandise.name}" 
+                                                 style="width: 50px; height: 50px; object-fit: cover;">
+                                            ${item.merchandise.name}
+                                        </td>
+                                        <td>$${item.merchandise.price.toFixed(2)}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>$${subtotal.toFixed(2)}</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" 
+                                                    onclick="removeFromCart(${item.id})">
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                <td><strong>$${total.toFixed(2)}</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div class="text-end mt-3">
+                        <a href="{{ path('merchandise_index') }}" class="btn btn-secondary">Continue Shopping</a>
+                        <a href="{{ path('cart_payment') }}" class="btn btn-primary">Proceed to Payment</a>
+                    </div>
+                `;
+                cartContainer.innerHTML = table;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                cartContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        Failed to load cart items. Please try again later.
+                    </div>
+                `;
+            });
+    }
+
+    window.removeFromCart = function(cartItemId) {
+        if (!confirm('Are you sure you want to remove this item?')) {
+            return;
+        }
+
+        fetch(`/api/cart/remove/${cartItemId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to remove item');
+            }
+            loadCart();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to remove item. Please try again.');
+        });
+    };
+
+    loadCart();
+});
+</script>
+{% endblock %} 

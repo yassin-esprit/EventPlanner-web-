@@ -3,8 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\DonationRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DonationRepository::class)]
 class Donation
@@ -12,37 +13,33 @@ class Donation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['donation:read'])]
     private ?int $id = null;
 
-    #[Assert\NotNull(message: 'The user cannot be null.')]
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(inversedBy: 'donations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['donation:read'])]
     private ?User $user = null;
 
-    #[Assert\NotBlank(message: 'The message cannot be blank.')]
-    #[Assert\Length(
-        max: 500,
-        maxMessage: 'The message cannot exceed {{ limit }} characters.'
-    )]
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['donation:read'])]
+    private ?string $amount = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['donation:read'])]
     private ?string $message = null;
 
-    #[Assert\Choice(choices: ['pending', 'accepted', 'denied'], message: 'Invalid status.')]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['donation:read'])]
+    private ?\DateTimeImmutable $createdAt = null;
+
     #[ORM\Column(length: 20)]
-    private ?string $status = 'pending';
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $submittedAt = null;
-
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?\DateTimeImmutable $processedAt = null;
-
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    private ?User $processedBy = null;
+    #[Groups(['donation:read'])]
+    private ?string $status = null;
 
     public function __construct()
     {
-        $this->submittedAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
         $this->status = 'pending';
     }
 
@@ -62,14 +59,36 @@ class Donation
         return $this;
     }
 
+    public function getAmount(): ?string
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(string $amount): static
+    {
+        $this->amount = $amount;
+        return $this;
+    }
+
     public function getMessage(): ?string
     {
         return $this->message;
     }
 
-    public function setMessage(string $message): static
+    public function setMessage(?string $message): static
     {
         $this->message = $message;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
         return $this;
     }
 
@@ -81,33 +100,6 @@ class Donation
     public function setStatus(string $status): static
     {
         $this->status = $status;
-        return $this;
-    }
-
-    public function getSubmittedAt(): ?\DateTimeImmutable
-    {
-        return $this->submittedAt;
-    }
-
-    public function getProcessedAt(): ?\DateTimeImmutable
-    {
-        return $this->processedAt;
-    }
-
-    public function setProcessedAt(?\DateTimeImmutable $processedAt): static
-    {
-        $this->processedAt = $processedAt;
-        return $this;
-    }
-
-    public function getProcessedBy(): ?User
-    {
-        return $this->processedBy;
-    }
-
-    public function setProcessedBy(?User $processedBy): static
-    {
-        $this->processedBy = $processedBy;
         return $this;
     }
 }

@@ -37,9 +37,15 @@ class UserController extends AbstractController
             ['requestedAt' => 'DESC']
         );
 
+        $donationHistory = $entityManager->getRepository(Donation::class)->findBy(
+            ['user' => $user],
+            ['createdAt' => 'DESC']
+        );
+
         return $this->render('user/dashboard.html.twig', [
             'pendingRequest' => $pendingRequest,
-            'roleHistory' => $roleHistory
+            'roleHistory' => $roleHistory,
+            'donationHistory' => $donationHistory
         ]);
     }
 
@@ -231,16 +237,31 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user_merchandise');
     }
 
+    #[Route('/donate', name: 'app_user_donate', methods: ['GET'])]
+    public function donate(): Response
+    {
+        return $this->render('user/donate.html.twig');
+    }
+
     #[Route('/submit-donation', name: 'app_user_submit_donation', methods: ['POST'])]
     public function submitDonation(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         $user = $this->getUser();
+        $amount = $request->request->get('amount');
         $message = $request->request->get('message');
+
+        // Validate amount
+        if (!$amount || !is_numeric($amount) || $amount <= 0) {
+            $this->addFlash('error', 'Please enter a valid donation amount.');
+            return $this->redirectToRoute('app_user_dashboard');
+        }
+
+        // Convert amount to string with 2 decimal places
+        $amount = number_format((float)$amount, 2, '.', '');
 
         $donation = new Donation();
         $donation->setUser($user);
+        $donation->setAmount($amount);
         $donation->setMessage($message);
 
         // Validate the donation entity

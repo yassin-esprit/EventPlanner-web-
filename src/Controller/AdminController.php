@@ -229,9 +229,16 @@ class AdminController extends AbstractController
     }
 
     #[Route('/merchandise', name: 'admin_merchandise')]
-    public function merchandiseList(MerchandiseRepository $repository): Response
+    public function merchandiseList(MerchandiseRepository $repository, Request $request): Response
     {
-        $merchandise = $repository->findAll();
+        $search = $request->query->get('search');
+        $merchandise = $repository->findBySearch($search);
+
+        if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+            return $this->render('admin/_merchandise_list_content.html.twig', [
+                'merchandise' => $merchandise,
+            ]);
+        }
 
         return $this->render('admin/merchandise_list.html.twig', [
             'merchandise' => $merchandise,
@@ -244,10 +251,19 @@ class AdminController extends AbstractController
         if ($request->isMethod('POST')) {
             $merchandise = new Merchandise();
             $merchandise->setName($request->request->get('name'));
-            $merchandise->setImage($request->request->get('image'));
             $merchandise->setDescription($request->request->get('description'));
             $merchandise->setPrice($request->request->get('price'));
             $merchandise->setQuantity($request->request->get('quantity'));
+
+            $file = $request->files->get('image');
+            if ($file) {
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                $file->move(
+                    $this->getParameter('merchandise_images_directory'),
+                    $fileName
+                );
+                $merchandise->setImage($fileName);
+            }
 
             $entityManager->persist($merchandise);
             $entityManager->flush();
@@ -299,10 +315,29 @@ class AdminController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $merchandise->setName($request->request->get('name'));
-            $merchandise->setImage($request->request->get('image'));
             $merchandise->setDescription($request->request->get('description'));
             $merchandise->setPrice($request->request->get('price'));
             $merchandise->setQuantity($request->request->get('quantity'));
+
+            $file = $request->files->get('image');
+            if ($file) {
+                // Delete old image if it exists
+                $oldImage = $merchandise->getImage();
+                if ($oldImage) {
+                    $oldImagePath = $this->getParameter('merchandise_images_directory') . '/' . $oldImage;
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
+                }
+
+                // Upload new image
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                $file->move(
+                    $this->getParameter('merchandise_images_directory'),
+                    $fileName
+                );
+                $merchandise->setImage($fileName);
+            }
 
             $entityManager->flush();
 

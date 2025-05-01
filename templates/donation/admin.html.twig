@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Donations Management{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Donations Management</h1>
+        <div class="btn-group">
+            <a href="{{ path('app_donations_admin', {status: 'pending'}) }}" 
+               class="btn btn-outline-primary {{ currentStatus == 'pending' ? 'active' }}">
+                Pending
+            </a>
+            <a href="{{ path('app_donations_admin', {status: 'accepted'}) }}" 
+               class="btn btn-outline-success {{ currentStatus == 'accepted' ? 'active' }}">
+                Accepted
+            </a>
+            <a href="{{ path('app_donations_admin', {status: 'denied'}) }}" 
+               class="btn btn-outline-danger {{ currentStatus == 'denied' ? 'active' }}">
+                Denied
+            </a>
+            <a href="{{ path('app_donations_admin') }}" 
+               class="btn btn-outline-secondary {{ currentStatus is null ? 'active' }}">
+                All
+            </a>
+        </div>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% if donations|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for donation in donations %}
+                        <tr>
+                            <td>{{ donation.createdAt|date('Y-m-d H:i') }}</td>
+                            <td>{{ donation.user.email }}</td>
+                            <td>${{ donation.amount }}</td>
+                            <td>{{ donation.message|default('No message') }}</td>
+                            <td>
+                                <span class="badge bg-{{ donation.status == 'accepted' ? 'success' : (donation.status == 'denied' ? 'danger' : 'warning') }}">
+                                    {{ donation.status|capitalize }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if donation.status == 'pending' %}
+                                    <form action="{{ path('app_donations_accept', {id: donation.id}) }}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i> Accept
+                                        </button>
+                                    </form>
+                                    <form action="{{ path('app_donations_deny', {id: donation.id}) }}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i> Deny
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            {% if currentStatus %}
+                No {{ currentStatus }} donations found.
+            {% else %}
+                No donations found.
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

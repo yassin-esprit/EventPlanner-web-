@@ -1,0 +1,213 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Available Merchandise{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Available Merchandise</h1>
+        <a href="{{ path('shop_cart_index') }}" class="btn btn-primary position-relative">
+            <i class="fas fa-shopping-cart me-2"></i>Cart
+            {% if app.session.get('cart_count', 0) > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ app.session.get('cart_count') }}
+                </span>
+            {% endif %}
+        </a>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row">
+        {% for item in merchandise %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-img-container">
+                        <img src="{{ asset('uploads/merchandise/' ~ item.image) }}" 
+                             class="card-img-top" 
+                             alt="{{ item.name }}"
+                             style="height: 250px; object-fit: cover;">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.name }}</h5>
+                        <p class="card-text">{{ item.description }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="price">
+                                <span class="text-primary fw-bold">${{ item.price }}</span>
+                            </div>
+                            <div class="stock">
+                                {% if item.quantity > 0 %}
+                                    <span class="badge bg-success">In Stock ({{ item.quantity }})</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Out of Stock</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if item.quantity > 0 %}
+                            {% set formAction = path('shop_cart_add', {id: item.id}) %}
+                            <!-- Debug: Form action URL: {{ formAction }} -->
+                            <form action="{{ formAction }}" method="post" class="add-to-cart-form">
+                                <div class="input-group">
+                                    <input type="number" 
+                                           name="quantity" 
+                                           class="form-control" 
+                                           value="1" 
+                                           min="1" 
+                                           max="{{ item.quantity }}"
+                                           required>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                    </button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-secondary w-100" disabled>Out of Stock</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    No merchandise available at the moment.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-container {
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+.card-title {
+    color: #333;
+    font-weight: 600;
+}
+
+.card-text {
+    color: #666;
+    min-height: 48px;
+}
+
+.price {
+    font-size: 1.25rem;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5em 0.75em;
+}
+
+.add-to-cart-form input[type="number"] {
+    max-width: 80px;
+}
+
+.btn .badge {
+    font-size: 0.75rem;
+    padding: 0.25em 0.6em;
+}
+
+@media (max-width: 768px) {
+    .card-img-top {
+        height: 200px !important;
+    }
+}
+</style>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Automatically hide alerts after 5 seconds
+    const alerts = document.querySelectorAll('.alert-dismissible');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }, 5000);
+    });
+
+    // Handle form submission
+    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+    addToCartForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const quantityInput = this.querySelector('input[name="quantity"]');
+            const quantity = parseInt(quantityInput.value);
+            const max = parseInt(quantityInput.getAttribute('max'));
+
+            if (quantity < 1 || quantity > max) {
+                alert('Please enter a valid quantity');
+                return;
+            }
+
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to add item to cart');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Show success message
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success alert-dismissible fade show';
+                alert.innerHTML = `
+                    Item added to cart successfully!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.container').insertBefore(alert, document.querySelector('.row'));
+                
+                // Update cart count
+                const cartBadge = document.querySelector('.badge');
+                if (cartBadge) {
+                    const currentCount = parseInt(cartBadge.textContent) || 0;
+                    cartBadge.textContent = currentCount + 1;
+                } else {
+                    const cartButton = document.querySelector('.btn-primary');
+                    const badge = document.createElement('span');
+                    badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
+                    badge.textContent = '1';
+                    cartButton.appendChild(badge);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to add item to cart. Please try again.');
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

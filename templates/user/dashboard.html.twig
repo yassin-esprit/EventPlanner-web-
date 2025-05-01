@@ -90,11 +90,68 @@
         <div class="card-body">
             <form action="{{ path('app_user_submit_donation') }}" method="post">
                 <div class="mb-3">
-                    <label for="message" class="form-label">Message:</label>
-                    <textarea name="message" id="message" class="form-control" rows="4" required placeholder="Enter your donation message..."></textarea>
+                    <label for="amount" class="form-label">Donation Amount ($)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" 
+                               class="form-control" 
+                               id="amount" 
+                               name="amount" 
+                               step="0.01" 
+                               min="0.01" 
+                               required>
+                    </div>
+                    <div class="form-text">Please enter the amount you wish to donate.</div>
                 </div>
+
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message (Optional)</label>
+                    <textarea class="form-control" 
+                              id="message" 
+                              name="message" 
+                              rows="3"></textarea>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Submit Donation</button>
             </form>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3>Your Donation History</h3>
+        </div>
+        <div class="card-body">
+            {% if donationHistory is empty %}
+                <p class="text-muted">You haven't made any donations yet.</p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Message</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for donation in donationHistory %}
+                                <tr>
+                                    <td>{{ donation.createdAt|date('Y-m-d H:i') }}</td>
+                                    <td>${{ donation.amount }}</td>
+                                    <td>{{ donation.message|default('No message') }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ donation.status == 'accepted' ? 'success' : (donation.status == 'denied' ? 'danger' : 'warning') }}">
+                                            {{ donation.status|capitalize }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
