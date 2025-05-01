@@ -13,6 +13,7 @@
             border-radius: 4px;
             font-weight: bold;
         }
+        
         .type-badge { background: #f6388a; color: white; }
         .status-active { background: #28a745; color: white; }
         .status-inactive { background: #dc3545; color: white; }
@@ -28,6 +29,17 @@
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
         .footer { margin-top: 30px; text-align: right; font-size: 12px; color: #777; }
+        .qr-code { 
+            text-align: center; 
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #eee;
+            display: inline-block;
+        }
+        .qr-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -44,9 +56,9 @@
     <div class="section">
         <h2 class="section-title">Contenu</h2>
         {% if publicite.typePub == 'image' %}
-            <p><strong>Image :</strong> {{ publicite.titrePub }}</p>
+            <p><strong> </strong> {{ publicite.contenuPub}}</p>
         {% elseif publicite.typePub == 'video' %}
-            <p><strong>Vidéo :</strong> {{ publicite.contenuPub }}</p>
+            <p><strong></strong> {{ publicite.contenuPub }}</p>
         {% else %}
             <p>{{ publicite.contenuPub }}</p>
         {% endif %}
@@ -88,10 +100,26 @@
                 </tbody>
             </table>
         </div>
+
+        {# QR Code Section #}
+    <div class="qr-container">
+        <div class="qr-code">
+            <h3>Scan this QR Code for more details </h3>
+            {# Generate QR code using goqr.me API #}
+           <img 
+    src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ 
+        ('https://www.google.com/search?q=' ~ publicite.titrePub|url_encode)|url_encode 
+    }}" 
+    alt="Search on Google"
+>
+            <p> {{ publicite.titre_pub }}</p>
+        </div>
+    </div>
     {% endif %}
 
     <div class="footer">
-        Généré le {{ "now"|date("d/m/Y à H:i") }} - © MYTHOS PLANNER 
+       <p>Généré le {{ "now"|date("d/m/Y à H:i") }}<br>
+        © {{ "now"|date("Y") }} MYTHOS PLANNER - Tous droits réservés</p>
     </div>
 </body>
 </html>

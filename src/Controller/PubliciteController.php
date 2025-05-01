@@ -85,50 +85,79 @@ final class PubliciteController extends AbstractController{
         return $this->redirectToRoute('app_publicite_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id_pub}/pdf', name: 'app_publicite_pdf' ,methods: ['GET'])]
-public function generatePdf(int $id_pub, PubliciteRepository $publiciteRepository): Response
-{
-    // 1. Récupérer la publicité via le repository injecté
-    $publicite = $publiciteRepository->find($id_pub);
+    #[Route('/{id_pub}/pdf', name: 'app_publicite_pdf' ,methods: ['GET'])] 
+    public function generatePdf(int $id_pub, PubliciteRepository $publiciteRepository): Response
+    {
+        // 1. Get the advertisement
+        $publicite = $publiciteRepository->find($id_pub);
+        if (!$publicite) {
+            throw $this->createNotFoundException('Advertisement not found');
+        }
 
-    if (!$publicite) {
-        throw $this->createNotFoundException("Cette publicité n'existe pas.");
+        // 2. Configure Dompdf
+        $pdfOptions = new Options();
+        $pdfOptions->set([
+            'defaultFont' => 'Arial',
+            'isRemoteEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'tempDir' => sys_get_temp_dir(),
+            'dpi' => 96,
+            'isPhpEnabled' => false,
+            'isJavascriptEnabled' => false
+        ]);
+
+        // 3. Initialize Dompdf
+        $dompdf = new Dompdf($pdfOptions);
+        $dompdf->setHttpContext([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ]
+        ]);
+
+        // 4. Handle logo
+        $logoPath = $this->getParameter('kernel.project_dir').'/public/images/mythosplanner1.png';
+        $logoBase64 = null;
+        if (file_exists($logoPath)) {
+            $logoBase64 = base64_encode(file_get_contents($logoPath));
+        }
+
+        // 5. Generate HTML
+        $html = $this->renderView('publicite/pdf_template.html.twig', [
+            'publicite' => $publicite,
+            'logo_base64' => $logoBase64
+        ]);
+
+        // 6. Generate PDF with timeout protection
+        try {
+            set_time_limit(60); // Set max execution time to 60 seconds
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+        } catch (\Exception $e) {
+            throw new \RuntimeException('PDF generation failed: '.$e->getMessage());
+        }
+
+        // 7. Return the PDF
+        $filename = "publicite-".$publicite->getIdPub()."-".date('Y-m-d').".pdf";
+        
+        return new Response(
+            $dompdf->output(),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)
+            ]
+        );
     }
 
-    // 2. Configurer Dompdf
-    $pdfOptions = new Options();
-    $pdfOptions->set('defaultFont', 'Arial');
-    $pdfOptions->set('isRemoteEnabled', true); // Permet d'afficher les images
-    $pdfOptions->set('isHtml5ParserEnabled', true);
-
-    // 3. Initialiser Dompdf
-    $dompdf = new Dompdf($pdfOptions);
-
-    // 4. Générer le HTML depuis Twig
-    $html = $this->renderView('publicite/pdf_template.html.twig', [
+// In PubliciteController.php
+#[Route('/{id_pub}/map', name: 'app_publicite_map', methods: ['GET'])]
+public function showMap(Publicite $publicite): Response
+{
+    return $this->render('publicite/map.html.twig', [
         'publicite' => $publicite,
+        'location_query' => urlencode($publicite->getEmplacementPub()),
     ]);
-
-    // 5. Charger le HTML dans Dompdf
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-
-    // 6. Générer le PDF
-    $dompdf->render();
-
-    // 7. Nom du fichier PDF (ex: "publicite-45-2024-03-15.pdf")
-    $filename = "publicite-" . $publicite->getIdPub() . "-" . date('Y-m-d') . ".pdf";
-
-    // 8. Retourner le PDF en réponse
-    return new Response(
-        $dompdf->output(),
-        200,
-        [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ]
-    );
-
 }
-
 }
