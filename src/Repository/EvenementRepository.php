@@ -70,12 +70,10 @@ public function getParticipationStats(): array
         ->getQuery()
         ->getResult();
 }
-// src/Repository/EvenementRepository.php
 
 public function findWithSearchAndSort(
     ?string $search = null,
-    string $sort = 'date',
-    string $direction = 'asc'
+    array $sort = ['date' => 'asc']
 ): array {
     $qb = $this->createQueryBuilder('e');
 
@@ -84,20 +82,28 @@ public function findWithSearchAndSort(
             ->setParameter('search', '%' . $search . '%');
     }
 
-    // Add sorting
-    switch ($sort) {
-        case 'title':
-            $qb->orderBy('e.titre', $direction);
-            break;
-        case 'type':
-            $qb->orderBy('e.type', $direction);
-            break;
-        case 'date':
-        default:
-            $qb->orderBy('e.date', $direction);
-            break;
+    // Add sorting for each criteria
+    foreach ($sort as $field => $direction) {
+        switch ($field) {
+            case 'title':
+                $qb->addOrderBy('e.titre', $direction);
+                break;
+            case 'type':
+                $qb->addOrderBy('e.type', $direction);
+                break;
+            case 'places':
+                $qb->addOrderBy('e.nbrplaces', $direction);
+                break;
+            case 'date':
+            default:
+                $qb->addOrderBy('e.date', $direction);
+                break;
+        }
     }
 
     return $qb->getQuery()->getResult();
 }
+
+
+
 }

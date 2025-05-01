@@ -113,55 +113,41 @@ final class EvenementController extends AbstractController
 }
 
 
-    #[Route('/participant/dashboard', name: 'participant_dashboard')]
-    public function participantDashboard(
-        EvenementRepository $evenementRepository,
-        Request $request
-        ): Response {
-         // Get search and sort parameters
-         $search = $request->query->get('search');
-        $sort = $request->query->get('sort', 'date');
-        $direction = $request->query->get('direction', 'asc');
-
-        // Get filtered and sorted events
-        $evenements = $evenementRepository->findWithSearchAndSort(
-            $search,
-            $sort,
-            $direction
-            );
-            
-            return $this->render('dashboard/participant/participant.html.twig', [
-                'evenements' => $evenements,
-                'search' => $search,
-                'sort' => $sort,
-                'direction' => $direction,
-            ]);
-        }
-
-
-
-        #[Route('/participant/dashboard/ajax', name: 'participant_dashboard_ajax')]
-public function participantDashboardAjax(
+// EvenementController.php
+#[Route('/participant/dashboard', name: 'participant_dashboard')]
+public function participantDashboard(
     EvenementRepository $evenementRepository,
-    Request $request,
-    BadgeService $badgeService
+    Request $request
 ): Response {
     // Get search and sort parameters
     $search = $request->query->get('search');
-    $sort = $request->query->get('sort', 'date');
-    $direction = $request->query->get('direction', 'asc');
-
+    $sort = $request->query->all('sort') ?? ['date' => 'asc'];
+    
     // Get filtered and sorted events
-    $evenements = $evenementRepository->findWithSearchAndSort(
-        $search,
-        $sort,
-        $direction
-    );
-
-    return $this->render('dashboard/participant/_events_list.html.twig', [
+    $evenements = $evenementRepository->findWithSearchAndSort($search, $sort);
+    
+    return $this->render('dashboard/participant/participant.html.twig', [
         'evenements' => $evenements,
         'search' => $search,
-        'badge_service' => $badgeService, 
+        'sort' => $sort
+    ]);
+}
+
+#[Route('/participant/dashboard/ajax', name: 'participant_dashboard_ajax')]
+public function participantDashboardAjax(
+    EvenementRepository $evenementRepository,
+    Request $request
+): Response {
+    // Get search and sort parameters
+    $search = $request->query->get('search');
+    $sort = $request->query->all('sort') ?? ['date' => 'asc'];
+    
+    // Get filtered and sorted events
+    $evenements = $evenementRepository->findWithSearchAndSort($search, $sort);
+    
+    return $this->render('dashboard/participant/_events_list.html.twig', [
+        'evenements' => $evenements,
+        'search' => $search
     ]);
 }
 

@@ -34,13 +34,6 @@
 
 			<div class="col-lg-4 col-md-6 col-12 mb-4">
 				<div class="artists-thumb">
-					<div class="d-flex justify-content-between align-items-center mb-2">
-						{% set badge = badge_service.getBadgeForEvent(evenement) %}
-						<span class="badge bg-{{ badge.color }} d-flex align-items-center">
-							<i class="bi {{ badge.icon }} me-1"></i>
-							{{ badge.name }}
-						</span>
-					</div>
 					<div class="artists-image-wrap">
 						<img src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="artists-image img-fluid" alt="{{ evenement.titre }}">
 						<div class="artists-date-badge">
