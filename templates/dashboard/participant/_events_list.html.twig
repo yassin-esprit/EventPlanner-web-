@@ -1,49 +1,66 @@
 <div class="container">
-	<div class="row justify-content-center">
-		{% for evenement in evenements %}
-			{# Define image and color based on event type #}
-			{% set event_assets = {
-                'conference': {
-                    'image': 'conference.jpg',
-                    'color': 'rgba(70, 130, 180, 0.9)',
-                    'icon': 'bi-mic'
-                },
-                'fête': {
-                    'image': 'party.jpg',
-                    'color': 'rgba(220, 53, 69, 0.9)',
-                    'icon': 'bi-music-note-beamed'
-                },
-                'fete': {
-                    'image': 'party.jpg',
-                    'color': 'rgba(220, 53, 69, 0.9)',
-                    'icon': 'bi-music-note-beamed'
-                },
-                'formation': {
-                    'image': 'training.jpg',
-                    'color': 'rgba(25, 135, 84, 0.9)',
-                    'icon': 'bi-mortarboard'
-                },
-                'default': {
-                    'image': 'event-default.jpg',
-                    'color': 'rgba(108, 117, 125, 0.9)',
-                    'icon': 'bi-calendar-event'
-                }
-            } %}
+	<div
+		class="row justify-content-center">
+		{# Define event type assets at the top #}
+		{% set event_assets = {
+            'conference': {
+                'image': 'conference.jpg',
+                'color': 'rgba(70, 130, 180, 0.9)',
+                'icon': 'bi-mic'
+            },
+            'fête': {
+                'image': 'party.jpg',
+                'color': 'rgba(220, 53, 69, 0.9)',
+                'icon': 'bi-music-note-beamed'
+            },
+            'fete': {
+                'image': 'party.jpg',
+                'color': 'rgba(220, 53, 69, 0.9)',
+                'icon': 'bi-music-note-beamed'
+            },
+            'formation': {
+                'image': 'training.jpg',
+                'color': 'rgba(25, 135, 84, 0.9)',
+                'icon': 'bi-mortarboard'
+            },
+            'default': {
+                'image': 'event-default.jpg',
+                'color': 'rgba(108, 117, 125, 0.9)',
+                'icon': 'bi-calendar-event'
+            }
+        } %}
 
+		{% for evenement in evenements %}
+			{# Get the configuration for this event type #}
 			{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
+			{% set participant_badge = badge_service.getBadgeForEvent(evenement) %}
 
 			<div class="col-lg-4 col-md-6 col-12 mb-4">
 				<div class="artists-thumb">
 					<div class="artists-image-wrap">
-						<img src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="artists-image img-fluid" alt="{{ evenement.titre }}">
+						<img
+						src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="artists-image img-fluid" alt="{{ evenement.titre }}" onerror="this.src='{{ asset('assets/images/events/event-default.jpg') }}'">
+
+						{# Date Badge #}
 						<div class="artists-date-badge">
 							<i class="bi {{ current_event.icon }} me-1"></i>
 							{{ evenement.date ? evenement.date|date('d M') : '' }}
 						</div>
+
+						{# Type Badge #}
 						<div class="artists-type-badge" style="background: {{ current_event.color }}">
 							{{ evenement.type }}
 						</div>
+
+						{# Participant Count Badge #}
+						<div class="artists-participant-badge badge bg-{{ participant_badge.color }}">
+							<i class="bi {{ participant_badge.icon }} me-1"></i>
+							{{ participant_badge.name }}
+							<span class="ms-1">({{ evenement.users.count }})</span>
+						</div>
 					</div>
+
+					{# Hover Content #}
 					<div class="artists-hover" style="background: {{ current_event.color }}">
 						<h4>{{ evenement.titre }}</h4>
 						<div class="event-meta">
@@ -68,37 +85,45 @@
 								{% endif %}
 							</p>
 						</div>
+
+						{# Action Buttons and Badges #}
 						<div class="d-flex justify-content-between mt-3">
 							<a href="{{ path('app_evenement_participant_show', {'id': evenement.id}) }}" class="btn btn-sm btn-light">
-								<i class="bi bi-eye me-1"></i>Details
+								<i class="bi bi-eye me-1"></i>
+								Details
 							</a>
 
 							{% if app.user %}
 								{% if evenement.nbrplaces <= evenement.users.count %}
 									<span class="badge bg-danger d-flex align-items-center">
-										<i class="bi bi-x-circle me-1"></i>Sold Out
+										<i class="bi bi-x-circle me-1"></i>
+										Sold Out
 									</span>
 								{% elseif evenement.users.contains(app.user) %}
 									<span class="badge bg-success d-flex align-items-center">
-										<i class="bi bi-check-circle me-1"></i>Registered
+										<i class="bi bi-check-circle me-1"></i>
+										Registered
 									</span>
 								{% else %}
 									<form method="post" action="{{ path('app_evenement_participate', {'id': evenement.id}) }}" class="d-inline">
 										<input type="hidden" name="_token" value="{{ csrf_token('participate' ~ evenement.id) }}">
 										<button type="submit" class="btn btn-sm btn-success">
-											<i class="bi bi-check-circle me-1"></i>Participate
+											<i class="bi bi-check-circle me-1"></i>
+											Participate
 										</button>
 									</form>
 								{% endif %}
 							{% else %}
 								<a href="{{ path('app_login') }}" class="btn btn-sm btn-warning">
-									<i class="bi bi-box-arrow-in-right me-1"></i>Login to Join
+									<i class="bi bi-box-arrow-in-right me-1"></i>
+									Login to Join
 								</a>
 							{% endif %}
 
 							{% if is_granted('ROLE_ADMIN') %}
 								<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-light">
-									<i class="bi bi-pencil me-1"></i>Edit
+									<i class="bi bi-pencil me-1"></i>
+									Edit
 								</a>
 							{% endif %}
 						</div>
@@ -120,3 +145,66 @@
 		{% endfor %}
 	</div>
 </div>
+
+<style>
+	/* Badge Styles */
+	.artists-date-badge {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		background: rgba(0, 0, 0, 0.7);
+		color: white;
+		padding: 8px 12px;
+		border-radius: 5px;
+		font-weight: bold;
+		display: flex;
+		align-items: center;
+		z-index: 1;
+	}
+
+	.artists-type-badge {
+		position: absolute;
+		top: 20px;
+		left: 20px;
+		color: white;
+		padding: 6px 12px;
+		border-radius: 5px;
+		font-weight: bold;
+		font-size: 0.8rem;
+		z-index: 1;
+	}
+
+	.artists-participant-badge {
+		position: absolute;
+		bottom: 20px;
+		left: 50%;
+		transform: translateX(-50%);
+		padding: 6px 12px;
+		font-weight: bold;
+		font-size: 0.8rem;
+		z-index: 1;
+		white-space: nowrap;
+	}
+
+	/* Participation Badges */
+	.badge {
+		padding: 8px 12px;
+		border-radius: 50px;
+		font-size: 0.85rem;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.badge.bg-danger {
+		background-color: #dc3545 !important;
+	}
+
+	.badge.bg-success {
+		background-color: #28a745 !important;
+	}
+
+	/* Hover effect for badges */
+	.badge:hover {
+		opacity: 0.9;
+	}
+</style>
