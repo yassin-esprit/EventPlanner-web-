@@ -357,7 +357,7 @@ class AdminController extends AbstractController
 
         $donations = $entityManager->getRepository(Donation::class)->findBy(
             ['status' => 'pending'],
-            ['submittedAt' => 'DESC']
+            ['createdAt' => 'DESC']
         );
 
         return $this->render('admin/donations.html.twig', [

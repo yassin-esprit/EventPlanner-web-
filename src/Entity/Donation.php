@@ -37,6 +37,15 @@ class Donation
     #[Groups(['donation:read'])]
     private ?string $status = null;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['donation:read'])]
+    private ?\DateTimeImmutable $processedAt = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['donation:read'])]
+    private ?User $processedBy = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -100,6 +109,28 @@ class Donation
     public function setStatus(string $status): static
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getProcessedAt(): ?\DateTimeImmutable
+    {
+        return $this->processedAt;
+    }
+
+    public function setProcessedAt(?\DateTimeImmutable $processedAt): static
+    {
+        $this->processedAt = $processedAt;
+        return $this;
+    }
+
+    public function getProcessedBy(): ?User
+    {
+        return $this->processedBy;
+    }
+
+    public function setProcessedBy(?User $processedBy): static
+    {
+        $this->processedBy = $processedBy;
         return $this;
     }
 }

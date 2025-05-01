@@ -393,7 +393,7 @@
                         <tr>
                             <td>{{ donation.user.firstName }} {{ donation.user.lastName }}</td>
                             <td>{{ donation.message }}</td>
-                            <td>{{ donation.submittedAt|date('Y-m-d H:i') }}</td>
+                            <td>{{ donation.createdAt|date('Y-m-d H:i') }}</td>
                             <td>
                                 <form action="{{ path('app_admin_process_donation', {id: donation.id}) }}" method="post" class="d-inline">
                                     <input type="hidden" name="status" value="accepted">
