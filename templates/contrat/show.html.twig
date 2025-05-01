@@ -1,165 +1,395 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contrat{% endblock %}
+{% block title %}Détails du Contrat{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        .contrat-card {
-            max-width: 700px;
-            margin: 2rem auto;
-            padding: 2rem;
-            border-radius: 1.5rem;
-            background: linear-gradient(to right, #ffffff, #f0f0f0);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #f8cb2e;
+            --secondary-color: #ee5007;
+            --section-bg-color: #f0f8ff;
+            --custom-btn-bg-color: #ee5007;
+            --custom-btn-bg-hover-color: #c01f27;
+            --dark-color: #000000;
+            --p-color: #717275;
+            --border-color: #7fffd4;
+            --link-hover-color: #b22727;
         }
 
-        .contrat-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .contrat-header {
+        /* Main Layout */
+        #wrapper {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            min-height: 100vh;
+            background-color: #f8f9fa;
         }
 
-        .contrat-title {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #333;
+        /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .contrat-info table {
-            width: 100%;
+        .sidebar-brand {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .contrat-info th {
-            text-align: left;
-            padding-right: 1rem;
-            color: #666;
-            font-weight: normal;
+        .sidebar-brand-icon {
+            color: var(--primary-color);
+            margin-right: 10px;
         }
 
-        .contrat-info td {
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Content */
+        #content {
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: #f8f9fc;
+            padding: 20px;
+        }
+
+        .contract-details {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contract-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contract-body {
+            padding: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--p-color);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: var(--dark-color);
             font-weight: 500;
         }
 
-        .btn-group {
-            margin-top: 1.5rem;
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
-        .btn-group a,
-        .btn-group form button {
-            margin-right: 1rem;
+        .status-active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-inactive {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 992px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div id="sidebar" class="col-md-3 bg-dark text-white min-vh-100 sidebar p-0">
-            <ul class="navbar-nav sidebar sidebar-dark accordion">
-                <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="#">
-                    <div class="sidebar-brand-icon">
-                        <i class="bi bi-shield-lock"></i>
-                    </div>
-                    <div class="sidebar-brand-text mx-2">Admin Panel</div>
-                </a>
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <div class="sidebar-brand-text mx-2">Admin Panel</div>
+        </a>
 
-                <hr class="sidebar-divider my-0 bg-light">
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="dashboard">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
+        <!-- Nav Items -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
 
-                <hr class="sidebar-divider bg-light">
+        <!-- Divider -->
+        <hr class="sidebar-divider">
 
-                <div class="sidebar-heading text-light">
-                    Management
-                </div>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="events">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Events</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="sponsors">
-                        <i class="bi bi-award"></i>
-                        <span>Sponsors</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="equipements">
-                        <i class="bi bi-truck"></i>
-                        <span>Equipement</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="ads">
-                        <i class="bi bi-megaphone"></i>
-                        <span>Advertisements</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="merchandise">
-                        <i class="bi bi-shop"></i>
-                        <span>Merchandise</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="users">
-                        <i class="bi bi-people"></i>
-                        <span>Users</span>
-                    </a>
-                </li>
-            </ul>
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Management
         </div>
-        <!-- End Sidebar -->
 
-        <!-- Content -->
-        <div id="content" class="col-md-9">
-            <div class="contrat-card">
-                <div class="contrat-header">
-                    <div class="contrat-title">Contrat #{{ contrat.getId_contrat }}</div>
+        <!-- Events Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Events</span>
+            </a>
+        </li>
+
+        <!-- Sponsors Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-award"></i>
+                <span>Sponsors</span>
+            </a>
+        </li>
+
+        <!-- Contrat de Sponsor Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link active" href="#events">
+                <i class="bi bi-calendar-event"></i>
+                <span>Contrat de Sponsor</span>
+            </a>
+        </li>
+
+        <!-- Logistics Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-truck"></i>
+                <span>Logistics</span>
+            </a>
+        </li>
+
+        <!-- Ads Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-megaphone"></i>
+                <span>Advertisements</span>
+            </a>
+        </li>
+
+        <!-- Merchandise Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-shop"></i>
+                <span>Merchandise</span>
+            </a>
+        </li>
+
+        <!-- Users Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+        </li>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+
+    <div id="content">
+        </br>    </br>
+    </br>    </br>
+
+        <div class="container-fluid">
+            <div class="contract-details">
+                <div class="contract-header">
+                    <h2 class="mb-0">Contrat #{{ contrat.id_contrat }}</h2>
+                    <a href="{{ path('app_contrat_index') }}" class="btn btn-light">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
                 </div>
+                <div class="contract-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Type de Contrat</div>
+                            <div class="info-value">{{ contrat.typecontrat }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Montant</div>
+                            <div class="info-value">{{ contrat.montant }} TND</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Statut</div>
+                            <div class="info-value">
+                                <span class="status-badge {% if contrat.statut == 'Actif' %}status-active{% else %}status-inactive{% endif %}">
+                                    {{ contrat.statut }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Date de Début</div>
+                            <div class="info-value">{{ contrat.datedebut|date('d/m/Y') }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Date de Fin</div>
+                            <div class="info-value">{{ contrat.datefin|date('d/m/Y') }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Mode de Paiement</div>
+                            <div class="info-value">{{ contrat.modepaiement }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Sponsor</div>
+                            <div class="info-value">{{ contrat.sponsor.nom }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Description</div>
+                            <div class="info-value">{{ contrat.description }}</div>
+                        </div>
+                    </div>
 
-                <div class="contrat-info mt-4">
-                    <table class="table">
-                        <tbody>
-                            <tr><th>Type de contrat</th><td>{{ contrat.getTypecontrat }}</td></tr>
-                            <tr><th>Montant</th><td>{{ contrat.getMontant }}</td></tr>
-                            <tr><th>Description</th><td>{{ contrat.getDescription }}</td></tr>
-                            <tr><th>Date de début</th><td>{{ contrat.getDatedebut ? contrat.getDatedebut|date('Y-m-d') : 'N/A' }}</td></tr>
-                            <tr><th>Date de fin</th><td>{{ contrat.getDatefin ? contrat.getDatefin|date('Y-m-d') : 'N/A' }}</td></tr>
-                            <tr><th>Statut</th><td>{{ contrat.getStatut }}</td></tr>
-                            <tr><th>Mode de paiement</th><td>{{ contrat.getModepaiement }}</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="btn-group">
-                    <a href="{{ path('app_contrat_index') }}" class="btn btn-secondary">⬅ Retour</a>
-                    <a href="{{ path('app_contrat_edit', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-primary">✏️ Modifier</a>
-                    {{ include('contrat/_delete_form.html.twig') }}
+                    <div class="action-buttons">
+                        <a href="{{ path('app_contrat_edit', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </a>
+                        <a href="{{ path('app_contrat_print', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-success" target="_blank">
+                            <i class="bi bi-printer"></i> Imprimer
+                        </a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- End Content -->
     </div>
 </div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer ce contrat ? Cette action est irréversible.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <form action="{{ path('app_contrat_delete', {'id_contrat': contrat.id_contrat}) }}" method="post" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ contrat.id_contrat) }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Confirmer la suppression
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+<script>
+    // Initialisation des tooltips Bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
+{% endblock %}
 {% endblock %}

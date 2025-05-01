@@ -1,122 +1,368 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Contrat{% endblock %}
+{% block title %}Modifier le Contrat{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #f8cb2e;
+            --secondary-color: #ee5007;
+            --section-bg-color: #f0f8ff;
+            --custom-btn-bg-color: #ee5007;
+            --custom-btn-bg-hover-color: #c01f27;
+            --dark-color: #000000;
+            --p-color: #717275;
+            --border-color: #7fffd4;
+            --link-hover-color: #b22727;
+        }
+
+        /* Main Layout */
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-brand {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand-icon {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 0.5rem 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 8px;
+            font-size: 1rem;
+            color: var(--primary-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content */
+        #content {
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: #f8f9fc;
+            padding: 15px;
+        }
+
+        .contract-form {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contract-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contract-header h2 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .contract-body {
+            padding: 15px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--p-color);
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.9rem;
+            height: auto;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(248, 203, 46, 0.25);
+        }
+
+        .form-select {
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.9rem;
+            height: auto;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(248, 203, 46, 0.25);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.9rem;
+        }
+
+        .btn i {
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div id="sidebar" class="col-md-3 bg-dark text-white min-vh-100 sidebar p-0">
-            <ul class="navbar-nav sidebar sidebar-dark accordion">
-                <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="#">
-                    <div class="sidebar-brand-icon">
-                        <i class="bi bi-shield-lock"></i>
-                    </div>
-                    <div class="sidebar-brand-text mx-2">Admin Panel</div>
-                </a>
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <div class="sidebar-brand-text mx-2">Admin Panel</div>
+        </a>
 
-                <hr class="sidebar-divider my-0 bg-light">
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="dashboard">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
+        <!-- Nav Items -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
 
-                <hr class="sidebar-divider bg-light">
+        <!-- Divider -->
+        <hr class="sidebar-divider">
 
-                <div class="sidebar-heading text-light">
-                    Management
-                </div>
-
-                <li class="nav-item">
-                    <a class="nav-link active text-white" href="#" data-section="events">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Events</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="sponsors">
-                        <i class="bi bi-award"></i>
-                        <span>Sponsors</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="equipements">
-                        <i class="bi bi-truck"></i>
-                        <span>Equipement</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="ads">
-                        <i class="bi bi-megaphone"></i>
-                        <span>Advertisements</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="merchandise">
-                        <i class="bi bi-shop"></i>
-                        <span>Merchandise</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="users">
-                        <i class="bi bi-people"></i>
-                        <span>Users</span>
-                    </a>
-                </li>
-            </ul>
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Management
         </div>
-        <!-- End Sidebar -->
 
-        <!-- Content -->
-        <div id="content" class="col-md-9">
-            <div class="container py-5">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="card border-0 shadow-lg rounded-4">
-                            <div class="card-header bg-primary bg-gradient text-white py-4 rounded-top-4">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h1 class="h3 mb-0">
-                                        <i class="bi bi-file-earmark-text me-2"></i>
-                                        Edit Contrat
-                                    </h1>
-                                    <a href="{{ path('app_contrat_index') }}" class="btn btn-light btn-sm">
-                                        <i class="bi bi-arrow-left me-1"></i> Back to list
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="alert alert-info mb-4">
-                                    <i class="bi bi-info-circle me-2"></i>
-                                    Update the contract details below. All fields marked with <span class="text-danger">*</span> are required.
-                                </div>
+        <!-- Events Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Events</span>
+            </a>
+        </li>
 
-                                {{ include('contrat/_form.html.twig', {'button_label': 'Update'}) }}
+        <!-- Sponsors Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-award"></i>
+                <span>Sponsors</span>
+            </a>
+        </li>
 
-                                <div class="mt-4 pt-3 border-top">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <a href="{{ path('app_contrat_index') }}" class="btn btn-outline-secondary">
-                                            <i class="bi bi-arrow-left me-1"></i> Cancel
-                                        </a>
-                                        <div>
-                                            {{ include('contrat/_delete_form.html.twig') }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Contrat de Sponsor Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link active" href="#events">
+                <i class="bi bi-calendar-event"></i>
+                <span>Contrat de Sponsor</span>
+            </a>
+        </li>
+
+        <!-- Logistics Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-truck"></i>
+                <span>Logistics</span>
+            </a>
+        </li>
+
+        <!-- Ads Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-megaphone"></i>
+                <span>Advertisements</span>
+            </a>
+        </li>
+
+        <!-- Merchandise Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-shop"></i>
+                <span>Merchandise</span>
+            </a>
+        </li>
+
+        <!-- Users Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+        </li>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content">
+        </br>    </br>
+    </br>    </br>
+
+        <div class="contract-form">
+            <div class="contract-header">
+                <h2 class="mb-0">Modifier le Contrat #{{ contrat.id_contrat }}</h2>
+                <a href="{{ path('app_contrat_index') }}" class="btn btn-light">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+            </div>
+            <div class="contract-body">
+                {{ form_start(form) }}
+                <div class="form-grid">
+                    <div class="form-group">
+                        {{ form_label(form.type_contrat, 'Type de Contrat', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.type_contrat, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.type_contrat) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.montant, 'Montant', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.montant, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.montant) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.date_debut, 'Date de Début', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.date_debut, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.date_debut) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.date_fin, 'Date de Fin', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.date_fin, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.date_fin) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+                        {{ form_errors(form.statut) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.mode_paiement, 'Mode de Paiement', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.mode_paiement, {'attr': {'class': 'form-select'}}) }}
+                        {{ form_errors(form.mode_paiement) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.sponsor, 'Sponsor', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.sponsor, {'attr': {'class': 'form-select'}}) }}
+                        {{ form_errors(form.sponsor) }}
+                    </div>
+
+                    <div class="form-group" style="grid-column: span 2;">
+                        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 2}}) }}
+                        {{ form_errors(form.description) }}
                     </div>
                 </div>
+
+                <div class="action-buttons">
+                    <a href="{{ path('app_contrat_show', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Annuler
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Enregistrer
+                    </button>
+                </div>
+                {{ form_end(form) }}
             </div>
         </div>
-        <!-- End Content -->
     </div>
 </div>
 {% endblock %}

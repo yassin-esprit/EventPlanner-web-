@@ -1,154 +1,438 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tableau de bord - Statistiques{% endblock %}
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #f8cb2e;
+            --secondary-color: #ee5007;
+            --section-bg-color: #f0f8ff;
+            --custom-btn-bg-color: #ee5007;
+            --custom-btn-bg-hover-color: #c01f27;
+            --dark-color: #000000;
+            --p-color: #717275;
+            --border-color: #7fffd4;
+            --link-hover-color: #b22727;
+        }
+
+        /* Main Layout */
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-brand {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand-icon {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 0.5rem 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 8px;
+            font-size: 1rem;
+            color: var(--primary-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content */
+        #content {
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: #f8f9fc;
+            padding: 25px;
+        }
+
+        .page-title {
+            color: var(--dark-color);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: var(--p-color);
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .stat-card .value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            color: var(--p-color);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            height: 350px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .chart-container h2 {
+            color: var(--dark-color);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .chart-container canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+
+        @media (max-width: 1400px) {
+            .stats-container,
+            .charts-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-container,
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card .value {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="container my-4">
-<br/>
-<br/>
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Total Sponsors</div>
-                <div class="card-body">
-                    <h3 class="card-title">
-                        {{ sponsorsBySector|reduce((carry, item) => carry + item.count, 0) }}
-                    </h3>
-                </div>
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="bi bi-shield-lock"></i>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header">Total Contrats</div>
-                <div class="card-body">
-                    <h3 class="card-title">
-                        {{ contractsByStatus|reduce((carry, item) => carry + item.count, 0) }}
-                    </h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-header">Montant Total Contrats (TND)</div>
-                <div class="card-body">
-                    <h3 class="card-title">
-                        {{ totalMontantByType|reduce((carry, item) => carry + item.totalMontant, 0) | number_format(2, ',', ' ') }}
-                    </h3>
-                </div>
-            </div>
-        </div>
-    </div>
+            <div class="sidebar-brand-text mx-2">Admin Panel</div>
+        </a>
 
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card p-3" style="height: 350px;">
-            <h5>Nombre de Sponsors par Secteur d'Activité</h5>
-            <canvas id="sponsorsBySectorChart" style="max-height: 250px;"></canvas>
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Items -->
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Management
         </div>
-    </div>
-    <div class="col-md-4 mb-4">
-        <div class="card p-3" style="height: 350px;">
-            <h5>Nombre de Contrats par Statut</h5>
-            <canvas id="contractsByStatusChart" style="max-height: 250px;"></canvas>
+
+        <!-- Events Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Events</span>
+            </a>
+        </li>
+
+        <!-- Sponsors Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-award"></i>
+                <span>Sponsors</span>
+            </a>
+        </li>
+
+        <!-- Contrat de Sponsor Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#events">
+                <i class="bi bi-calendar-event"></i>
+                <span>Contrat de Sponsor</span>
+            </a>
+        </li>
+
+        <!-- Logistics Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-truck"></i>
+                <span>Logistics</span>
+            </a>
+        </li>
+
+        <!-- Ads Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-megaphone"></i>
+                <span>Advertisements</span>
+            </a>
+        </li>
+
+        <!-- Merchandise Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-shop"></i>
+                <span>Merchandise</span>
+            </a>
+        </li>
+
+        <!-- Users Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+        </li>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content">
+    </br>    </br>
+    </br>    
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Total Sponsors</h3>
+                <div class="value">{{ sponsorsBySector|reduce((carry, item) => carry + item.count, 0) }}</div>
+                <div class="label">Nombre total de sponsors</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Contracts</h3>
+                <div class="value">{{ contractsByStatus|reduce((carry, item) => carry + item.count, 0) }}</div>
+                <div class="label">Contrats actifs et en attente</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Revenue</h3>
+                <div class="value">{{ totalMontantByType|reduce((carry, item) => carry + item.totalMontant, 0)|number_format(2, ',', ' ') }} TND</div>
+                <div class="label">Montant total des contrats</div>
+            </div>
         </div>
-    </div>
-    <div class="col-md-4 mb-4">
-        <div class="card p-3" style="height: 350px;">
-            <h5>Montant Total des Contrats par Type</h5>
-            <canvas id="totalMontantByTypeChart" style="max-height: 250px;"></canvas>
+
+        <div class="charts-container">
+            <div class="chart-container">
+                <h2>Sponsors par Secteur</h2>
+                <canvas id="sponsorsBySectorChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h2>Contrats par Statut</h2>
+                <canvas id="contractsByStatusChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h2>Montant par Type</h2>
+                <canvas id="totalMontantByTypeChart"></canvas>
+            </div>
         </div>
     </div>
 </div>
-</div>
+{% endblock %}
 
+{% block javascripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Sponsors par Secteur
     const sponsorsBySectorData = {{ sponsorsBySector|json_encode|raw }};
-    const contractsByStatusData = {{ contractsByStatus|json_encode|raw }};
-    const totalMontantByTypeData = {{ totalMontantByType|json_encode|raw }};
-
-    function extractLabelsAndValues(data, labelKey, valueKey) {
-        const labels = data.map(item => item[labelKey] || 'Inconnu');
-        const values = data.map(item => Number(item[valueKey]));
-        return { labels, values };
-    }
-
-    const sponsorsSector = extractLabelsAndValues(sponsorsBySectorData, 'sector', 'count');
-    const ctx1 = document.getElementById('sponsorsBySectorChart').getContext('2d');
-    new Chart(ctx1, {
+    const sponsorsCtx = document.getElementById('sponsorsBySectorChart').getContext('2d');
+    new Chart(sponsorsCtx, {
         type: 'bar',
         data: {
-            labels: sponsorsSector.labels,
+            labels: sponsorsBySectorData.map(item => item.sector || 'Inconnu'),
             datasets: [{
                 label: 'Nombre de Sponsors',
-                data: sponsorsSector.values,
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                data: sponsorsBySectorData.map(item => item.count),
+                backgroundColor: '#f8cb2e',
+                borderColor: '#ee5007',
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
-            scales: {
-                y: { beginAtZero: true }
-            },
+            maintainAspectRatio: false,
             plugins: {
-                legend: { display: false }
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
             }
         }
     });
 
-    const contractsStatus = extractLabelsAndValues(contractsByStatusData, 'status', 'count');
-    const ctx2 = document.getElementById('contractsByStatusChart').getContext('2d');
-    new Chart(ctx2, {
+    // Contrats par Statut
+    const contractsByStatusData = {{ contractsByStatus|json_encode|raw }};
+    const contractsCtx = document.getElementById('contractsByStatusChart').getContext('2d');
+    new Chart(contractsCtx, {
         type: 'doughnut',
         data: {
-            labels: contractsStatus.labels,
+            labels: contractsByStatusData.map(item => item.status),
             datasets: [{
-                label: 'Nombre de Contrats',
-                data: contractsStatus.values,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
-                ],
-                borderWidth: 1
+                data: contractsByStatusData.map(item => item.count),
+                backgroundColor: ['#f8cb2e', '#ee5007', '#c01f27']
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'right' }
+                legend: {
+                    position: 'right',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
             }
         }
     });
 
-    const montantByType = extractLabelsAndValues(totalMontantByTypeData, 'type', 'totalMontant');
-    const ctx3 = document.getElementById('totalMontantByTypeChart').getContext('2d');
-    new Chart(ctx3, {
+    // Montant par Type de Contrat
+    const totalMontantByTypeData = {{ totalMontantByType|json_encode|raw }};
+    const montantCtx = document.getElementById('totalMontantByTypeChart').getContext('2d');
+    new Chart(montantCtx, {
         type: 'line',
         data: {
-            labels: montantByType.labels,
+            labels: totalMontantByTypeData.map(item => item.type || 'Inconnu'),
             datasets: [{
-                label: 'Montant Total (TND)',
-                data: montantByType.values,
-                fill: false,
-                borderColor: 'rgba(153, 102, 255, 1)',
-                tension: 0.1
+                label: 'Montant (TND)',
+                data: totalMontantByTypeData.map(item => item.totalMontant),
+                borderColor: '#f8cb2e',
+                backgroundColor: 'rgba(248, 203, 46, 0.1)',
+                fill: true,
+                tension: 0.4
             }]
         },
         options: {
             responsive: true,
-            scales: {
-                y: { beginAtZero: true }
-            },
+            maintainAspectRatio: false,
             plugins: {
-                legend: { display: true }
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
             }
         }
     });
