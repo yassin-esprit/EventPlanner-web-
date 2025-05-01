@@ -8,9 +8,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'home')]
+    #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        return $this->render('home.html.twig');
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('app_admin_dashboard');
+        }
+
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_user_dashboard');
+        }
+
+        return $this->render('home/index.html.twig');
     }
 }

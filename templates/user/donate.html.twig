@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Make a Donation{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="h3 mb-0">Make a Donation</h1>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Donation Amount ($)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" 
+                                           id="amount" 
+                                           name="amount" 
+                                           class="form-control" 
+                                           step="0.01" 
+                                           min="0.01" 
+                                           required 
+                                           placeholder="Enter donation amount">
+                                </div>
+                                <div class="form-text">
+                                    Please enter the amount you would like to donate.
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Submit Donation Request</button>
+                                <a href="{{ path('app_user_dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

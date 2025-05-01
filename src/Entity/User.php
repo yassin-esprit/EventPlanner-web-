@@ -1,82 +1,131 @@
 <?php
+
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use App\Repository\UserRepository;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: 'user')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
+#[ORM\Table(name: '`user`')]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(name: 'userId' ,type: 'integer')]
-    private ?int $userId = null;
+    #[ORM\Column]
+    private ?int $id = null;
 
-    #[ORM\Column(name: 'firstName', type: 'string', nullable: false)]
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 2, max: 50)]
-    private ?string $firstName = null;
-
-    #[ORM\Column(name: 'lastName', type: 'string', nullable: false)]
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 2, max: 50)]
-    private ?string $lastName = null;
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank]
-    #[Assert\Email]
+    #[Assert\Email(message: 'The email {{ value }} is not a valid email.', mode: 'strict')]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|tn|fr)$/',
+        message: 'The email must end with .com, .tn, or .fr.'
+    )]
+    #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 6)]
+    #[Assert\Regex(
+        pattern: '/^[A-Za-z]+$/',
+        message: 'First name must contain only letters without spaces or special characters.'
+    )]
+    #[ORM\Column(length: 255)]
+    private ?string $firstName = null;
+
+    #[Assert\Regex(
+        pattern: '/^[A-Za-z]+$/',
+        message: 'Last name must contain only letters without spaces or special characters.'
+    )]
+    #[ORM\Column(length: 255)]
+    private ?string $lastName = null;
+
+    #[Assert\Regex(
+        pattern: '/^(?=.*[0-9].*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Za-z]).{8,}$/',
+        message: 'Password must be at least 8 characters long, contain at least 2 digits, and include 1 special character.'
+    )]
+    #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank]
-    private ?string $phone = null;
+    #[ORM\Column]
+    private array $roles = [];
 
-#[ORM\Column(type: 'string', length: 20, nullable: false)]
-private ?string $Role = null; // Ensure the property name is lowercase 'role'
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isVerified = false;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $verificationToken = null;
 
-    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'user')]
-    private Collection $ratings;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $resetToken = null;
 
-    #[ORM\ManyToMany(targetEntity: Evenement::class, inversedBy: 'users')]
-    #[ORM\JoinTable(
-        name: 'participation',
-        joinColumns: [
-            new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'userId')
-        ],
-        inverseJoinColumns: [
-            new ORM\JoinColumn(name: 'evenement_id', referencedColumnName: 'id')
-        ]
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $resetTokenExpiresAt = null;
+
+    #[ORM\Column(length: 15, nullable: true)]
+    #[Assert\Regex(
+        pattern: '/^\+?[0-9]{7,15}$/',
+        message: 'Phone number must be valid and contain only digits, with an optional leading +.'
     )]
-    private Collection $evenements;
+    private ?string $phoneNumber = null;
 
     public function __construct()
     {
-        $this->ratings = new ArrayCollection();
-        $this->evenements = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->roles = ['ROLE_USER'];
+        $this->isVerified = false;
     }
 
-    public function getUserId(): ?int
+    public function getId(): ?int
     {
-        return $this->userId;
+        return $this->id;
     }
 
-    public function setUserId(int $userId): self
+    public function getEmail(): ?string
     {
-        $this->userId = $userId;
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
         return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        return array_unique($this->roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
     }
 
     public function getFirstName(): ?string
@@ -84,7 +133,7 @@ private ?string $Role = null; // Ensure the property name is lowercase 'role'
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): self
+    public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
         return $this;
@@ -95,148 +144,74 @@ private ?string $Role = null; // Ensure the property name is lowercase 'role'
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): self
+    public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
         return $this;
     }
 
-    public function getPhone(): ?string
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->phone;
+        return $this->createdAt;
     }
 
-    public function setPhone(string $phone): self
+    public function isVerified(): bool
     {
-        $this->phone = $phone;
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getVerificationToken(): ?string
     {
-        return $this->email;
+        return $this->verificationToken;
     }
 
-    public function setEmail(string $email): self
+    public function setVerificationToken(?string $verificationToken): static
     {
-        $this->email = $email;
+        $this->verificationToken = $verificationToken;
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getResetToken(): ?string
     {
-        return $this->password;
+        return $this->resetToken;
     }
 
-    public function setPassword(string $password): self
+    public function setResetToken(?string $resetToken): self
     {
-        $this->password = $password;
+        $this->resetToken = $resetToken;
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getResetTokenExpiresAt(): ?\DateTimeInterface
     {
-        return $this->Role;
+        return $this->resetTokenExpiresAt;
     }
 
-    public function setRole(string $Role): self
+    public function setResetTokenExpiresAt(?\DateTimeInterface $resetTokenExpiresAt): self
     {
-        $this->Role = $Role;
+        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
         return $this;
     }
 
-public function getRoles(): array
+    public function getFullName(): string
     {
-        // Ensure role starts with ROLE_ and is uppercase
-        $role = strtoupper($this->Role);
-        if (!str_starts_with($role, 'ROLE_')) {
-            $role = 'ROLE_' . $role;
-        }
-        return [$role];
+        return $this->firstName . ' ' . $this->lastName;
     }
 
-    public function getUserIdentifier(): string
+    public function getPhoneNumber(): ?string
     {
-        return $this->email;
+        return $this->phoneNumber;
     }
 
-    public function eraseCredentials(): void
+    public function setPhoneNumber(?string $phoneNumber): static
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-    }
-
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
-
-    public function serialize(): string
-    {
-        return serialize([$this->userId, $this->email, $this->password]);
-    }
-
-    public function unserialize($serialized): void
-    {
-        [$this->userId, $this->email, $this->password] = unserialize($serialized, ['allowed_classes' => false]);
-    }
-
-    /**
-     * @return Collection<int, Rating>
-     */
-    public function getRatings(): Collection
-    {
-        return $this->ratings;
-    }
-
-    public function addRating(Rating $rating): self
-    {
-        if (!$this->ratings->contains($rating)) {
-            $this->ratings->add($rating);
-            $rating->setUser($this);
-        }
+        $this->phoneNumber = $phoneNumber;
         return $this;
     }
-
-    public function removeRating(Rating $rating): self
-    {
-        if ($this->ratings->removeElement($rating)) {
-            if ($rating->getUser() === $this) {
-                $rating->setUser(null);
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Evenement>
-     */
-    public function getEvenements(): Collection
-    {
-        return $this->evenements;
-    }
-
-    public function addEvenement(Evenement $evenement): self
-    {
-        if (!$this->evenements->contains($evenement)) {
-            $this->evenements->add($evenement);
-        }
-        return $this;
-    }
-
-    public function removeEvenement(Evenement $evenement): self
-    {
-        $this->evenements->removeElement($evenement);
-        return $this;
-    }
-
-    public function hasRatedEvent(Evenement $event): bool
-{
-    foreach ($this->ratings as $rating) {
-        if ($rating->getEvenement() === $event) {
-            return true;
-        }
-    }
-    return false;
-}
 }

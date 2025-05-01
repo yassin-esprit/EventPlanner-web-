@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    <h1>Edit Profile</h1>
+
+    <form method="post" action="{{ path('app_admin_edit_user', {id: user.id}) }}" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="inputFirstName">First Name</label>
+            <input type="text" name="firstName" id="inputFirstName" class="form-control" required
+                value="{{ user.firstName }}"
+                pattern="^[A-Za-z]+$" title="Only letters are allowed. No spaces, numbers, or special characters.">
+        </div>
+
+        <div class="form-group">
+            <label for="inputLastName">Last Name</label>
+            <input type="text" name="lastName" id="inputLastName" class="form-control" required
+                value="{{ user.lastName }}"
+                pattern="^[A-Za-z]+$" title="Only letters are allowed. No spaces, numbers, or special characters.">
+        </div>
+
+        <div class="form-group">
+            <label for="inputEmail">Email</label>
+            <input type="email" name="email" id="inputEmail" class="form-control" required
+                value="{{ user.email }}"
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|tn|fr)$" title="Must be a valid email ending with .com, .tn, or .fr.">
+        </div>
+
+        <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" name="password" id="inputPassword" class="form-control"
+                pattern="^(?=.*[0-9].*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Za-z]).{8,}$"
+                title="Password must be at least 8 characters long, contain at least 2 digits, and include 1 special character.">
+            <small class="form-text text-muted">Leave blank to keep the current password.</small>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+    </form>
+
+    <script>
+        // Form validation
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Purchase Receipt</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+            }
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #333;
+                padding-bottom: 20px;
+            }
+            .details {
+                margin-bottom: 30px;
+            }
+            .details table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            .details th, .details td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+            .total {
+                text-align: right;
+                font-size: 1.2em;
+                margin-top: 20px;
+                border-top: 2px solid #333;
+                padding-top: 20px;
+            }
+            .footer {
+                margin-top: 50px;
+                text-align: center;
+                font-size: 0.9em;
+                color: #666;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Purchase Receipt</h1>
+                <p>Thank you for your purchase!</p>
+            </div>
+
+            <div class="details">
+                <h2>Purchase Details</h2>
+                <table>
+                    <tr>
+                        <th>Item</th>
+                        <td>{{ purchase.merchandise.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ purchase.merchandise.description }}</td>
+                    </tr>
+                    <tr>
+                        <th>Price</th>
+                        <td>${{ purchase.purchasePrice|number_format(2) }}</td>
+                    </tr>
+                    <tr>
+                        <th>Purchase Date</th>
+                        <td>{{ purchase.purchaseDate|date('F j, Y H:i:s') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Purchaser</th>
+                        <td>{{ purchase.user.fullName }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="total">
+                <strong>Total Amount: ${{ purchase.purchasePrice|number_format(2) }}</strong>
+            </div>
+
+            <div class="footer">
+                <p>This is an official receipt for your purchase.</p>
+                <p>Thank you for your business!</p>
+                <p>Generated on {{ 'now'|date('F j, Y H:i:s') }}</p>
+            </div>
+        </div>
+    </body>
+</html>

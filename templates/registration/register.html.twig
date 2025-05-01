@@ -1,181 +1,234 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Register for MYTHOS PLANNER
-{% endblock %}
-
-{% block body %}
-	<section class="ticket-section section-padding" class="ticket-section section-padding" style="
-						        background-image: url('{{ asset('images/nicholas-green-unsplash-blur.jpg') }}');
-						        background-size: cover;
-						        background-position: center;
-						        background-attachment: fixed;
-						        position: relative;
-						    ">
-		<div class="section-overlay"></div>
-
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6 col-10 mx-auto">
-					<form class="custom-form ticket-form mb-5 mb-lg-0" method="post">
-						<h2 class="text-center mb-4">Register for MYTHOS PLANNER</h2>
-
-						<div class="ticket-form-body">
-							{{ form_start(registrationForm) }}
-							<div class="row">
-								<div class="col-lg-6 col-md-6 col-12">
-									{{ form_row(registrationForm.firstName, {
-                                        'attr': {
-                                            'class': 'form-control',
-                                            'placeholder': 'First Name'
-                                        },
-                                        'label': false
-                                    }) }}
-								</div>
-
-								<div class="col-lg-6 col-md-6 col-12">
-									{{ form_row(registrationForm.lastName, {
-                                        'attr': {
-                                            'class': 'form-control',
-                                            'placeholder': 'Last Name'
-                                        },
-                                        'label': false
-                                    }) }}
-								</div>
-							</div>
-
-							{{ form_row(registrationForm.email, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'placeholder': 'Email address'
-                                },
-                                'label': false
-                            }) }}
-
-							{{ form_row(registrationForm.phone, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'placeholder': 'Phone number'
-                                },
-                                'label': false
-                            }) }}
-
-							<div class="row">
-								<div class="col-lg-6 col-md-6 col-12">
-									{{ form_row(registrationForm.password.first, {
-                                        'attr': {
-                                            'class': 'form-control',
-                                            'placeholder': 'Password'
-                                        },
-                                        'label': false
-                                    }) }}
-								</div>
-
-								<div class="col-lg-6 col-md-6 col-12">
-									{{ form_row(registrationForm.password.second, {
-                                        'attr': {
-                                            'class': 'form-control',
-                                            'placeholder': 'Repeat Password'
-                                        },
-                                        'label': false
-                                    }) }}
-								</div>
-							</div>
-
-							<h6 class="mt-3">Choose Your Role</h6>
-							{{ form_row(registrationForm.Role, {
-                                'attr': {
-                                    'class': 'form-control'
-                                },
-                                'label': false
-                            }) }}
-
-							<div class="row mt-4">
-								<div class="col-md-6 col-12 mb-3 mb-md-0">
-									<button type="submit" class="custom-btn w-100">
-										<i class="bi bi-person-plus me-2"></i>Register
-									</button>
-								</div>
-								<div class="col-md-6 col-12">
-									<a href="{{ path('app_login') }}" class="custom-border-btn w-100 d-inline-block text-center">
-										<i class="bi bi-box-arrow-in-right me-2"></i>Login Instead
-									</a>
-								</div>
-							</div>
-							{{ form_end(registrationForm) }}
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</section>
-{% endblock %}
+{% extends 'auth_base.html.twig' %}
 
 {% block stylesheets %}
-	{{ parent() }}
-	<style>
-		/* Custom button styles - matches your existing template */
-		.custom-btn {
-			background: var(--custom-btn-bg-color);
-			border: 2px solid transparent;
-			border-radius: var(--border-radius-large);
-			color: var(--white-color);
-			font-size: var(--btn-font-size);
-			font-weight: var(--font-weight-bold);
-			line-height: normal;
-			transition: all 0.3s;
-			padding: 12px 20px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			text-transform: uppercase;
-		}
+    {{ parent() }}
+    {{ encore_entry_link_tags('auth') }}
+    <style>
+        .bg {
+            background-image: url("{{ asset('images/pic5.png') }}") !important;
+        }
+        .auth-container .left {
+            background-image: url("{{ asset('images/pic5.png') }}") !important;
+        }
+        .registration-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .registration-container h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group .text-danger {
+            color: #d9534f;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            background-color: #4267B2;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #365899;
+        }
+        .form-footer {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .form-footer a {
+            color: #4267B2;
+            text-decoration: none;
+        }
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
 
-		.custom-btn:hover {
-			background: var(--custom-btn-bg-hover-color);
-			color: var(--white-color);
-			transform: translateY(-2px);
-			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-		}
+{% block title %}Register{% endblock %}
 
-		.custom-border-btn {
-			background: transparent;
-			border: 2px solid var(--custom-btn-bg-color);
-			border-radius: var(--border-radius-large);
-			color: var(--custom-btn-bg-color);
-			font-size: var(--btn-font-size);
-			font-weight: var(--font-weight-bold);
-			line-height: normal;
-			transition: all 0.3s;
-			padding: 12px 20px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			text-decoration: none;
-			text-transform: uppercase;
-		}
+{% block body %}
+    <div class="bg"></div>
+    <div class="auth-container">
+        <div class="left"></div>
+        <div class="right">
+            <div class="registration-container">
+                <h1>Create Account</h1>
+                
+                {% for flash_error in app.flashes('verify_email_error') %}
+                    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                {% endfor %}
 
-		.custom-border-btn:hover {
-			background: var(--custom-btn-bg-hover-color);
-			border-color: transparent;
-			color: var(--white-color);
-			transform: translateY(-2px);
-			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-		}
+                <form method="post" action="{{ path('app_register') }}" class="needs-validation" novalidate>
+                    <div class="form-group">
+                        <label for="inputFirstName">First Name</label>
+                        <input type="text" name="firstName" id="inputFirstName" class="form-control" required
+                            placeholder="Enter your first name"
+                            pattern="^[A-Za-z]+$" title="Only letters are allowed. No spaces, numbers, or special characters."
+                            value="{{ lastInput.firstName|default('') }}">
+                        {% if errorMessages.firstName is defined %}
+                            <div class="text-danger">
+                                {% for error in errorMessages.firstName %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
 
-		/* Form styling */
-		.ticket-form {
-			background: rgba(255, 255, 255, 0.95);
-			border-radius: var(--border-radius-medium);
-			box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
-		}
+                    <div class="form-group">
+                        <label for="inputLastName">Last Name</label>
+                        <input type="text" name="lastName" id="inputLastName" class="form-control" required
+                            placeholder="Enter your last name"
+                            pattern="^[A-Za-z]+$" title="Only letters are allowed. No spaces, numbers, or special characters."
+                            value="{{ lastInput.lastName|default('') }}">
+                        {% if errorMessages.lastName is defined %}
+                            <div class="text-danger">
+                                {% for error in errorMessages.lastName %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
 
-		/* Responsive adjustments */
-		@media(max-width: 767px) {
-			.custom-btn,
-			.custom-border-btn {
-				padding: 10px 15px;
-				font-size: 14px;
-			}
-		}
-	</style>
+                    <div class="form-group">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" name="email" id="inputEmail" class="form-control" required
+                            placeholder="Enter your email"
+                            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|tn|fr)$" title="Must be a valid email ending with .com, .tn, or .fr."
+                            value="{{ lastInput.email|default('') }}">
+                        {% if errorMessages.email is defined %}
+                            <div class="text-danger">
+                                {% for error in errorMessages.email %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputPhoneNumber">Phone Number</label>
+                        <input type="text" name="phoneNumber" id="inputPhoneNumber" class="form-control" required
+                            placeholder="Enter your phone number"
+                            pattern="^\+?[0-9]{7,15}$" title="Phone number must be valid and contain only digits, with an optional leading +."
+                            value="{{ lastInput.phoneNumber|default('') }}">
+                        {% if errorMessages.phoneNumber is defined %}
+                            <div class="text-danger">
+                                {% for error in errorMessages.phoneNumber %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" name="password" id="inputPassword" class="form-control" required
+                            placeholder="Enter your password"
+                            pattern="^(?=.*[0-9].*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Za-z]).{8,}$"
+                            title="Password must be at least 8 characters long, contain at least 2 digits, and include 1 special character.">
+                        {% if errorMessages.password is defined %}
+                            <div class="text-danger">
+                                {% for error in errorMessages.password %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <!-- reCAPTCHA widget -->
+                        <div class="g-recaptcha" data-sitekey="6LeaEysrAAAAAOwtRgJ1nvzqTLB9BYlxBoTnm8ze"></div>
+                    </div>
+
+                    <button class="btn-primary" type="submit">Register</button>
+
+                    <div class="form-footer">
+                        <p>Already have an account? <a href="{{ path('app_login') }}">Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form validation
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.parentElement.querySelector('.password-toggle i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
 {% endblock %}

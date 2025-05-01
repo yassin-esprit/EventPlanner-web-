@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage Donations{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Manage Donation Requests</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Requested At</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for donation in donations %}
+                                <tr>
+                                    <td>{{ donation.user.fullName }}</td>
+                                    <td>${{ donation.amount|number_format(2) }}</td>
+                                    <td>{{ donation.requestedAt|date('Y-m-d H:i:s') }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ donation.status == 'pending' ? 'warning' : (donation.status == 'accepted' ? 'success' : 'danger') }}">
+                                            {{ donation.status|capitalize }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if donation.status == 'pending' %}
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-primary" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#processDonationModal{{ donation.id }}">
+                                                Process
+                                            </button>
+
+                                            {# Modal for processing donation #}
+                                            <div class="modal fade" id="processDonationModal{{ donation.id }}" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Process Donation Request</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form action="{{ path('app_admin_process_donation', {id: donation.id}) }}" method="post">
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Status</label>
+                                                                    <select name="status" class="form-select" required>
+                                                                        <option value="accepted">Accept</option>
+                                                                        <option value="rejected">Reject</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Comment</label>
+                                                                    <textarea name="comment" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">Processed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No pending donation requests</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="navigation">
+                    {{ knp_pagination_render(donations) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Dashboard - Mythos Planner{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Welcome, {{ app.user.firstName }}!</h1>
+
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Your Current Role</h3>
+                </div>
+                <div class="card-body">
+                    <p>Current role: <strong>{{ app.user.roles[0]|replace({'ROLE_': ''}) }}</strong></p>
+
+                    {% if not pendingRequest and app.user.roles[0] != 'ROLE_OWNER' and app.user.roles[0] != 'ROLE_ADMIN' %}
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestRoleModal">
+                            Request Role Change
+                        </button>
+                    {% endif %}
+
+                    {% if pendingRequest %}
+                        <div class="alert alert-info mt-3">
+                            <h4 class="alert-heading">Pending Request</h4>
+                            <p>You have a pending request to become: <strong>{{ pendingRequest.requestedRole|replace({'ROLE_': ''}) }}</strong></p>
+                            <p>Submitted on: {{ pendingRequest.requestedAt|date('Y-m-d H:i') }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Role Request History</h3>
+                </div>
+                <div class="card-body">
+                    {% if roleHistory is empty %}
+                        <p class="text-muted">No role change history.</p>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Requested Role</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in roleHistory %}
+                                        <tr>
+                                            <td>{{ request.requestedRole|replace({'ROLE_': ''}) }}</td>
+                                            <td>
+                                                {% if request.status == 'pending' %}
+                                                    <span class="badge bg-warning">Pending</span>
+                                                {% elseif request.status == 'approved' %}
+                                                    <span class="badge bg-success">Approved</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">Rejected</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ request.requestedAt|date('Y-m-d H:i') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Role Request Modal -->
+<div class="modal fade" id="requestRoleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ path('app_request_role') }}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Request Role Change</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label for="role">Requested Role:</label>
+                        <select name="role" id="role" class="form-control" required>
+                            <option value="ROLE_OWNER">Owner</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reason">Reason for Request:</label>
+                        <textarea name="reason" id="reason" class="form-control" rows="4" required 
+                            placeholder="Please explain why you would like this role change..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

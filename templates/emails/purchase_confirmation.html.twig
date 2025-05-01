@@ -1,0 +1,24 @@
+{% extends 'emails/base_email.html.twig' %}
+
+{% block title %}Purchase Confirmation{% endblock %}
+
+{% block content %}
+    <p>Dear {{ purchase.user.firstName }},</p>
+
+    <p>Thank you for your purchase! Below are the details of your transaction:</p>
+
+    <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+        <h3 style="margin-top: 0;">Purchase Details:</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li><strong>Item:</strong> {{ purchase.merchandise.name }}</li>
+            <li><strong>Price:</strong> ${{ purchase.purchasePrice|number_format(2) }}</li>
+            <li><strong>Purchase Date:</strong> {{ purchase.purchaseDate|date('F j, Y H:i:s') }}</li>
+        </ul>
+    </div>
+
+    <p>A PDF receipt has been attached to this email for your records.</p>
+
+    <p>If you have any questions about your purchase, please don't hesitate to contact us.</p>
+
+    <p>Best regards,<br>Your Store Team</p>
+{% endblock %}

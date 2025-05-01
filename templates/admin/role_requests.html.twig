@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Role Requests - Admin Panel{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Role Requests</h1>
+
+    <form method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    <option value="pending" {% if currentStatus == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="approved" {% if currentStatus == 'approved' %}selected{% endif %}>Approved</option>
+                    <option value="rejected" {% if currentStatus == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Requested Role</th>
+                <th>Status</th>
+                <th>Requested At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in roleRequests %}
+                <tr>
+                    <td>{{ request.id }}</td>
+                    <td>{{ request.user.email }}</td>
+                    <td>{{ request.requestedRole|replace({'ROLE_': ''}) }}</td>
+                    <td>{{ request.status }}</td>
+                    <td>{{ request.requestedAt|date('Y-m-d H:i') }}</td>
+                    <td>
+                        {% if request.status == 'pending' %}
+                            <form method="post" action="{{ path('app_admin_approve_role_request', {id: request.id}) }}" class="d-inline">
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                            <form method="post" action="{{ path('app_admin_reject_role_request', {id: request.id}) }}" class="d-inline">
+                                <input type="text" name="reason" placeholder="Reason" class="form-control form-control-sm mb-2">
+                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                        {% else %}
+                            <span class="text-muted">No actions available</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No role requests found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(roleRequests) }}
+    </div>
+</div>
+{% endblock %}

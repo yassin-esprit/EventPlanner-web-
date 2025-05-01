@@ -1,0 +1,28 @@
+{% extends 'emails/base_email.html.twig' %}
+
+{% block title %}Donation Request Accepted{% endblock %}
+
+{% block content %}
+    <p>Dear {{ donation.user.firstName }},</p>
+
+    <p>We are pleased to inform you that your donation request has been accepted!</p>
+
+    <div class="details">
+        <h3>Donation Details:</h3>
+        <ul>
+            <li>Amount: ${{ donation.amount|number_format(2) }}</li>
+            <li>Date Requested: {{ donation.requestedAt|date('F j, Y') }}</li>
+            <li>Date Processed: {{ donation.processedAt|date('F j, Y') }}</li>
+        </ul>
+    </div>
+
+    {% if donation.comment %}
+        <p><strong>Admin Comment:</strong> {{ donation.comment }}</p>
+    {% endif %}
+
+    <p>A PDF confirmation has been attached to this email for your records.</p>
+
+    <p>Thank you for your generous donation!</p>
+
+    <p>Best regards,<br>The Admin Team</p>
+{% endblock %}

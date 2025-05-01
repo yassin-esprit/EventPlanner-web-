@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="avatar-circle mb-3">
+                            <span class="initials">
+                                {{ app.user.firstName|first|upper }}{{ app.user.lastName|first|upper }}
+                            </span>
+                        </div>
+                        <h2 class="card-title">{{ app.user.firstName }} {{ app.user.lastName }}</h2>
+                        <p class="text-muted">{{ app.user.email }}</p>
+                        <p class="badge bg-primary">{{ app.user.roles|first|replace({'ROLE_': ''}) }}</p>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Account Information</h5>
+                            <dl class="row">
+                                <dt class="col-sm-4">First Name:</dt>
+                                <dd class="col-sm-8">{{ app.user.firstName }}</dd>
+
+                                <dt class="col-sm-4">Last Name:</dt>
+                                <dd class="col-sm-8">{{ app.user.lastName }}</dd>
+
+                                <dt class="col-sm-4">Email:</dt>
+                                <dd class="col-sm-8">{{ app.user.email }}</dd>
+
+                                <dt class="col-sm-4">Role:</dt>
+                                <dd class="col-sm-8">{{ app.user.roles|first|replace({'ROLE_': ''}) }}</dd>
+
+                                <dt class="col-sm-4">Member Since:</dt>
+                                <dd class="col-sm-8">{{ app.user.createdAt|date('F j, Y') }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('app_user_dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                        <a href="{{ path('app_user_settings') }}" class="btn btn-primary">
+                            <i class="fas fa-cog"></i> Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    background-color: #007bff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.initials {
+    font-size: 2rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
