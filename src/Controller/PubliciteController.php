@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-
+use Twilio\Rest\Client;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
@@ -55,23 +55,63 @@ final class PubliciteController extends AbstractController{
             'publicite' => $publicite,
         ]);
     }
-
     #[Route('/{id_pub}/edit', name: 'app_publicite_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Publicite $publicite, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(PubliciteType::class, $publicite);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            
+            // Send SMS notification
+            $this->sendEditNotification($publicite);
+    
             return $this->redirectToRoute('app_publicite_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('publicite/edit.html.twig', [
             'publicite' => $publicite,
             'form' => $form,
         ]);
+    }
+    
+    private function sendEditNotification(Publicite $publicite): void
+    {
+        // Your Twilio credentials - better to put these in .env
+        $accountSid = 'AC78169c8b47cd1773189246897ab8e39f';
+        $authToken = 'e835bdd0f13cdb75811922db5673c80c';
+        $twilioNumber = '+19125720626';
+        
+        // The recipient's phone number - should be from configuration
+        $toNumber = '+21620370798'; // Replace with actual number to notify
+        
+        try {
+            // Now this will work with the use statement
+            $client = new Client($accountSid, $authToken);
+            
+            $message = $client->messages->create(
+                $toNumber,
+                [
+                    'from' => $twilioNumber,
+                    'body' => sprintf(
+                        "Advertisement '%s' has been updated.\nType: %s\nLocation: %s\nStatus: %s",
+                        $publicite->getTitrePub(),
+                        $publicite->getTypePub(),
+                        $publicite->getEmplacementPub(),
+                        $publicite->getStatutPub()
+                    )
+                ]
+            );
+            
+            // Optional: Log the message SID for reference
+            // $this->logger->info('Twilio message sent: ' . $message->sid);
+            
+        } catch (\Exception $e) {
+            // Log the error but don't interrupt the user flow
+            $this->addFlash('warning', 'Advertisement was updated but notification failed to send.');
+            // $this->logger->error('Twilio error: ' . $e->getMessage());
+        }
     }
 
     #[Route('/{id_pub}', name: 'app_publicite_delete', methods: ['POST'])]
