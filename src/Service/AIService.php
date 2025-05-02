@@ -35,36 +35,8 @@ class AIService
         ]);
     }
 
-    public function generateChatbotResponse(string $userMessage): string
-    {
-        try {
-            // First try a simple response without equipment data to isolate the issue
-            $prompt = sprintf(
-                "You are a helpful chatbot for an equipment management system. " .
-                "Respond to the user's query: '%s'\n" .
-                "Keep the response concise (max 200 characters), natural, and accurate. If the query is unclear or unrelated, provide a polite fallback response.",
-                $userMessage
-            );
-
-            $this->logger->info('Generating simple chatbot response for debugging', [
-                'user_message' => $userMessage,
-                'prompt' => $prompt
-            ]);
-
-            $response = $this->getGeminiResponse($prompt);
-            return substr($response, 0, 200);
-        } catch (\Exception $e) {
-            $this->logger->error('Failed to generate simple chatbot response', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'user_message' => $userMessage
-            ]);
-            return "Debug error: " . $e->getMessage();
-        }
-    }
-
     // Once the simple response works, you can uncomment this more complex version
-    /*
+    
     public function generateChatbotResponse(string $userMessage): string
     {
         // Fetch equipment data
@@ -118,7 +90,7 @@ class AIService
             return "API error: " . $e->getMessage();
         }
     }
-    */
+    
 
     public function getGeminiResponse(string $prompt): string
     {

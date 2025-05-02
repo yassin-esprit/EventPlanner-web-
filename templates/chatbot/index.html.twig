@@ -35,12 +35,12 @@
             const message = input.value.trim();
             if (!message) return;
 
-            // Add user message
+            //  user message
             const messages = document.getElementById('chat-messages');
             messages.innerHTML += `<div class="mb-2"><strong>You:</strong> ${message}</div>`;
             input.value = '';
 
-            // Add loading message
+            //  loading message
             const loadingId = 'loading-' + Date.now();
             messages.innerHTML += `<div class="mb-2" id="${loadingId}"><strong>Bot:</strong> <em>Thinking...</em></div>`;
 
