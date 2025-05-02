@@ -567,36 +567,66 @@
 					</a>
 				</div>
 
-				<!-- Dashboard Section -->
-				<div id="dashboard-section" class="content-section">
-					<div class="card shadow mb-4">
-						<div class="card-header">
-							<h6 class="m-0 font-weight-bold">Dashboard Overview</h6>
-						</div>
-						<div class="card-body">
-							<p>Welcome to the admin dashboard. Select a section from the sidebar to manage.</p>
-						</div>
-					</div>
-				</div>
-
 				<!-- Events Section -->
 				<div id="events-section" class="content-section active">
 					<div class="card shadow mb-4">
 						<div class="card-header">
 							<h6 class="m-0 font-weight-bold">All Events</h6>
-							<div class="dropdown d-inline-block">
-								<button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-									<i class="bi bi-filter"></i>
-									Filter
-								</button>
-								<div class="dropdown-menu dropdown-menu-right">
-									<a class="dropdown-item" href="#">All Events</a>
-									<a class="dropdown-item" href="#">Upcoming</a>
-									<a class="dropdown-item" href="#">Past</a>
+							<div
+								class="d-flex align-items-center">
+								<!-- Search Input -->
+								<div class="input-group input-group-sm mr-3" style="width: 250px;">
+									<input type="text" id="eventsSearchInput" class="form-control" placeholder="Search events...">
 								</div>
+
+								<!-- Sort Button -->
+								<button id="sortByEventNameBtn" class="btn btn-info btn-sm mr-3">
+									<i class="bi bi-sort-alpha-down"></i>
+									Sort by Name
+								</button>
+
+								<!-- Add New Event Button -->
+								<a href="{{ path('app_evenement_new') }}" class="btn btn-primary btn-sm">
+									<i class="bi bi-plus-circle"></i>
+									Add New Event
+								</a>
 							</div>
 						</div>
-						<div class="card-body">
+						<div
+							class="card-body">
+							<!-- Event Statistics -->
+							<div class="row mb-3">
+								<div class="col-md-4">
+									<div class="card border-left-primary shadow h-100 py-2">
+										<div class="card-body">
+											<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Events</div>
+											<div class="h5 mb-0 font-weight-bold text-gray-800">{{ evenements|length }}</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="card border-left-success shadow h-100 py-2">
+										<div class="card-body">
+											<div class="text-xs font-weight-bold text-success text-uppercase mb-1">Upcoming Events</div>
+											<div class="h5 mb-0 font-weight-bold text-gray-800">
+												{{ evenements|filter(e => e.date and e.date >= date())|length }}
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="card border-left-secondary shadow h-100 py-2">
+										<div class="card-body">
+											<div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Past Events</div>
+											<div class="h5 mb-0 font-weight-bold text-gray-800">
+												{{ evenements|filter(e => e.date and e.date < date())|length }}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Event Table -->
 							<div class="table-responsive">
 								<table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
 									<thead>
@@ -613,12 +643,12 @@
 									<tbody>
 										{% for evenement in evenements %}
 											{% set event_assets = {
-                                            'conference': {'color': 'primary', 'icon': 'bi-mic'},
-                                            'fête': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
-                                            'fete': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
-                                            'formation': {'color': 'success', 'icon': 'bi-mortarboard'},
-                                            'default': {'color': 'secondary', 'icon': 'bi-calendar-event'}
-                                        } %}
+												'conference': {'color': 'primary', 'icon': 'bi-mic'},
+												'fête': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
+												'fete': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
+												'formation': {'color': 'success', 'icon': 'bi-mortarboard'},
+												'default': {'color': 'secondary', 'icon': 'bi-calendar-event'}
+											} %}
 
 											{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
 											{% set is_past = evenement.date and evenement.date < date() %}
@@ -768,6 +798,7 @@
 					</div>
 				</div>
 
+<<<<<<< HEAD
 			<!-- Advertisements Section -->
 <div id="ads-section" class="content-section">
     <div class="card shadow mb-4">
@@ -1355,6 +1386,586 @@ document.addEventListener('DOMContentLoaded', function() {
             sortByDateBtn.innerHTML = '<i class="bi bi-sort-up"></i> Sort by Date ';
         }
     });
+=======
+				<!-- Advertisements Section -->
+				<div id="ads-section" class="content-section">
+					<div class="card shadow mb-4">
+						<div class="card-header d-flex justify-content-between align-items-center">
+							<h6 class="m-0 font-weight-bold">All Advertisements</h6>
+							<div
+								class="d-flex align-items-center">
+								<!-- Search Input -->
+								<div class="input-group input-group-sm mr-3" style="width: 250px;">
+
+									<input type="text" id="adsSearchInput" class="form-control" placeholder="Search advertisements...">
+									<div class="input-group-append"></div>
+								</div>
+
+								<!-- Sort Button -->
+								<button id="sortByNameBtn" class="btn btn-info btn-sm mr-3">
+									<i class="bi bi-sort-alpha-down"></i>
+									Sort by Name
+								</button>
+
+								<!-- Add New Button -->
+								<a href="{{ path('app_publicite_new') }}" class="btn btn-primary btn-sm">
+									<i class="bi bi-plus-circle"></i>
+									Add New
+								</a>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="table" width="100%" cellspacing="0" id="adsTable">
+									<thead>
+										<tr>
+											<th>Title</th>
+											<th>Type</th>
+											<th>Content</th>
+											<th>Location</th>
+											<th>Status</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody id="adsTableBody">
+										{% for publicite in publicites %}
+											{% set status_color = publicite.statut_pub == 'active' ? 'success' : 'secondary' %}
+											<tr data-name="{{ publicite.titre_pub|lower }}" data-type="{{ publicite.type_pub|lower }}" data-content="{{ publicite.contenu_pub|lower }}" data-location="{{ publicite.emplacement_pub|lower }}" data-status="{{ publicite.statut_pub|lower }}">
+												<td>
+													<strong>{{ publicite.titre_pub }}</strong>
+												</td>
+												<td>
+													<span class="badge badge-primary">
+														{{ publicite.type_pub }}
+													</span>
+												</td>
+												<td>{{ publicite.contenu_pub|length > 30 ? publicite.contenu_pub|slice(0, 30) ~ '...' : publicite.contenu_pub }}</td>
+												<td>{{ publicite.emplacement_pub }}</td>
+												<td>
+													<span class="badge badge-{{ status_color }}">
+														{{ publicite.statut_pub }}
+													</span>
+												</td>
+												<td>
+													<div class="action-buttons">
+														<a href="{{ path('app_publicite_show', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-primary" title="View">
+															<i class="bi bi-eye"></i>
+														</a>
+														<a href="{{ path('app_publicite_edit', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-warning" title="Edit">
+															<i class="bi bi-pencil"></i>
+														</a>
+														<form method="post" action="{{ path('app_publicite_delete', {'id_pub': publicite.id_pub}) }}" onsubmit="return confirm('Are you sure you want to delete this advertisement?');" class="d-inline">
+															<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ publicite.id_pub) }}">
+															<button class="btn btn-sm btn-danger" title="Delete">
+																<i class="bi bi-trash"></i>
+															</button>
+														</form>
+													</div>
+												</td>
+											</tr>
+										{% else %}
+											<tr id="noAdsRow">
+												<td colspan="6" class="text-center py-4">
+													<i class="bi bi-megaphone fs-1 text-muted"></i>
+													<h5 class="text-muted mt-3">No advertisements found</h5>
+													<a href="{{ path('app_publicite_new') }}" class="btn btn-primary mt-2">
+														<i class="bi bi-plus-circle"></i>
+														Create Advertisement
+													</a>
+												</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- JavaScript for Search and Sort Functionality -->
+				<script>
+					document.addEventListener('DOMContentLoaded', function () {
+const searchInput = document.getElementById('adsSearchInput');
+const clearSearchBtn = document.getElementById('clearSearchBtn');
+const sortByNameBtn = document.getElementById('sortByNameBtn');
+const adsTableBody = document.getElementById('adsTableBody');
+const noAdsRow = document.getElementById('noAdsRow');
+
+let sortAscending = true;
+let currentSearchTerm = '';
+
+// Search functionality
+searchInput.addEventListener('input', function () {
+currentSearchTerm = this.value.toLowerCase();
+filterAds();
+
+// Show/hide clear button
+clearSearchBtn.style.display = currentSearchTerm ? 'block' : 'none';
+});
+
+// Clear search
+clearSearchBtn.addEventListener('click', function () {
+searchInput.value = '';
+currentSearchTerm = '';
+filterAds();
+clearSearchBtn.style.display = 'none';
+searchInput.focus();
+});
+
+// Sort functionality
+sortByNameBtn.addEventListener('click', function () {
+sortAscending = ! sortAscending;
+filterAds(); // This will reapply both search and sort
+});
+
+function filterAds() {
+const rows = Array.from(adsTableBody.querySelectorAll('tr:not(#noAdsRow)'));
+let hasVisibleRows = false;
+
+// Filter and sort rows
+rows.forEach(row => {
+const name = row.getAttribute('data-name');
+const type = row.getAttribute('data-type');
+const content = row.getAttribute('data-content');
+const location = row.getAttribute('data-location');
+const status = row.getAttribute('data-status');
+
+// Check if row matches search term
+const matchesSearch = ! currentSearchTerm || name.includes(currentSearchTerm) || type.includes(currentSearchTerm) || content.includes(currentSearchTerm) || location.includes(currentSearchTerm) || status.includes(currentSearchTerm);
+
+row.style.display = matchesSearch ? '' : 'none';
+if (matchesSearch) 
+hasVisibleRows = true;
+
+
+
+});
+
+// Handle no results message
+if (noAdsRow) {
+noAdsRow.style.display = hasVisibleRows ? 'none' : '';
+}
+
+// Sort visible rows
+if (hasVisibleRows) {
+const visibleRows = rows.filter(row => row.style.display !== 'none');
+
+visibleRows.sort((a, b) => {
+const nameA = a.getAttribute('data-name');
+const nameB = b.getAttribute('data-name');
+return sortAscending ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+});
+
+// Re-append sorted rows
+visibleRows.forEach(row => adsTableBody.appendChild(row));
+}
+
+// Update sort button text
+sortByNameBtn.innerHTML = sortAscending ? '<i class="bi bi-sort-alpha-down"></i> Sort by Name (A-Z)' : '<i class="bi bi-sort-alpha-up"></i> Sort by Name (Z-A)';
+}
+});
+
+// Alternative jQuery version
+/*
+$(document).ready(function() {
+    let sortAscending = true;
+    let currentSearchTerm = '';
+    
+    $('#adsSearchInput').on('input', function() {
+        currentSearchTerm = $(this).val().toLowerCase();
+        filterAds();
+        $('#clearSearchBtn').toggle(currentSearchTerm.length > 0);
+    });
+    
+    $('#clearSearchBtn').click(function() {
+        $('#adsSearchInput').val('').focus();
+        currentSearchTerm = '';
+        filterAds();
+        $(this).hide();
+    });
+    
+    $('#sortByNameBtn').click(function() {
+        sortAscending = !sortAscending;
+        filterAds();
+    });
+    
+    function filterAds() {
+        const $rows = $('#adsTableBody tr:not(#noAdsRow)');
+        let hasVisibleRows = false;
+        
+        $rows.each(function() {
+            const $row = $(this);
+            const matchesSearch = !currentSearchTerm || 
+                $row.data('name').includes(currentSearchTerm) || 
+                $row.data('type').includes(currentSearchTerm) || 
+                $row.data('content').includes(currentSearchTerm) || 
+                $row.data('location').includes(currentSearchTerm) || 
+                $row.data('status').includes(currentSearchTerm);
+            
+            $row.toggle(matchesSearch);
+            if (matchesSearch) hasVisibleRows = true;
+        });
+        
+        $('#noAdsRow').toggle(!hasVisibleRows);
+        
+        if (hasVisibleRows) {
+            const $visibleRows = $rows.filter(':visible').detach();
+            
+            $visibleRows.sort(function(a, b) {
+                const nameA = $(a).data('name');
+                const nameB = $(b).data('name');
+                return sortAscending ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+            });
+            
+            $('#adsTableBody').append($visibleRows);
+        }
+        
+        $('#sortByNameBtn').html(
+            sortAscending 
+                ? '<i class="bi bi-sort-alpha-down"></i> Sort by Name (A-Z)' 
+                : '<i class="bi bi-sort-alpha-up"></i> Sort by Name (Z-A)'
+        );
+    }
+});
+*/
+				</script>
+				<!-- JavaScript for Sorting Functionality -->
+				<script>
+					document.addEventListener('DOMContentLoaded', function () {
+const sortByNameBtn = document.getElementById('sortByNameBtn');
+let sortAscending = true;
+
+sortByNameBtn.addEventListener('click', function () {
+const tableBody = document.getElementById('adsTableBody');
+const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+// Remove the "no advertisements" row if it exists
+const noAdsRow = rows.find(row => row.querySelector('td[colspan="6"]'));
+if (noAdsRow) {
+tableBody.removeChild(noAdsRow);
+}
+
+// Sort rows alphabetically by name
+rows.sort((a, b) => {
+const nameA = a.getAttribute('data-name');
+const nameB = b.getAttribute('data-name');
+
+if (sortAscending) {
+return nameA.localeCompare(nameB);
+} else {
+return nameB.localeCompare(nameA);
+}
+});
+
+// Clear the table
+while (tableBody.firstChild) {
+tableBody.removeChild(tableBody.firstChild);
+}
+
+// Re-add the sorted rows
+rows.forEach(row => tableBody.appendChild(row));
+
+// Toggle sort direction for next click
+sortAscending = ! sortAscending;
+
+// Update button icon and text
+if (sortAscending) {
+sortByNameBtn.innerHTML = '<i class="bi bi-sort-alpha-down"></i> Sort by Name (Z-A)';
+} else {
+sortByNameBtn.innerHTML = '<i class="bi bi-sort-alpha-up"></i> Sort by Name (A-Z)';
+}
+});
+});
+
+// Alternative jQuery version
+/*
+$(document).ready(function() {
+    let sortAscending = true;
+    
+    $('#sortByNameBtn').click(function() {
+        const $tableBody = $('#adsTableBody');
+        const $rows = $tableBody.find('tr').not('td[colspan="6"]').get();
+        
+        $rows.sort(function(a, b) {
+            const nameA = $(a).data('name').toLowerCase();
+            const nameB = $(b).data('name').toLowerCase();
+            
+            return sortAscending 
+                ? nameA.localeCompare(nameB)
+                : nameB.localeCompare(nameA);
+        });
+        
+        $tableBody.empty().append($rows);
+        sortAscending = !sortAscending;
+        
+        $(this).html(
+            sortAscending
+                ? '<i class="bi bi-sort-alpha-down"></i> Sort by Name (A-Z)'
+                : '<i class="bi bi-sort-alpha-up"></i> Sort by Name (Z-A)'
+        );
+    });
+});
+*/
+				</script>
+				<!-- Campaign Status Statistics Card -->
+				<div class="card shadow mb-4">
+					<div class="card-header d-flex justify-content-between align-items-center">
+						<h6 class="m-0 font-weight-bold">Campaign Status Statistics</h6>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="chart-container" style="position: relative; height: 250px;">
+									<canvas id="campaignStatusChart"></canvas>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="status-details">
+									{% set stats = {
+                        'en_cours': campagnes|filter(c => c.statutCamp == 'en_cours')|length,
+                        'suspendue': campagnes|filter(c => c.statutCamp == 'suspendue')|length,
+                        'terminee': campagnes|filter(c => c.statutCamp == 'terminee')|length
+                    } %}
+									<div class="list-group list-group-flush">
+										<div class="list-group-item border-0">
+											<div class="d-flex justify-content-between align-items-center">
+												<span>
+													<span bg-success">&nbsp;</span>
+													En Cours</span>
+												<strong>{{ stats.en_cours }}</strong>
+											</div>
+										</div>
+										<div class="list-group-item border-0">
+											<div class="d-flex justify-content-between align-items-center">
+												<span>
+													<span bg-warning me-7">&nbsp;</span>
+													Suspendue</span>
+												<strong>{{ stats.suspendue }}</strong>
+											</div>
+										</div>
+										<div class="list-group-item border-0">
+											<div class="d-flex justify-content-between align-items-center">
+												<span>
+													<span bg-secondary me-2">&nbsp;</span>
+													Terminee</span>
+												<strong>{{ stats.terminee }}</strong>
+											</div>
+										</div>
+										<div class="list-group-item border-0 pt-2">
+											<div class="d-flex justify-content-between align-items-center">
+												<span class="fw-bold">Total Campaigns</span>
+												<strong>{{ campagnes|length }}</strong>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Your Existing Campaigns Card (Unchanged) -->
+				<div class="card shadow mb-4">
+					<div class="card-header d-flex justify-content-between align-items-center">
+						<h6 class="m-0 font-weight-bold">Advertising Campaigns</h6>
+						<div>
+							<button id="sortByDateBtn" class="btn btn-info btn-sm me-2">
+								<i class="bi bi-sort-down"></i>
+								Sort by Date
+							</button>
+							<a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary">
+								<i class="bi bi-plus-circle me-2"></i>Create New Campaign
+							</a>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="row" id="campaignsContainer">
+							{% for campagne in campagnes %}
+								<div class="col-lg-4 col-md-6 mb-4" data-start-date="{{ campagne.dateDebutCamp|date('Y-m-d') }}" data-end-date="{{ campagne.dateFinCamp|date('Y-m-d') }}" data-status="{{ campagne.statutCamp }}" data-budget="{{ campagne.budgetCamp }}">
+									<div class="card campaign-card h-100 border-0 shadow-sm">
+										<div class="card-header bg-white">
+											<h5 class="card-title mb-0">{{ campagne.nomCamp }}</h5>
+										</div>
+										<div class="card-body">
+											<div class="campaign-meta mb-3">
+												<div class="d-flex justify-content-between mb-2">
+													<span class="text-muted">Budget:</span>
+													<strong>{{ campagne.budgetCamp }}
+														TND</strong>
+												</div>
+												<div class="d-flex justify-content-between mb-2">
+													<span class="text-muted">Status:</span>
+													<span class="badge bg-{{ campagne.statutCamp == 'en_cours' ? 'success' :
+																																																																																																									                                          (campagne.statutCamp == 'suspendue' ? 'warning' :
+																																																																																																									                                          (campagne.statutCamp == 'terminee' ? 'secondary' : 'danger')) }}">
+														{{ campagne.statutCamp }}
+													</span>
+												</div>
+												<div class="d-flex justify-content-between mb-2">
+													<span class="text-muted">Start:</span>
+													<span>{{ campagne.dateDebutCamp|date('d M Y') }}</span>
+												</div>
+												<div class="d-flex justify-content-between">
+													<span class="text-muted">End:</span>
+													<span>{{ campagne.dateFinCamp|date('d M Y') }}</span>
+												</div>
+											</div>
+											<hr>
+											<div class="campaign-ad">
+												<h6 class="text-muted mb-2">Associated Ad:</h6>
+												<p class="mb-1">
+													<strong>{{ campagne.publicite.titrePub }}</strong>
+												</p>
+												<p class="small text-muted">{{ campagne.publicite.typePub|capitalize }}
+													-
+													{{ campagne.publicite.emplacementPub }}</p>
+											</div>
+										</div>
+										<div class="card-footer bg-white d-flex justify-content-between">
+											<a href="{{ path('app_campagnes_publicitaire_show', {'id_camp': campagne.idCamp}) }}" class="btn btn-sm btn-outline-primary">
+												<i class="bi bi-eye"></i>
+												View
+											</a>
+											<a href="{{ path('app_campagnes_publicitaire_edit', {'id_camp': campagne.idCamp}) }}" class="btn btn-sm btn-outline-secondary">
+												<i class="bi bi-pencil"></i>
+												Edit
+											</a>
+										</div>
+									</div>
+								</div>
+							{% else %}
+								<div class="col-12" id="noCampaignsMessage">
+									<div class="text-center py-4">
+										<i class="bi bi-megaphone fs-1 text-muted"></i>
+										<h5 class="text-muted mt-3">No campaigns found</h5>
+										<p class="mb-0">Create your first advertising campaign</p>
+										<a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary mt-3">
+											<i class="bi bi-plus-circle me-2"></i>New Campaign
+										</a>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+
+				<!-- JavaScript for Chart -->
+				<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+				<script>
+					document.addEventListener('DOMContentLoaded', function () { // Status Statistics Chart
+const ctx = document.getElementById('campaignStatusChart').getContext('2d');
+const statusChart = new Chart(ctx, {
+type: 'doughnut',
+data: {
+labels: [
+'En Cours', 'Suspendue', 'Terminee'
+],
+datasets: [
+{
+data: [
+{{ campagnes|filter(c => c.statutCamp == 'en_cours')|length }}, {{ campagnes|filter(c => c.statutCamp == 'suspendue')|length }}, {{ campagnes|filter(c => c.statutCamp == 'terminee')|length }}
+],
+backgroundColor: [
+'rgba(110, 40, 167, 0.8)', // Green for Ongoing
+'rgba(251, 22, 87, 0.8)', // Yellow for Suspended
+'rgba(108, 117, 125, 0.8)' // Gray for Completed
+],
+borderColor: [
+'rgb(0, 0, 0)', 'rgb(0, 0, 0)', 'rgb(0, 0, 0)'
+],
+borderWidth: 1
+}
+]
+},
+options: {
+maintainAspectRatio: false,
+plugins: {
+legend: {
+position: 'right',
+labels: {
+boxWidth: 12,
+padding: 20
+}
+}
+},
+cutout: '70%'
+}
+});
+
+// Your existing sort functionality
+const sortByDateBtn = document.getElementById('sortByDateBtn');
+let sortAscending = true;
+
+sortByDateBtn.addEventListener('click', function () {
+const container = document.getElementById('campaignsContainer');
+const campaignCards = Array.from(container.querySelectorAll('.col-lg-4.col-md-6.mb-4'));
+const noCampaignsMessage = document.getElementById('noCampaignsMessage');
+
+if (noCampaignsMessage) {
+container.removeChild(noCampaignsMessage);
+}
+
+campaignCards.sort((a, b) => {
+const dateA = new Date(a.getAttribute('data-start-date'));
+const dateB = new Date(b.getAttribute('data-start-date'));
+return sortAscending ? dateA - dateB : dateB - dateA;
+});
+
+campaignCards.forEach(card => container.appendChild(card));
+sortAscending = ! sortAscending;
+
+sortByDateBtn.innerHTML = sortAscending ? '<i class="bi bi-sort-down"></i> Sort by Date (Oldest First)' : '<i class="bi bi-sort-up"></i> Sort by Date (Newest First)';
+});
+});
+				</script>
+
+				<style>
+					.chart-container {
+						min-height: 250px;
+					}
+					.bg-warning {
+						background-color: #ffc107 !important;
+						color: #212529;
+					}
+				</style>
+				<!-- JavaScript for Date Sorting Functionality -->
+				<script>
+					document.addEventListener('DOMContentLoaded', function () {
+const sortByDateBtn = document.getElementById('sortByDateBtn');
+let sortAscending = true;
+
+sortByDateBtn.addEventListener('click', function () {
+const container = document.getElementById('campaignsContainer');
+const campaignCards = Array.from(container.querySelectorAll('.col-lg-4.col-md-6.mb-4'));
+const noCampaignsMessage = document.getElementById('noCampaignsMessage');
+
+// If there's a "no campaigns" message, remove it temporarily
+if (noCampaignsMessage) {
+container.removeChild(noCampaignsMessage);
+}
+
+// Sort campaigns by start date
+campaignCards.sort((a, b) => {
+const dateA = new Date(a.getAttribute('data-start-date'));
+const dateB = new Date(b.getAttribute('data-start-date'));
+
+return sortAscending ? dateA - dateB : dateB - dateA;
+});
+
+// Re-append sorted campaigns
+campaignCards.forEach(card => container.appendChild(card));
+
+// Toggle sort direction for next click
+sortAscending = ! sortAscending;
+
+// Update button icon and text
+if (sortAscending) {
+sortByDateBtn.innerHTML = '<i class="bi bi-sort-down"></i> Sort by Date';
+} else {
+sortByDateBtn.innerHTML = '<i class="bi bi-sort-up"></i> Sort by Date ';
+}
+});
+>>>>>>> Gestion-evenement
 });
 
 // Alternative jQuery version
@@ -1389,7 +2000,11 @@ $(document).ready(function() {
     });
 });
 */
+<<<<<<< HEAD
 </script>
+=======
+				</script>
+>>>>>>> Gestion-evenement
 
 				<div id="merchandise-section" class="content-section">
 					<div class="card shadow mb-4">
@@ -1495,4 +2110,60 @@ window.location.hash = sectionId;
 const initialSection = window.location.hash.substring(1) || 'events';
 switchSection(initialSection);
 });
+<<<<<<< HEAD
 </script>{% endblock %}
+=======
+
+document.addEventListener('DOMContentLoaded', function () {
+const searchInput = document.getElementById('eventsSearchInput');
+const sortByEventNameBtn = document.getElementById('sortByEventNameBtn');
+const eventTableBody = document.querySelector('#events-section .table tbody');
+let sortAscending = true;
+
+// Search functionality
+searchInput.addEventListener('input', function () {
+const searchTerm = this.value.toLowerCase();
+const rows = eventTableBody.querySelectorAll('tr');
+let hasVisibleRows = false;
+
+rows.forEach(row => {
+const title = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+const type = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+const location = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+
+const matchesSearch = title.includes(searchTerm) || type.includes(searchTerm) || location.includes(searchTerm);
+row.style.display = matchesSearch ? '' : 'none';
+
+if (matchesSearch) 
+hasVisibleRows = true;
+
+
+
+});
+
+// Handle "no events found" row
+const noEventsRow = eventTableBody.querySelector('tr td[colspan="7"]');
+if (noEventsRow) {
+noEventsRow.style.display = hasVisibleRows ? 'none' : '';
+}
+});
+
+// Sort functionality
+sortByEventNameBtn.addEventListener('click', function () {
+const rows = Array.from(eventTableBody.querySelectorAll('tr:not(:last-child)'));
+rows.sort((a, b) => {
+const nameA = a.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
+const nameB = b.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
+return sortAscending ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+});
+
+rows.forEach(row => eventTableBody.appendChild(row));
+sortAscending = ! sortAscending;
+
+// Update button text
+sortByEventNameBtn.innerHTML = sortAscending ? '<i class="bi bi-sort-alpha-down"></i> Sort by Name (A-Z)' : '<i class="bi bi-sort-alpha-up"></i> Sort by Name (Z-A)';
+});
+});
+	</script>
+{% endblock %}
+>>>>>>> Gestion-evenement
