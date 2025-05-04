@@ -721,101 +721,109 @@
     </div>
 
     <!-- Equipment Reservations Section -->
-    <div class="card shadow mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold">Réservations d'équipement</h6>
-            <div class="d-flex align-items-center">
-                <!-- Search Input for Reservations -->
-                <div class="input-group input-group-sm mr-3" style="width: 250px;">
-                    <input type="text" id="reservationSearchInput" class="form-control" placeholder="Rechercher réservations...">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="clearReservationSearch">
-                            <i class="bi bi-x"></i>
-                        </button>
-                    </div>
+    <!-- Dans la section Reservation Table -->
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold">Réservations d'équipement</h6>
+        <div class="d-flex align-items-center">
+            <!-- Search Input for Reservations -->
+            <div class="input-group input-group-sm mr-3" style="width: 250px;">
+                <input type="text" id="reservationSearchInput" class="form-control" placeholder="Rechercher réservations...">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="clearReservationSearch">
+                        <i class="bi bi-x"></i>
+                    </button>
                 </div>
-                
-                <!-- Sort Button for Reservations -->
-                <button id="sortReservationBtn" class="btn btn-info btn-sm">
-                    <i class="bi bi-sort-down"></i>
-                    Trier par Date
-                </button>
-				<a href="{{ path('app_reservation_equipement_new') }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-plus-circle"></i>
-                    Ajouter une reservation
-                </a>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table" width="100%" cellspacing="0" id="reservationTable">
-                    <thead>
-                        <tr>
-                            <th>ÉQUIPEMENT</th>
-                            <th>DATE RÉSERVATION</th>
-                            <th>STATUT</th>
-                            <th>ÉVÉNEMENT</th>
-                            <th>ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reservationTableBody">
-                        {% for reservation in reservation_equipements %}
-                            {% set status_color = reservation.statut == 'confirme' ? 'success' : 
-                                              (reservation.statut == 'attente' ? 'warning' : 'danger') %}
-                            <tr data-equipment="{% if reservation.equipement %}{{ reservation.equipement.nom|lower }}{% endif %}"
-                                data-date="{{ reservation.dateReservation|date('Y-m-d H:i') }}"
-                                data-status="{{ reservation.statut|lower }}"
-                                data-event="{% if reservation.evenement %}{{ reservation.evenement.titre|lower }}{% endif %}">
-                                <td>
-                                    {% if reservation.equipement %}
-                                        <strong>{{ reservation.equipement.nom }}</strong>
-                                    {% else %}
-                                        <span class="text-muted">Non spécifié</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ reservation.dateReservation|date('d/m/Y H:i') }}</td>
-                                <td>
-                                    <span class="badge badge-{{ status_color }}">
-                                        {% if reservation.statut == 'confirme' %}
-                                            CONFIRMÉ
-                                        {% elseif reservation.statut == 'attente' %}
-                                            EN ATTENTE
-                                        {% else %}
-                                            ANNULÉ
-                                        {% endif %}
-                                    </span>
-                                </td>
-                                <td>
-                                    {% if reservation.evenement %}
-                                        {{ reservation.evenement.titre }}
-                                    {% else %}
-                                        <span class="text-muted">Non spécifié</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <a href="{{ path('app_reservation_equipement_show', {'id': reservation.id}) }}" class="btn btn-sm btn-primary" title="Voir">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a href="{{ path('app_reservation_equipement_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr id="noReservationRow">
-                                <td colspan="5" class="text-center py-4">
-                                    <i class="bi bi-calendar-x fs-1 text-muted"></i>
-                                    <h5 class="text-muted mt-3">Aucune réservation trouvée</h5>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            
+            <!-- Sort Button for Reservations -->
+            <button id="sortReservationBtn" class="btn btn-info btn-sm">
+                <i class="bi bi-sort-down"></i>
+                Trier par Date
+            </button>
+            <a href="{{ path('app_reservation_equipement_new') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle"></i>
+                Ajouter une reservation
+            </a>
         </div>
     </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table" width="100%" cellspacing="0" id="reservationTable">
+                <thead>
+                    <tr>
+                        <th>ÉQUIPEMENT</th>
+                        <th>DATE RÉSERVATION</th>
+                        <th>STATUT</th>
+                        <th>ÉVÉNEMENT</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="reservationTableBody">
+                    {% for reservation in reservation_equipements %}
+                        {% set status_color = reservation.statut == 'confirme' ? 'success' : 
+                                          (reservation.statut == 'attente' ? 'warning' : 'danger') %}
+                        <tr data-equipment="{% if reservation.equipement %}{{ reservation.equipement.nom|lower }}{% endif %}"
+                            data-date="{{ reservation.dateReservation|date('Y-m-d H:i') }}"
+                            data-status="{{ reservation.statut|lower }}"
+                            data-event="{% if reservation.evenement %}{{ reservation.evenement.titre|lower }}{% endif %}">
+                            <td>
+                                {% if reservation.equipement %}
+                                    <strong>{{ reservation.equipement.nom }}</strong>
+                                {% else %}
+                                    <span class="text-muted">Non spécifié</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ reservation.dateReservation|date('d/m/Y H:i') }}</td>
+                            <td>
+                                <span class="badge badge-{{ status_color }}">
+                                    {% if reservation.statut == 'confirme' %}
+                                        CONFIRMÉ
+                                    {% elseif reservation.statut == 'attente' %}
+                                        EN ATTENTE
+                                    {% else %}
+                                        ANNULÉ
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                {% if reservation.evenement %}
+                                    {{ reservation.evenement.titre }}
+                                {% else %}
+                                    <span class="text-muted">Non spécifié</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{{ path('app_reservation_equipement_show', {'id': reservation.id}) }}" class="btn btn-sm btn-primary" title="Voir">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ path('app_reservation_equipement_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <!-- Ajout du bouton Supprimer -->
+                                    <form method="post" action="{{ path('app_reservation_equipement_delete', {'id': reservation.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette réservation ?');" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
+                                        <button class="btn btn-sm btn-danger" title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr id="noReservationRow">
+                            <td colspan="5" class="text-center py-4">
+                                <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                                <h5 class="text-muted mt-3">Aucune réservation trouvée</h5>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 	<!-- Statistiques des équipements -->
 <div class="card shadow mb-4 mt-4">
     <div class="card-header d-flex justify-content-between align-items-center">
