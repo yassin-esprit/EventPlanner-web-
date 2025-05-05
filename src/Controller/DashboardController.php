@@ -24,19 +24,30 @@ class DashboardController extends AbstractController
         EvenementRepository $evenementRepository,
         EquipementRepository $equipementRepository,
         PubliciteRepository $publiciteRepository,
+        ReservationEquipementRepository $reservationEquipementRepository,
         CampagnesPublicitaireRepository $campagneRepository
     ): Response {
         $evenements   = $evenementRepository->findAll();
         $equipements  = $equipementRepository->findAll();
         $publicites   = $publiciteRepository->findAll();
+        $reservationEquipements = $reservationEquipementRepository->findAll();
         $campagnes    = $campagneRepository->findAll();
 
+        // ✅ Statistiques équipements par statut
+        $stats = [
+            'disponible'   => $equipementRepository->count(['statut' => 'disponible']),
+            'maintenance'  => $equipementRepository->count(['statut' => 'maintenance']),
+            'indisponible' => $equipementRepository->count(['statut' => 'indisponible']),
+        ];
+
         return $this->render('dashboard/admin/admin.html.twig', [
-            'controller_name' => 'DashboardController',
-            'evenements'      => $evenements,
-            'equipements'     => $equipements,
-            'publicites'      => $publicites,
-            'campagnes'       => $campagnes,
+            'controller_name'        => 'DashboardController',
+            'evenements'             => $evenements,
+            'equipements'            => $equipements,
+            'publicites'             => $publicites,
+            'campagnes'              => $campagnes,
+            'reservation_equipements'=> $reservationEquipements,
+            'stats'                  => $stats,
         ]);
     }
 
@@ -51,17 +62,20 @@ class DashboardController extends AbstractController
     ): Response {
         $evenements            = $evenementRepository->findAll();
         $equipements           = $equipementRepository->findAll();
-        $reservationEquipements = $reservationEquipementRepository->findAll();
         $publicites            = $publiciteRepository->findAll();
         $campagnes             = $campagneRepository->findAll();
+        
+        // Get the current user
+        $user = $this->getUser();
 
         return $this->render('dashboard/owner/owner.html.twig', [
             'controller_name'        => 'DashboardController',
             'evenements'             => $evenements,
             'equipements'            => $equipements,
-            'reservation_equipements'=> $reservationEquipements,
+            'reservation_equipements' => $reservationEquipementRepository->findBy(['user' => $user]),
             'publicites'             => $publicites,
             'campagnes'              => $campagnes,
+            'userId'                => $user->getUserId()
         ]);
     }
 
@@ -79,7 +93,6 @@ class DashboardController extends AbstractController
         $sort = $request->query->get('sort', 'name'); // Default sort field
         $direction = $request->query->get('direction', 'asc'); // Default sort direction
 
-        // Pass the badge service to the view
         return $this->render('dashboard/participant/participant.html.twig', [
             'evenements' => $evenements,
             'search' => $search,

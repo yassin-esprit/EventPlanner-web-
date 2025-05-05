@@ -85,7 +85,8 @@
 
                         <div class="event-actions mt-5">
                             <div class="d-flex flex-wrap justify-content-center gap-3">
-                                <a href="{{ path('app_reservation_equipement_index') }}" class="btn btn-outline-light">
+                                                                <a href="{{ path('app_reservation_equipement_index', {'userId': userId}) }}" class="btn btn-outline-light">                            </div>
+
                                     <i class="bi bi-arrow-left me-2"></i>Back to Reservations
                                 </a>
                                 <a href="{{ path('app_reservation_equipement_edit', {'id': reservation_equipement.id}) }}" class="btn btn-primary">
@@ -93,7 +94,32 @@
                                 </a>
                                 {{ include('reservation_equipement/_delete_form.html.twig', {'custom_class': 'btn-danger'}) }}
                             </div>
-                        </div>
+                        
+
+
+
+                         
+                        <script>
+                                   function addToCalendar(ReservationEquipementId) {
+                                        window.location.href = '{{ path('Reservation_add_calendar', {'id': 'ID_PLACEHOLDER'}) }}'.replace('ID_PLACEHOLDER', ReservationEquipementId);
+                                    }
+                                </script>
+                           
+                             
+                        
+                           
+
+                            
+                            {# Usage in your button #}
+                            <button onclick="addToCalendar({{ reservation_equipement.id }})" 
+                                class="btn btn-success d-flex align-items-center"
+                                style="transition: all 0.3s;"
+                                onmouseover="this.style.transform='scale(1.02)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                            <i class="bi bi-calendar-plus me-2"></i>
+                            <span>Add to Calendar</span>
+                        </button>
+                           </div> 
                     </div>
                 </div>
             </div>

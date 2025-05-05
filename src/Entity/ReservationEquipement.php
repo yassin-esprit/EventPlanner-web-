@@ -6,6 +6,7 @@ use App\Repository\ReservationEquipementRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\User; // Add this use statement
 
 #[ORM\Entity(repositoryClass: ReservationEquipementRepository::class)]
 #[ORM\Table(name: 'reservation_equipement')]
@@ -39,7 +40,9 @@ class ReservationEquipement
     #[ORM\Column(type: 'string', length: 20)]
     private ?string $statut = null;
 
-    // === Getters et Setters ===
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'userId', nullable: false)]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -88,5 +91,21 @@ class ReservationEquipement
     {
         $this->statut = $statut;
         return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    public function __construct()
+    {
+        $this->statut = 'attente';
     }
 }
