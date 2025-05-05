@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage Role Requests{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Manage Role Requests</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    {% if roleRequests is empty %}
+        <p class="text-muted">No pending role requests at the moment.</p>
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Requested Role</th>
+                    <th>Reason</th>
+                    <th>Requested At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in roleRequests %}
+                    <tr>
+                        <td>{{ request.user.firstName }} {{ request.user.lastName }}</td>
+                        <td>{{ request.requestedRole|replace({'ROLE_': ''}) }}</td>
+                        <td>{{ request.reason }}</td>
+                        <td>{{ request.requestedAt|date('Y-m-d H:i') }}</td>
+                        <td>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="request_id" value="{{ request.id }}">
+                                <input type="hidden" name="action" value="accept">
+                                <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                            </form>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="request_id" value="{{ request.id }}">
+                                <input type="hidden" name="action" value="deny">
+                                <button type="submit" class="btn btn-danger btn-sm">Deny</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

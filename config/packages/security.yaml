@@ -18,14 +18,15 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                username_parameter: email
-                password_parameter: password
-                enable_csrf: true
+            entry_point: App\Security\LoginFormAuthenticator
+            custom_authenticator: App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
+                target: app_login
+                enable_csrf: true
+                csrf_token_id: logout
+                csrf_parameter: _csrf_token
+                csrf_token_generator: security.csrf.token_manager
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800 # 1 week
@@ -39,7 +40,8 @@ security:
         - { path: ^/owner, roles: ROLE_OWNER }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/user, roles: ROLE_USER }
+        - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

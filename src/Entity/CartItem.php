@@ -12,17 +12,21 @@ class CartItem
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart_item'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Merchandise::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart_item'])]
     private ?Merchandise $merchandise = null;
 
     #[ORM\Column]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart_item'])]
     private ?int $quantity = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -54,5 +58,16 @@ class CartItem
     public function getTotal(): float
     {
         return $this->merchandise->getPrice() * $this->quantity;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
     }
 } 

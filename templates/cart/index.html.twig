@@ -3,118 +3,262 @@
 {% block title %}Shopping Cart{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>Shopping Cart</h1>
-    <div id="cart-items" class="mt-4">
-        <div class="text-center">
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Shopping Cart</h1>
+        <a href="{{ path('user_merchandise_list') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+        </a>
     </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const cartContainer = document.getElementById('cart-items');
-    
-    function loadCart() {
-        fetch('/api/cart')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load cart');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.length === 0) {
-                    cartContainer.innerHTML = '<div class="alert alert-info">Your cart is empty</div>';
-                    return;
-                }
+    <div id="alerts-container">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
 
-                let total = 0;
-                const table = `
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if cartItems|length > 0 %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
                                 <th>Product</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
-                                <th>Subtotal</th>
+                                <th>Total</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${data.map(item => {
-                                const subtotal = item.merchandise.price * item.quantity;
-                                total += subtotal;
-                                return `
-                                    <tr>
-                                        <td>
-                                            <img src="${item.merchandise.image || '/images/placeholder.jpg'}" 
-                                                 alt="${item.merchandise.name}" 
-                                                 style="width: 50px; height: 50px; object-fit: cover;">
-                                            ${item.merchandise.name}
-                                        </td>
-                                        <td>$${item.merchandise.price.toFixed(2)}</td>
-                                        <td>${item.quantity}</td>
-                                        <td>$${subtotal.toFixed(2)}</td>
-                                        <td>
-                                            <button class="btn btn-danger btn-sm" 
-                                                    onclick="removeFromCart(${item.id})">
-                                                Remove
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
+                            {% set total = 0 %}
+                            {% for item in cartItems %}
+                                {% set itemTotal = item.merchandise.price * item.quantity %}
+                                {% set total = total + itemTotal %}
+                                <tr data-cart-item-id="{{ item.id }}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ asset('uploads/merchandise/' ~ item.merchandise.image) }}" 
+                                                 alt="{{ item.merchandise.name }}"
+                                                 class="me-3"
+                                                 style="width: 80px; height: 80px; object-fit: cover;">
+                                            <div>
+                                                <h6 class="mb-0">{{ item.merchandise.name }}</h6>
+                                                <small class="text-muted">{{ item.merchandise.description|slice(0, 50) }}...</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>${{ item.merchandise.price }}</td>
+                                    <td>
+                                        <div class="input-group" style="width: 120px;">
+                                            <button class="btn btn-outline-secondary btn-sm quantity-btn" data-action="decrease">-</button>
+                                            <input type="number" class="form-control form-control-sm text-center quantity-input" 
+                                                   value="{{ item.quantity }}" min="1" max="{{ item.merchandise.quantity }}"
+                                                   data-merchandise-id="{{ item.merchandise.id }}">
+                                            <button class="btn btn-outline-secondary btn-sm quantity-btn" data-action="increase">+</button>
+                                        </div>
+                                    </td>
+                                    <td>${{ itemTotal }}</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm remove-item">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                <td><strong>$${total.toFixed(2)}</strong></td>
+                                <td><strong>${{ total }}</strong></td>
                                 <td></td>
                             </tr>
                         </tfoot>
                     </table>
-                    <div class="text-end mt-3">
-                        <a href="{{ path('merchandise_index') }}" class="btn btn-secondary">Continue Shopping</a>
-                        <a href="{{ path('cart_payment') }}" class="btn btn-primary">Proceed to Payment</a>
-                    </div>
-                `;
-                cartContainer.innerHTML = table;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                cartContainer.innerHTML = `
-                    <div class="alert alert-danger">
-                        Failed to load cart items. Please try again later.
-                    </div>
-                `;
-            });
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button class="btn btn-success" id="checkout-btn">
+                        <i class="fas fa-shopping-cart me-2"></i>Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+            <h3>Your cart is empty</h3>
+            <p class="text-muted">Add some items to your cart to continue shopping.</p>
+            <a href="{{ path('user_merchandise_list') }}" class="btn btn-primary mt-3">
+                <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle quantity changes
+    const quantityInputs = document.querySelectorAll('.quantity-input');
+    quantityInputs.forEach(input => {
+        const merchandiseId = input.dataset.merchandiseId;
+        const row = input.closest('tr');
+        const decreaseBtn = row.querySelector('[data-action="decrease"]');
+        const increaseBtn = row.querySelector('[data-action="increase"]');
+
+        decreaseBtn.addEventListener('click', () => {
+            const currentValue = parseInt(input.value);
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+                updateQuantity(merchandiseId, currentValue - 1);
+            }
+        });
+
+        increaseBtn.addEventListener('click', () => {
+            const currentValue = parseInt(input.value);
+            const max = parseInt(input.getAttribute('max'));
+            if (currentValue < max) {
+                input.value = currentValue + 1;
+                updateQuantity(merchandiseId, currentValue + 1);
+            }
+        });
+
+        input.addEventListener('change', () => {
+            const value = parseInt(input.value);
+            const max = parseInt(input.getAttribute('max'));
+            if (value < 1) input.value = 1;
+            if (value > max) input.value = max;
+            updateQuantity(merchandiseId, parseInt(input.value));
+        });
+    });
+
+    // Handle remove item
+    const removeButtons = document.querySelectorAll('.remove-item');
+    removeButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const row = this.closest('tr');
+            const cartItemId = row.dataset.cartItemId;
+
+            if (confirm('Are you sure you want to remove this item from your cart?')) {
+                try {
+                    const response = await fetch(`/shop/cart/remove/${cartItemId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to remove item from cart');
+                    }
+
+                    row.remove();
+                    updateCartTotal();
+                    showAlert('Item removed from cart', 'success');
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert('Failed to remove item from cart', 'danger');
+                }
+            }
+        });
+    });
+
+    // Handle checkout
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', async function() {
+            if (confirm('Are you sure you want to proceed with checkout?')) {
+                try {
+                    const response = await fetch('/shop/cart/checkout', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Checkout failed');
+                    }
+
+                    showAlert('Checkout successful!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/user/merchandise';
+                    }, 2000);
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert(error.message || 'Checkout failed', 'danger');
+                }
+            }
+        });
     }
 
-    window.removeFromCart = function(cartItemId) {
-        if (!confirm('Are you sure you want to remove this item?')) {
-            return;
-        }
+    async function updateQuantity(merchandiseId, quantity) {
+        try {
+            const response = await fetch(`/shop/cart/add/${merchandiseId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ quantity: quantity })
+            });
 
-        fetch(`/api/cart/remove/${cartItemId}`, {
-            method: 'DELETE'
-        })
-        .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to remove item');
+                throw new Error('Failed to update quantity');
             }
-            loadCart();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to remove item. Please try again.');
-        });
-    };
 
-    loadCart();
+            updateCartTotal();
+        } catch (error) {
+            console.error('Error:', error);
+            showAlert('Failed to update quantity', 'danger');
+        }
+    }
+
+    function updateCartTotal() {
+        const rows = document.querySelectorAll('tbody tr');
+        let total = 0;
+
+        rows.forEach(row => {
+            const price = parseFloat(row.querySelector('td:nth-child(2)').textContent.replace('$', ''));
+            const quantity = parseInt(row.querySelector('.quantity-input').value);
+            const rowTotal = price * quantity;
+            row.querySelector('td:nth-child(4)').textContent = `$${rowTotal}`;
+            total += rowTotal;
+        });
+
+        document.querySelector('tfoot strong:last-child').textContent = `$${total}`;
+    }
+
+    function showAlert(message, type) {
+        const alertsContainer = document.getElementById('alerts-container');
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show`;
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        alertsContainer.appendChild(alert);
+
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
 });
 </script>
 {% endblock %} 

@@ -58,7 +58,7 @@ class AdminController extends AbstractController
                 ->setParameter('search', '%' . $search . '%');
         }
 
-        // Sorting
+        // Sorting 
         $sortField = $request->query->get('sort', 'id');
         $sortOrder = $request->query->get('order', 'ASC');
         $queryBuilder->orderBy('u.' . $sortField, $sortOrder);
@@ -385,6 +385,21 @@ class AdminController extends AbstractController
 
         $this->addFlash('success', 'Donation has been ' . $status . '.');
         return $this->redirectToRoute('app_admin_donations');
+    }
+
+    #[Route('/manage-requests', name: 'app_admin_manage_requests', methods: ['GET'])]
+    public function manageRequests(EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $roleRequests = $entityManager->getRepository(RoleRequest::class)->findBy(
+            ['status' => 'pending'],
+            ['requestedAt' => 'DESC']
+        );
+
+        return $this->render('admin/manage_requests.html.twig', [
+            'roleRequests' => $roleRequests
+        ]);
     }
 
     private function getLoginLogs(): array

@@ -16,19 +16,21 @@
         </a>
     </div>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
+    <div id="alerts-container">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
 
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
 
     <div class="row">
         {% for item in merchandise %}
@@ -56,9 +58,7 @@
                             </div>
                         </div>
                         {% if item.quantity > 0 %}
-                            {% set formAction = path('shop_cart_add', {id: item.id}) %}
-                            <!-- Debug: Form action URL: {{ formAction }} -->
-                            <form action="{{ formAction }}" method="post" class="add-to-cart-form">
+                            <form class="add-to-cart-form" data-merchandise-id="{{ item.id }}">
                                 <div class="input-group">
                                     <input type="number" 
                                            name="quantity" 
@@ -144,69 +144,88 @@
 {{ parent() }}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Automatically hide alerts after 5 seconds
-    const alerts = document.querySelectorAll('.alert-dismissible');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        }, 5000);
-    });
-
     // Handle form submission
     const addToCartForms = document.querySelectorAll('.add-to-cart-form');
     addToCartForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            const merchandiseId = this.dataset.merchandiseId;
             const quantityInput = this.querySelector('input[name="quantity"]');
             const quantity = parseInt(quantityInput.value);
             const max = parseInt(quantityInput.getAttribute('max'));
+            const submitButton = this.querySelector('button[type="submit"]');
 
             if (quantity < 1 || quantity > max) {
-                alert('Please enter a valid quantity');
+                showAlert('Please enter a valid quantity', 'danger');
                 return;
             }
 
-            const formData = new FormData(this);
-            fetch(this.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
+            // Disable the submit button
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+
+            try {
+                const response = await fetch(`/shop/cart/add/${merchandiseId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity: quantity })
+                });
+
+                const data = await response.json();
+
                 if (!response.ok) {
-                    throw new Error('Failed to add item to cart');
+                    throw new Error(data.error || 'Failed to add item to cart');
                 }
-                return response.json();
-            })
-            .then(data => {
+
                 // Show success message
-                const alert = document.createElement('div');
-                alert.className = 'alert alert-success alert-dismissible fade show';
-                alert.innerHTML = `
-                    Item added to cart successfully!
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                `;
-                document.querySelector('.container').insertBefore(alert, document.querySelector('.row'));
+                showAlert('Item added to cart successfully!', 'success');
                 
-                // Update cart count
-                const cartBadge = document.querySelector('.badge');
-                if (cartBadge) {
-                    const currentCount = parseInt(cartBadge.textContent) || 0;
-                    cartBadge.textContent = currentCount + 1;
-                } else {
-                    const cartButton = document.querySelector('.btn-primary');
-                    const badge = document.createElement('span');
-                    badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
-                    badge.textContent = '1';
-                    cartButton.appendChild(badge);
-                }
-            })
-            .catch(error => {
+                // Update cart count badge
+                updateCartBadge(1);
+            } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to add item to cart. Please try again.');
-            });
+                showAlert(error.message || 'Failed to add item to cart. Please try again.', 'danger');
+            } finally {
+                // Re-enable the submit button
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-cart-plus me-2"></i>Add to Cart';
+            }
         });
     });
+
+    function showAlert(message, type) {
+        const alertsContainer = document.getElementById('alerts-container');
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show`;
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        alertsContainer.appendChild(alert);
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
+
+    function updateCartBadge(increment) {
+        const cartBadge = document.querySelector('.badge');
+        if (cartBadge) {
+            const currentCount = parseInt(cartBadge.textContent) || 0;
+            cartBadge.textContent = currentCount + increment;
+        } else {
+            const cartButton = document.querySelector('.btn-primary');
+            const badge = document.createElement('span');
+            badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
+            badge.textContent = '1';
+            cartButton.appendChild(badge);
+        }
+    }
 });
 </script>
 {% endblock %}

@@ -20,6 +20,7 @@ class MerchandiseController extends AbstractController
     }
 
     #[Route('/user/merchandise', name: 'user_merchandise_list')]
+    #[IsGranted('ROLE_USER')]
     public function userIndex(): Response
     {
         // Get all available merchandise (quantity > 0)

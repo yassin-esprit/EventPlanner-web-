@@ -6,23 +6,28 @@
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Donations Management</h1>
-        <div class="btn-group">
-            <a href="{{ path('app_donations_admin', {status: 'pending'}) }}" 
-               class="btn btn-outline-primary {{ currentStatus == 'pending' ? 'active' }}">
-                Pending
+        <div class="d-flex gap-2">
+            <a href="{{ path('user_merchandise_list') }}" class="btn btn-primary">
+                <i class="fas fa-shopping-bag me-2"></i>Manage Merchandise
             </a>
-            <a href="{{ path('app_donations_admin', {status: 'accepted'}) }}" 
-               class="btn btn-outline-success {{ currentStatus == 'accepted' ? 'active' }}">
-                Accepted
-            </a>
-            <a href="{{ path('app_donations_admin', {status: 'denied'}) }}" 
-               class="btn btn-outline-danger {{ currentStatus == 'denied' ? 'active' }}">
-                Denied
-            </a>
-            <a href="{{ path('app_donations_admin') }}" 
-               class="btn btn-outline-secondary {{ currentStatus is null ? 'active' }}">
-                All
-            </a>
+            <div class="btn-group">
+                <a href="{{ path('app_donations_admin', {status: 'pending'}) }}" 
+                   class="btn btn-outline-primary {{ currentStatus == 'pending' ? 'active' }}">
+                    Pending
+                </a>
+                <a href="{{ path('app_donations_admin', {status: 'accepted'}) }}" 
+                   class="btn btn-outline-success {{ currentStatus == 'accepted' ? 'active' }}">
+                    Accepted
+                </a>
+                <a href="{{ path('app_donations_admin', {status: 'denied'}) }}" 
+                   class="btn btn-outline-danger {{ currentStatus == 'denied' ? 'active' }}">
+                    Denied
+                </a>
+                <a href="{{ path('app_donations_admin') }}" 
+                   class="btn btn-outline-secondary {{ currentStatus is null ? 'active' }}">
+                    All
+                </a>
+            </div>
         </div>
     </div>
 
