@@ -72,7 +72,11 @@ private ?string $Role = null; // Ensure the property name is lowercase 'role'
     {
         return $this->userId;
     }
-
+    public function getId(): ?int
+    {
+        return $this->userId;
+    }
+    
     public function setUserId(int $userId): self
     {
         $this->userId = $userId;

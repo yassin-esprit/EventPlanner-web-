@@ -2,21 +2,75 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+use App\Repository\SponsorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
-use App\Repository\SponsorRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: SponsorRepository::class)]
 #[ORM\Table(name: 'sponsor')]
+#[UniqueEntity(fields: ['contact_email'], message: 'Cet email est déjà utilisé.')]
+#[UniqueEntity(fields: ['contact_telephone'], message: 'Ce numéro de téléphone est déjà utilisé.')]
+#[UniqueEntity(fields: ['site_web'], message: 'Ce site web est déjà utilisé.')]
 class Sponsor
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id_sponsor = null;
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    private ?string $nom = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $logo = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $site_web = null;
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'L\'email est obligatoire.')]
+    #[Assert\Email(message: 'L\'adresse email "{{ value }}" n\'est pas valide.')]
+    private ?string $contact_email = null;
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le numéro de téléphone est obligatoire.')]
+    #[Assert\Regex(
+        pattern: '/^\d{8}$/',
+        message: 'Le numéro de téléphone doit contenir exactement 8 chiffres.'
+    )]
+    private ?string $contact_telephone = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $adresse = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $secteur_activite = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $date_inscription = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'sponsors')]
+    #[ORM\JoinColumn(name: 'iduser', referencedColumnName: 'userId', nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $statut = null;
+
+    #[ORM\OneToMany(targetEntity: Contrat::class, mappedBy: 'sponsor')]
+    private Collection $contrats;
+
+    #[ORM\OneToMany(targetEntity: Evenement::class, mappedBy: 'sponsor')]
+    private Collection $evenements;
+
+    public function __construct()
+    {
+        $this->contrats = new ArrayCollection();
+        $this->evenements = new ArrayCollection();
+    }
 
     public function getId_sponsor(): ?int
     {
@@ -28,9 +82,17 @@ class Sponsor
         $this->id_sponsor = $id_sponsor;
         return $this;
     }
+    
+public function getIdSponsor(): ?int
+{
+    return $this->id_sponsor;
+}
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $nom = null;
+public function setIdSponsor(int $id_sponsor): self
+{
+    $this->id_sponsor = $id_sponsor;
+    return $this;
+}
 
     public function getNom(): ?string
     {
@@ -43,9 +105,6 @@ class Sponsor
         return $this;
     }
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $logo = null;
-
     public function getLogo(): ?string
     {
         return $this->logo;
@@ -57,50 +116,38 @@ class Sponsor
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $site_web = null;
-
-    public function getSite_web(): ?string
+    public function getSiteweb(): ?string
     {
         return $this->site_web;
     }
 
-    public function setSite_web(?string $site_web): self
+    public function setSiteweb(?string $site_web): self
     {
         $this->site_web = $site_web;
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $contact_email = null;
-
-    public function getContact_email(): ?string
+    public function getContactemail(): ?string
     {
         return $this->contact_email;
     }
 
-    public function setContact_email(string $contact_email): self
+    public function setContactemail(string $contact_email): self
     {
         $this->contact_email = $contact_email;
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $contact_telephone = null;
-
-    public function getContact_telephone(): ?string
+    public function getContacttelephone(): ?string
     {
         return $this->contact_telephone;
     }
 
-    public function setContact_telephone(string $contact_telephone): self
+    public function setContacttelephone(string $contact_telephone): self
     {
         $this->contact_telephone = $contact_telephone;
         return $this;
     }
-
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $adresse = null;
 
     public function getAdresse(): ?string
     {
@@ -113,36 +160,38 @@ class Sponsor
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $secteur_activite = null;
-
-    public function getSecteur_activite(): ?string
+    public function getSecteuractivite(): ?string
     {
         return $this->secteur_activite;
     }
 
-    public function setSecteur_activite(?string $secteur_activite): self
+    public function setSecteuractivite(?string $secteur_activite): self
     {
         $this->secteur_activite = $secteur_activite;
         return $this;
     }
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $date_inscription = null;
-
-    public function getDate_inscription(): ?\DateTimeInterface
+    public function getDateinscription(): ?\DateTimeInterface
     {
         return $this->date_inscription;
     }
 
-    public function setDate_inscription(?\DateTimeInterface $date_inscription): self
+    public function setDateinscription(?\DateTimeInterface $date_inscription): self
     {
         $this->date_inscription = $date_inscription;
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $statut = null;
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
 
     public function getStatut(): ?string
     {
@@ -155,131 +204,41 @@ class Sponsor
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Contrat::class, mappedBy: 'sponsor')]
-    private Collection $contrats;
-
-    /**
-     * @return Collection<int, Contrat>
-     */
     public function getContrats(): Collection
     {
-        if (!$this->contrats instanceof Collection) {
-            $this->contrats = new ArrayCollection();
-        }
         return $this->contrats;
     }
 
     public function addContrat(Contrat $contrat): self
     {
-        if (!$this->getContrats()->contains($contrat)) {
-            $this->getContrats()->add($contrat);
+        if (!$this->contrats->contains($contrat)) {
+            $this->contrats->add($contrat);
         }
         return $this;
     }
 
     public function removeContrat(Contrat $contrat): self
     {
-        $this->getContrats()->removeElement($contrat);
+        $this->contrats->removeElement($contrat);
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Evenement::class, mappedBy: 'sponsor')]
-    private Collection $evenements;
-
-    public function __construct()
-    {
-        $this->contrats = new ArrayCollection();
-        $this->evenements = new ArrayCollection();
-    }
-
-    /**
-     * @return Collection<int, Evenement>
-     */
     public function getEvenements(): Collection
     {
-        if (!$this->evenements instanceof Collection) {
-            $this->evenements = new ArrayCollection();
-        }
         return $this->evenements;
     }
 
     public function addEvenement(Evenement $evenement): self
     {
-        if (!$this->getEvenements()->contains($evenement)) {
-            $this->getEvenements()->add($evenement);
+        if (!$this->evenements->contains($evenement)) {
+            $this->evenements->add($evenement);
         }
         return $this;
     }
 
     public function removeEvenement(Evenement $evenement): self
     {
-        $this->getEvenements()->removeElement($evenement);
+        $this->evenements->removeElement($evenement);
         return $this;
     }
-
-    public function getIdSponsor(): ?int
-    {
-        return $this->id_sponsor;
-    }
-
-    public function getSiteWeb(): ?string
-    {
-        return $this->site_web;
-    }
-
-    public function setSiteWeb(?string $site_web): static
-    {
-        $this->site_web = $site_web;
-
-        return $this;
-    }
-
-    public function getContactEmail(): ?string
-    {
-        return $this->contact_email;
-    }
-
-    public function setContactEmail(string $contact_email): static
-    {
-        $this->contact_email = $contact_email;
-
-        return $this;
-    }
-
-    public function getContactTelephone(): ?string
-    {
-        return $this->contact_telephone;
-    }
-
-    public function setContactTelephone(string $contact_telephone): static
-    {
-        $this->contact_telephone = $contact_telephone;
-
-        return $this;
-    }
-
-    public function getSecteurActivite(): ?string
-    {
-        return $this->secteur_activite;
-    }
-
-    public function setSecteurActivite(?string $secteur_activite): static
-    {
-        $this->secteur_activite = $secteur_activite;
-
-        return $this;
-    }
-
-    public function getDateInscription(): ?\DateTimeInterface
-    {
-        return $this->date_inscription;
-    }
-
-    public function setDateInscription(?\DateTimeInterface $date_inscription): static
-    {
-        $this->date_inscription = $date_inscription;
-
-        return $this;
-    }
-
 }

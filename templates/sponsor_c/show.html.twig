@@ -1,0 +1,402 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Sponsor{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #f8cb2e;
+            --secondary-color: #ee5007;
+            --section-bg-color: #f0f8ff;
+            --custom-btn-bg-color: #ee5007;
+            --custom-btn-bg-hover-color: #c01f27;
+            --dark-color: #000000;
+            --p-color: #717275;
+            --border-color: #7fffd4;
+            --link-hover-color: #b22727;
+        }
+
+        /* Main Layout */
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-brand {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand-icon {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Content */
+        #content {
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: #f8f9fc;
+            padding: 20px;
+        }
+
+        .contract-details {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contract-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contract-body {
+            padding: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--p-color);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-inactive {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 992px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <div class="sidebar-brand-text mx-2">Admin Panel</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Items -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Management
+        </div>
+
+        <!-- Events Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Events</span>
+            </a>
+        </li>
+
+        <!-- Sponsors Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                <i class="bi bi-award"></i>
+                <span>Sponsors</span>
+            </a>
+        </li>
+
+        <!-- Contrat de Sponsor Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Contrat de Sponsor</span>
+            </a>
+        </li>
+
+        <!-- Logistics Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-truck"></i>
+                <span>Logistics</span>
+            </a>
+        </li>
+
+        <!-- Ads Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-megaphone"></i>
+                <span>Advertisements</span>
+            </a>
+        </li>
+
+        <!-- Merchandise Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-shop"></i>
+                <span>Merchandise</span>
+            </a>
+        </li>
+
+        <!-- Users Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+        </li>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+
+    <div id="content">
+        </br>    </br>
+    </br>    </br>
+
+        <div class="container-fluid">
+            <div class="contract-details">
+                <div class="contract-header">
+                    <h2 class="mb-0">Sponsor #{{ sponsor.id_sponsor }}</h2>
+                    <a href="{{ path('app_sponsor_c_index') }}" class="btn btn-light">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
+                </div>
+                <div class="contract-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Nom</div>
+                            <div class="info-value">{{ sponsor.nom }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Logo</div>
+                            <div class="info-value">
+                                {% if sponsor.logo %}
+                                    <img src="{{ asset('uploads/sponsors/' ~ sponsor.logo) }}" alt="{{ sponsor.nom }}" style="max-width: 100px;">
+                                {% else %}
+                                    Aucun logo
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Site Web</div>
+                            <div class="info-value">{{ sponsor.siteweb }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Email</div>
+                            <div class="info-value">{{ sponsor.contactemail }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Téléphone</div>
+                            <div class="info-value">{{ sponsor.contacttelephone }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Adresse</div>
+                            <div class="info-value">{{ sponsor.adresse }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Secteur d'activité</div>
+                            <div class="info-value">{{ sponsor.secteuractivite }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Date d'inscription</div>
+                            <div class="info-value">{{ sponsor.dateinscription|date('d/m/Y') }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Statut</div>
+                            <div class="info-value">
+                                <span class="status-badge {% if sponsor.statut == 'Actif' %}status-active{% else %}status-inactive{% endif %}">
+                                    {{ sponsor.statut }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <a href="{{ path('app_sponsor_c_edit', {'id_sponsor': sponsor.id_sponsor}) }}" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer ce sponsor ? Cette action est irréversible.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <form action="{{ path('app_sponsor_c_delete', {'id_sponsor': sponsor.id_sponsor}) }}" method="post" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sponsor.id_sponsor) }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Confirmer la suppression
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+<script>
+    // Initialisation des tooltips Bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
+{% endblock %}
+{% endblock %}

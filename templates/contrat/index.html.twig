@@ -1,0 +1,439 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Contrats{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #f8cb2e;
+            --secondary-color: #ee5007;
+            --section-bg-color: #f0f8ff;
+            --custom-btn-bg-color: #ee5007;
+            --custom-btn-bg-hover-color: #c01f27;
+            --dark-color: #000000;
+            --p-color: #717275;
+            --border-color: #7fffd4;
+            --link-hover-color: #b22727;
+        }
+
+        /* Main Layout */
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-brand {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand-icon {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Content */
+        #content {
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: #f8f9fc;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .sponsor-info-modal .modal-content {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .sponsor-info-modal .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .sponsor-info-modal .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .sponsor-info-modal .modal-footer {
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media(max-width: 768px) {
+            #sidebar {
+                margin-left: -250px;
+            }
+            #sidebar.active {
+                margin-left: 0;
+            }
+            #content {
+                width: 100%;
+                margin-left: 0;
+            }
+            #content.active {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <div class="sidebar-brand-text mx-2">Admin Panel</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Items -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Management
+        </div>
+
+        <!-- Events Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Events</span>
+            </a>
+        </li>
+
+        <!-- Sponsors Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-award"></i>
+                <span>Sponsors</span>
+            </a>
+        </li>
+
+        <!-- Contrat de Sponsor Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link active" href="#events">
+                <i class="bi bi-calendar-event"></i>
+                <span>Contrat de Sponsor</span>
+            </a>
+        </li>
+
+        <!-- Logistics Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-truck"></i>
+                <span>Logistics</span>
+            </a>
+        </li>
+
+        <!-- Ads Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-megaphone"></i>
+                <span>Advertisements</span>
+            </a>
+        </li>
+
+        <!-- Merchandise Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-shop"></i>
+                <span>Merchandise</span>
+            </a>
+        </li>
+
+        <!-- Users Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+        </li>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content">
+                </br>
+
+            </br>
+
+        <div class="container py-5">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un contrat..." autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">Liste des Contrats</h2>
+                        <a href="{{ path('app_contrat_new') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Ajouter un Contrat
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="contratCards">
+                {% for contrat in contrats %}
+                    <div class="col-md-4 mb-4 contrat-card">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ contrat.description }}</h5>
+                                <p class="card-text">
+                                    <strong>Sponsor:</strong> {{ contrat.sponsor.nom }}<br>
+                                    <strong>Date de début:</strong> {{ contrat.datedebut|date('d/m/Y') }}<br>
+                                    <strong>Date de fin:</strong> {{ contrat.datefin|date('d/m/Y') }}<br>
+                                    <strong>Montant:</strong> {{ contrat.montant }} €<br>
+                                    <strong>Statut:</strong> 
+                                    <span class="badge {% if contrat.statut == 'Actif' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ contrat.statut }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ path('app_contrat_show', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+                                    <a href="{{ path('app_contrat_edit', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                    <a href="{{ path('app_contrat_print', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-success btn-sm" target="_blank">
+                                        <i class="fas fa-print"></i> Imprimer
+                                    </a>
+                                    {% if contrat.sponsor is defined and contrat.sponsor.id_sponsor is defined and contrat.sponsor.id_sponsor is not null %}
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="getSponsorInfo({{ contrat.sponsor.id_sponsor }})">
+                                            <i class="fas fa-info-circle"></i> Infos
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                            <i class="fas fa-info-circle"></i> Pas de sponsor
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info">Aucun contrat trouvé</div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if totalPages > 1 %}
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                {% for i in 1..totalPages %}
+                                    <li class="page-item {% if currentPage == i %}active{% endif %}">
+                                        <a class="page-link" href="{{ path('app_contrat_index', {'page': i}) }}">{{ i }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour les informations du sponsor -->
+<div class="modal fade sponsor-info-modal" id="sponsorInfoModal" tabindex="-1" aria-labelledby="sponsorInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sponsorInfoModalLabel">Informations sur le Sponsor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-2">Chargement des informations...</p>
+                </div>
+                <div id="sponsorInfoContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const contratCards = document.querySelectorAll('.contrat-card');
+
+            function filterContrats() {
+                const searchTerm = searchInput.value.toLowerCase();
+                contratCards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            }
+
+            searchInput.addEventListener('input', filterContrats);
+        });
+
+        function getSponsorInfo(sponsorId) {
+            if (!sponsorId) {
+                console.error('ID du sponsor manquant');
+                return;
+            }
+
+            console.log('Fetching info for sponsor ID:', sponsorId);
+            
+            const modal = new bootstrap.Modal(document.getElementById('sponsorInfoModal'));
+            const loadingSpinner = document.querySelector('.loading-spinner');
+            const contentDiv = document.getElementById('sponsorInfoContent');
+            
+            modal.show();
+            loadingSpinner.classList.add('active');
+            contentDiv.innerHTML = '';
+
+            fetch(`/sponsor/c/info/${sponsorId}`)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Received data:', data);
+                    loadingSpinner.classList.remove('active');
+                    if (data.success) {
+                        contentDiv.innerHTML = `
+                            <div class="alert alert-success">
+                                <h4 class="alert-heading">Informations sur le Sponsor</h4>
+                                <p>${data.info}</p>
+                            </div>`;
+                    } else {
+                        contentDiv.innerHTML = `
+                            <div class="alert alert-danger">
+                                <h4 class="alert-heading">Erreur</h4>
+                                <p>${data.error}</p>
+                            </div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error details:', error);
+                    loadingSpinner.classList.remove('active');
+                    contentDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4 class="alert-heading">Erreur de connexion</h4>
+                            <p>Une erreur est survenue lors de la récupération des informations.</p>
+                        </div>`;
+                });
+        }
+
+        // Function to handle PDF printing
+        function printContract(id) {
+            window.open(`/contrat/${id}/print`, '_blank');
+        }
+    </script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Contrat - {{ contrat.sponsor.nom }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            margin: 40px;
+            background-color: #f7f9fb;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            color: #005a8d;
+            margin-bottom: 5px;
+        }
+        .contract-number {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 20px;
+            margin-top: 30px;
+            color: #0074a2;
+            border-bottom: 2px solid #0074a2;
+            padding-bottom: 5px;
+        }
+        p {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CONTRAT DE SPONSORING</h1>
+        <div class="contract-number">N° {{ contrat.id_contrat }}</div>
+
+        <h2>Informations du Sponsor</h2>
+        <p>
+            Ce contrat est conclu entre <strong>Event Planner</strong> et le sponsor <strong>{{ contrat.sponsor.nom }}</strong>, 
+            opérant dans le secteur d’activité <strong>{{ contrat.sponsor.getSecteuractivite }}</strong>. 
+            Le sponsor peut être contacté par email à <strong>{{ contrat.sponsor.getContactEmail }}</strong> 
+            ou par téléphone au <strong>{{ contrat.sponsor.getContactTelephone }}</strong>.
+        </p>
+
+        <h2>Détails du Contrat</h2>
+        <p>
+            Le présent contrat est un <strong>{{ contrat.getTypeContrat }}</strong>. Il entre en vigueur à partir du 
+            <strong>{{ contrat.getDateDebut|date('d/m/Y') }}</strong> et prendra fin le <strong>{{ contrat.getDateFin|date('d/m/Y') }}</strong>. 
+            Le montant total alloué à ce sponsoring est de <strong>{{ contrat.montant }} TND</strong>. 
+            Le statut actuel est <strong>{{ contrat.statut }}</strong>, et le mode de paiement choisi est 
+            <strong>{{ contrat.getModePaiement }}</strong>.
+        </p>
+
+        <h2>Description</h2>
+        <p>{{ contrat.description }}</p>
+
+        <div class="footer">
+            <p>Ce document a été généré automatiquement le {{ "now"|date('d/m/Y') }}.</p>
+            <p>© {{ "now"|date('Y') }} Event Planner. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html>

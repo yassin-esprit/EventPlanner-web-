@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Graphique Circulaire des Sponsors{% endblock %}
+
+{% block body %}
+    <h1>Répartition des Sponsors par Secteur</h1>
+    
+    <div id="sector-chart" style="width: 100%; height: 400px;"></div>
+
+    <div id="sector-details" style="margin-top: 20px;">
+        <h3>Details des Sponsors</h3>
+        <p id="sector-name"></p>
+        <p id="sector-sponsor-count"></p>
+        <ul id="sector-sponsor-list"></ul>
+    </div>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var chartData = {{ chartData | raw }};
+            
+            Highcharts.chart('sector-chart', {
+                chart: {
+                    type: 'pie'
+                },
+                title: {
+                    text: 'Répartition des Sponsors par Secteur'
+                },
+                tooltip: {
+                    pointFormat: '{point.name}: {point.y} sponsors'
+                },
+                series: [{
+                    name: 'Sponsors',
+                    data: chartData.map(function (item) {
+                        return {
+                            name: item.name,
+                            y: item.y,
+                            sector: item.name,
+                            sponsors: item.sponsors
+                        };
+                    }),
+                    point: {
+                        events: {
+                            mouseOver: function (event) {
+                                var sector = event.target.sector;
+                                var sponsors = event.target.sponsors;
+                                
+                                // Afficher les détails du secteur
+                                document.getElementById('sector-name').innerText = 'Secteur: ' + sector;
+                                document.getElementById('sector-sponsor-count').innerText = 'Nombre de Sponsors: ' + sponsors.length;
+                                
+                                // Afficher la liste des sponsors
+                                var sponsorList = document.getElementById('sector-sponsor-list');
+                                sponsorList.innerHTML = ''; // Réinitialiser la liste
+                                sponsors.forEach(function(sponsor) {
+                                    var listItem = document.createElement('li');
+                                    listItem.innerText = sponsor.nom;
+                                    sponsorList.appendChild(listItem);
+                                });
+                            }
+                        }
+                    }
+                }]
+            });
+        });
+    </script>
+{% endblock %}

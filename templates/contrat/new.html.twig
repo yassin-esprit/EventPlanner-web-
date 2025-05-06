@@ -1,0 +1,480 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un Contrat{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #f8cb2e;
+            --secondary-color: #ee5007;
+            --section-bg-color: #f0f8ff;
+            --custom-btn-bg-color: #ee5007;
+            --custom-btn-bg-hover-color: #c01f27;
+            --dark-color: #000000;
+            --p-color: #717275;
+            --border-color: #7fffd4;
+            --link-hover-color: #b22727;
+        }
+
+        /* Main Layout */
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-brand {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand-icon {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Content */
+        #content {
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: #f8f9fc;
+        }
+
+        .form-control:invalid, .form-select:invalid {
+            border-color: #dc3545;
+        }
+
+        .form-control:invalid:focus, .form-select:invalid:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.25rem rgba(220,53,69,0.25);
+        }
+
+        .toast {
+            min-width: 300px;
+            background-color: #dc3545 !important;
+            color: white !important;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .toast-body {
+            padding: 1rem;
+        }
+
+        .toast-header {
+            background-color: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <div class="sidebar-brand-text mx-2">Admin Panel</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Items -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Management
+        </div>
+
+        <!-- Events Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Events</span>
+            </a>
+        </li>
+
+        <!-- Sponsors Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-award"></i>
+                <span>Sponsors</span>
+            </a>
+        </li>
+
+        <!-- Contrat de Sponsor Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link active" href="#events">
+                <i class="bi bi-calendar-event"></i>
+                <span>Contrat de Sponsor</span>
+            </a>
+        </li>
+
+        <!-- Logistics Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-truck"></i>
+                <span>Logistics</span>
+            </a>
+        </li>
+
+        <!-- Ads Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-megaphone"></i>
+                <span>Advertisements</span>
+            </a>
+        </li>
+
+        <!-- Merchandise Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-shop"></i>
+                <span>Merchandise</span>
+            </a>
+        </li>
+
+        <!-- Users Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+        </li>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content">
+                </br>
+            </br>
+
+        <div class="container py-5">
+            <div class="row justify-content-between align-items-center mb-4">
+                <div class="col-md-8">
+                    <h1 class="display-6">Créer un nouveau Contrat</h1>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a href="{{ path('app_contrat_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form_label(form.type_contrat, 'Type de Contrat *', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.type_contrat, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.type_contrat) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_label(form.montant, 'Montant (TND) *', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.montant, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'pattern': '^\\d+(\\.\\d{1,2})?$',
+                                        'title': 'Entrez un montant valide avec au plus 2 décimales',
+                                        'min': '0.01',
+                                        'max': '1000000',
+                                        'step': '0.01',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.montant) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                {{ form_label(form.description, 'Description *', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.description, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'minlength': '10',
+                                        'maxlength': '1000',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.description) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form_label(form.date_debut, 'Date de Début *', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.date_debut, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'min': 'now'|date('Y-m-d'),
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.date_debut) }}
+                                </div>
+                                <small class="form-text text-muted">
+                                    La date de début doit être supérieure ou égale à aujourd'hui.
+                                </small>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_label(form.date_fin, 'Date de Fin *', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.date_fin, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'min': 'now'|date('Y-m-d'),
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.date_fin) }}
+                                </div>
+                                <small class="form-text text-muted">
+                                    La date de fin doit être strictement postérieure à la date de début.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form_label(form.statut, 'Statut *', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.statut, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.statut) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_label(form.mode_paiement, 'Mode de Paiement *', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.mode_paiement, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.mode_paiement) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                {{ form_label(form.sponsor, 'Sponsor *', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.sponsor, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.sponsor) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Créer le Contrat</button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div id="toast-container"></div>
+</div>
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Validation côté client
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    showFormErrors(form);
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+
+        // Validation des dates
+        const dateDebut = document.getElementById('{{ form.date_debut.vars.id }}');
+        const dateFin = document.getElementById('{{ form.date_fin.vars.id }}');
+
+        dateDebut.addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                showErrorToast("Date de début invalide", "La date de début doit être supérieure ou égale à aujourd'hui.");
+                this.setCustomValidity("La date de début doit être supérieure ou égale à aujourd'hui.");
+            } else {
+                this.setCustomValidity("");
+                dateFin.min = this.value;
+                if (dateFin.value && new Date(dateFin.value) <= selectedDate) {
+                    showErrorToast("Date de fin invalide", "La date de fin doit être strictement postérieure à la date de début.");
+                    dateFin.setCustomValidity("La date de fin doit être strictement postérieure à la date de début.");
+                } else {
+                    dateFin.setCustomValidity("");
+                }
+            }
+        });
+
+        dateFin.addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const debutDate = new Date(dateDebut.value);
+
+            if (selectedDate <= debutDate) {
+                showErrorToast("Date de fin invalide", "La date de fin doit être strictement postérieure à la date de début.");
+                this.setCustomValidity("La date de fin doit être strictement postérieure à la date de début.");
+            } else {
+                this.setCustomValidity("");
+            }
+        });
+
+        // Gestion des messages d'erreur du serveur
+        {% for field in form %}
+            {% for error in field.vars.errors %}
+                showErrorToast("Erreur dans {{ field.vars.label|e }}", "{{ error.message|e }}");
+            {% endfor %}
+        {% endfor %}
+
+        {% for error in form.vars.errors %}
+            showErrorToast("Erreur", "{{ error.message|e }}");
+        {% endfor %}
+    });
+
+    function showFormErrors(form) {
+        const invalidFields = form.querySelectorAll(':invalid');
+        invalidFields.forEach(field => {
+            const label = field.previousElementSibling?.textContent?.trim() || 'Champ';
+            const errorMessage = field.validationMessage;
+            if (errorMessage) {
+                showErrorToast(`Erreur dans ${label}`, errorMessage);
+            }
+        });
+    }
+
+    function showErrorToast(title, message) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast show mb-2';
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+
+        toast.innerHTML = `
+            <div class="toast-header">
+                <strong class="me-auto">${title}</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        `;
+        container.appendChild(toast);
+
+        // Initialiser le toast Bootstrap
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+
+        // Supprimer le toast après 5 secondes
+        setTimeout(() => {
+            toast.remove();
+        }, 5000);
+    }
+</script>
+{% endblock %}
+{% endblock %}
