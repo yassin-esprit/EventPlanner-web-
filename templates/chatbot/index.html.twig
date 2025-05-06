@@ -1,0 +1,223 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Equipment Chatbot - MYTHOS PLANNER{% endblock %}
+
+{% block body %}
+<main>
+    <!-- En-tête -->
+    <header class="site-header bg-black text-white py-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">
+                        <i class="bi-person-fill me-2"></i>
+                        <strong>Welcome back, {{ app.user.firstName ?? app.user.email }}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Barre de navigation principale -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('home') }}">
+                <img src="{{ asset('images/mythosplanner1.png') }}" alt="Logo" style="height: 40px;">
+                <span class="ms-2 fw-bold d-none d-sm-inline">MYTHOS PLANNER</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav w-100 justify-content-evenly">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ path('home') }}">
+                            <i class="bi-house-door me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_chatbot_page') }}">
+                            <i class="bi-chat-dots me-1"></i> Chatbot
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section_2">
+                            About
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section_3">
+                            Artists
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section_4">
+                            Schedule
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section_5">
+                            Pricing
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section_6">
+                            Contact
+                        </a>
+                    </li>
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{{ path('app_logout') }}">
+                            <i class="bi-box-arrow-right me-1"></i> Logout
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu du chatbot -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-12 mx-auto">
+                    <div class="card shadow-sm mb-5">
+                        <div class="card-header bg-white">
+                            <h2 class="mb-0 text-center">Equipment Chatbot</h2>
+                        </div>
+                        
+                        <div class="card-body chat-container" id="chat-container">
+                            <div id="chat-messages">
+                                <div class="mb-2"><strong>Bot:</strong> Hello! How can I help you today?</div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-white">
+                            <form id="chat-form" class="d-flex">
+                                <input type="text" id="chat-input" class="form-control me-2" 
+                                       placeholder="Ask about equipment..." 
+                                       required>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi-send-fill"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    document.getElementById('chat-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+        if (!message) return;
+
+        const messages = document.getElementById('chat-messages');
+        messages.innerHTML += `<div class="mb-2 user-message"><strong>You:</strong> ${message}</div>`;
+        input.value = '';
+
+        const loadingId = 'loading-' + Date.now();
+        messages.innerHTML += `<div class="mb-2" id="${loadingId}"><strong>Bot:</strong> <em>Thinking...</em></div>`;
+
+        const chatContainer = document.getElementById('chat-container');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        try {
+            const response = await fetch('{{ path('app_chatbot') }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `message=${encodeURIComponent(message)}`
+            });
+            const data = await response.json();
+
+            document.getElementById(loadingId)?.remove();
+
+            if (data.response) {
+                messages.innerHTML += `<div class="mb-2 bot-message"><strong>Bot:</strong> ${data.response}</div>`;
+            } else {
+                messages.innerHTML += `<div class="mb-2 bot-message"><strong>Bot:</strong> Error: ${data.error}</div>`;
+            }
+        } catch (error) {
+            document.getElementById(loadingId)?.remove();
+            messages.innerHTML += `<div class="mb-2 bot-message"><strong>Bot:</strong> Sorry, something went wrong!</div>`;
+            console.error("Chatbot error:", error);
+        }
+
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* Navigation */
+    .navbar-nav {
+        flex-grow: 1;
+    }
+    
+    .nav-item {
+        text-align: center;
+        padding: 0 5px;
+    }
+    
+    .nav-link {
+        white-space: nowrap;
+    }
+    
+    /* Style spécifique pour le bouton Logout */
+    .nav-link.text-danger {
+        color: #dc3545 !important;
+    }
+    .nav-link.text-danger:hover {
+        color: #bb2d3b !important;
+    }
+    
+    /* Chatbot */
+    .chat-container {
+        height: 500px;
+        overflow-y: auto;
+        background: #f8f9fa;
+    }
+    
+    #chat-messages div {
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+    
+    .user-message {
+        background-color: #e9f7fe;
+        margin-left: auto;
+    }
+    
+    .bot-message {
+        background-color: #e8f5e9;
+        margin-right: auto;
+    }
+    
+    @media (max-width: 991.98px) {
+        .navbar-brand span {
+            display: inline !important;
+        }
+        
+        .nav-item {
+            padding: 8px 0;
+            text-align: left;
+        }
+        
+        .chat-container {
+            height: 400px;
+        }
+    }
+</style>
+{% endblock %}

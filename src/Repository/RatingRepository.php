@@ -40,4 +40,26 @@ class RatingRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+
+    public function getAverageRatings(): array
+{
+    return $this->createQueryBuilder('r')
+        ->select('e.id, e.titre, AVG(r.rating) as avgRating')
+        ->join('r.evenement', 'e')
+        ->groupBy('e.id')
+        ->orderBy('avgRating', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+
+public function getRatingDistribution(): array
+{
+    return $this->createQueryBuilder('r')
+        ->select('r.rating, COUNT(r.id) as count')
+        ->groupBy('r.rating')
+        ->orderBy('r.rating', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
 }

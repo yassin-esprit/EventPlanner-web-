@@ -1,496 +1,1619 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin Dashboard
-{% endblock %}
+{% block title %}Admin Dashboard{% endblock %}
 
 {% block stylesheets %}
-	{{ parent() }}
-	<style>:root
-	{
-		--sidebar-width: 250px;
-		--primary-color: #f8cb2e;
-		--secondary-color: #ee5007;
-		--section-bg-color: #f0f8ff;
-		--custom-btn-bg-color: #ee5007;
-		--custom-btn-bg-hover-color: #c01f27;
-		--dark-color: #000000;
-		--p-color: #717275;
-		--border-color: #7fffd4;
-		--link-hover-color: #b22727;
-	}
+    {{ parent() }}
+    <style>
+        /* ✅ Import Google Fonts correctement séparé */
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;400;700&display=swap');
 
-	/* Main Layout */
-	#wrapper {
-		display: flex;
-		min-height: 100vh;
-		background-color: #f8f9fa;
-	}
+        :root {
+            --sidebar-width: 250px;
+            --white-color: #ffffff;
+            --primary-color: #f8cb2e;
+            --secondary-color: #ee5007;
+            --section-bg-color: #f0f8ff;
+            --custom-btn-bg-color: #ee5007;
+            --custom-btn-bg-hover-color: #c01f27;
+            --dark-color: #000000;
+            --p-color: #717275;
+            --border-color: rgba(248, 248, 248, 0);
+            --link-hover-color: #b22727;
 
-	/* Sidebar */
-	#sidebar {
-		width: var(--sidebar-width);
-		background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
-		color: white;
-		position: fixed;
-		height: 100vh;
-		transition: all 0.3s;
-		z-index: 1000;
-		box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-	}
+            --font-body: 'Outfit', sans-serif;
+            --font-base-size: 18px;
+            --line-height-base: 1.6;
+            --text-color: #000000;
+            --text-light: #717275;
+        }
 
-	.sidebar-brand {
-		height: 80px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-weight: 800;
-		font-size: 1.2rem;
-		background: rgba(0, 0, 0, 0.2);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-	}
+        .navbar,
+        .site-header:not(.admin-header) {
+            display: none !important;
+        }
 
-	.sidebar-brand-icon {
-		color: var(--primary-color);
-		margin-right: 10px;
-	}
+        body {
+            font-family: var(--font-body);
+            font-size: var(--font-base-size);
+            line-height: var(--line-height-base);
+            color: var(--text-color);
+            background-color: var(--white-color);
+            padding-top: 0 !important;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-	.sidebar-divider {
-		border-top: 1px solid rgba(255, 255, 255, 0.15);
-		margin: 1rem 0;
-	}
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-body);
+            font-weight: 700;
+            color: var(--dark-color);
+        }
 
-	.nav-item {
-		position: relative;
-	}
+        h1 { font-size: 74px; }
+        h2 { font-size: 46px; }
+        h3 { font-size: 32px; }
+        h4 { font-size: 28px; }
+        h5 { font-size: 24px; }
+        h6 { font-size: 22px; }
 
-	.nav-link {
-		color: rgba(255, 255, 255, 0.8);
-		padding: 12px 20px;
-		display: flex;
-		align-items: center;
-		transition: all 0.3s;
-	}
+        .admin-header {
+            background-color: var(--primary-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
 
-	.nav-link:hover,
-	.nav-link.active {
-		color: white;
-		background: rgba(255, 255, 255, 0.1);
-	}
+        .welcome-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
 
-	.nav-link.active {
-		border-left: 4px solid var(--primary-color);
-	}
+        .welcome-message {
+            font-family: var(--font-body);
+            font-weight: 400;
+            color: var(--dark-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
 
-	.nav-link i {
-		margin-right: 10px;
-		font-size: 1.1rem;
-		color: var(--primary-color);
-		width: 24px;
-		text-align: center;
-	}
+        .welcome-message i {
+            margin-right: 0.5rem;
+            color: var(--secondary-color);
+        }
 
-	/* Content */
-	#content {
-		width: calc(100% - var(--sidebar-width));
-		margin-left: var(--sidebar-width);
-		min-height: 100vh;
-		background: #f8f9fc;
-	}
+        .logout-btn {
+            background: var(--custom-btn-bg-color);
+            border: 2px solid transparent;
+            border-radius: 100px;
+            color: var(--white-color);
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
 
-	/* Main Content */
-	.container-fluid {
-		padding: 2rem;
-	}
+        .logout-btn:hover {
+            background: var(--custom-btn-bg-hover-color);
+            color: var(--white-color);
+        }
 
-	.card {
-		border: none;
-		border-radius: 10px;
-		box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-		margin-bottom: 2rem;
-		background: white;
-	}
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
 
-	.card-header {
-		background: white;
-		border-bottom: 1px solid #e3e6f0;
-		padding: 1.25rem 1.5rem;
-		font-weight: 700;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		border-radius: 10px 10px 0 0 !important;
-	}
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
+            color: white;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
 
-	.card-body {
-		padding: 1.5rem;
-	}
+        .sidebar-brand {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-	/* Page Heading */
-	.page-heading {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 2rem;
-		padding-bottom: 1rem;
-		border-bottom: 1px solid #eee;
-	}
+        .sidebar-brand-icon {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
 
-	/* Buttons */
-	.btn {
-		font-weight: 600;
-		padding: 0.5rem 1rem;
-		border-radius: 5px;
-		transition: all 0.3s;
-	}
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
+        }
 
-	.btn-primary {
-		background-color: var(--custom-btn-bg-color);
-		border-color: var(--custom-btn-bg-color);
-	}
+        .nav-item {
+            position: relative;
+        }
 
-	.btn-primary:hover {
-		background-color: var(--custom-btn-bg-hover-color);
-		border-color: var(--custom-btn-bg-hover-color);
-	}
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 18px;
+        }
 
-	.btn-outline-primary {
-		color: var(--custom-btn-bg-color);
-		border-color: var(--custom-btn-bg-color);
-	}
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
 
-	.btn-outline-primary:hover {
-		background-color: var(--custom-btn-bg-color);
-		color: white;
-	}
+        .nav-link.active {
+            border-left: 4px solid var(--primary-color);
+        }
 
-	.btn-sm {
-		padding: 0.35rem 0.75rem;
-		font-size: 0.875rem;
-	}
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            width: 24px;
+            text-align: center;
+        }
 
-	/* Tables */
-	.table {
-		width: 100%;
-		margin-bottom: 1rem;
-		color: #212529;
-		border-collapse: separate;
-		border-spacing: 0;
-	}
+        #content {
+            width: calc(100% - var(--sidebar-width));
+            min-height: 100vh;
+            background: var(--white-color);
+        }
 
-	.table th {
-		background: #f8f9fc;
-		border-bottom: 2px solid #e3e6f0;
-		vertical-align: middle;
-		padding: 1rem;
-		font-weight: 600;
-		color: var(--dark-color);
-	}
+        .container-fluid {
+            padding: 2rem;
+        }
 
-	.table td {
-		vertical-align: middle;
-		padding: 1rem;
-		border-top: 1px solid #e3e6f0;
-	}
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            background: var(--white-color);
+            overflow: hidden;
+        }
 
-	.table tr:first-child td {
-		border-top: none;
-	}
+        .card-header {
+            background: var(--white-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem 1.5rem;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 20px 20px 0 0 !important;
+        }
 
-	.table tr:hover td {
-		background-color: rgba(248, 203, 46, 0.05);
-	}
+        .card-body {
+            padding: 1.5rem;
+        }
 
-	.table-responsive {
-		display: block;
-		width: 100%;
-		overflow-x: auto;
-		-webkit-overflow-scrolling: touch;
-	}
+        .page-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-	/* Action Buttons */
-	.action-buttons {
-		display: flex;
-		gap: 0.5rem;
-	}
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            border-collapse: separate;
+            border-spacing: 0;
+            font-family: var(--font-body);
+        }
 
-	.action-buttons .btn {
-		min-width: 36px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
+        .table th {
+            background: var(--section-bg-color);
+            border-bottom: 2px solid var(--border-color);
+            vertical-align: middle;
+            padding: 1rem;
+            font-weight: 700;
+            font-size: 18px;
+            text-transform: uppercase;
+            color: var(--dark-color);
+        }
 
-	/* Badges */
-	.badge {
-		font-weight: 600;
-		padding: 0.5em 0.8em;
-		font-size: 0.75em;
-		border-radius: 50px;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-	}
+        .table td {
+            vertical-align: middle;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 18px;
+            background-color: var(--white-color);
+        }
 
-	.badge-primary {
-		background-color: var(--custom-btn-bg-color);
-	}
+        .table tr:first-child td {
+            border-top: none;
+        }
 
-	.badge-secondary {
-		background-color: #6c757d;
-	}
+        .table tr:hover td {
+            background-color: rgba(248, 203, 46, 0.05);
+        }
 
-	.badge-success {
-		background-color: #28a745;
-	}
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
 
-	.badge-warning {
-		background-color: #ffc107;
-		color: #212529;
-	}
+        .table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
 
-	.badge-danger {
-		background-color: #dc3545;
-	}
+        .btn {
+            font-family: var(--font-body);
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 100px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
 
-	/* Responsive */
-	@media(max-width: 768px) {
-		#sidebar {
-			margin-left: -250px;
-		}
-		#sidebar.active {
-			margin-left: 0;
-		}
-		#content {
-			width: 100%;
-			margin-left: 0;
-		}
-		#content.active {
-			margin-left: 250px;
-			width: calc(100% - 250px);
-		}
-	}
-</style>{% endblock %}{% block body %}
-<div
-	id="wrapper">
-	<!-- Sidebar -->
-	<ul
-		id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
-		<!-- Sidebar - Brand -->
-		<a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-			<div class="sidebar-brand-icon">
-				<i class="bi bi-shield-lock"></i>
-			</div>
-			<div class="sidebar-brand-text mx-2">Admin Panel</div>
-		</a>
+        .btn-primary {
+            background: var(--custom-btn-bg-color);
+            border: 2px solid transparent;
+            color: var(--white-color);
+        }
 
-		<!-- Divider -->
-		<hr
-		class="sidebar-divider my-0">
+        .btn-primary:hover {
+            background: var(--custom-btn-bg-hover-color);
+            color: var(--white-color);
+        }
 
-		<!-- Nav Items -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-speedometer2"></i>
-				<span>Dashboard</span>
-			</a>
-		</li>
+        .btn-outline-primary {
+            background: transparent;
+            border: 2px solid var(--custom-btn-bg-color);
+            color: var(--custom-btn-bg-color);
+        }
 
-		<!-- Divider -->
-		<hr
-		class="sidebar-divider">
+        .btn-outline-primary:hover {
+            background: var(--custom-btn-bg-color);
+            color: var(--white-color);
+        }
 
-		<!-- Heading -->
-		<div class="sidebar-heading">
-			Management
-		</div>
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 14px;
+        }
 
-		<!-- Events Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link active" href="#events">
-				<i class="bi bi-calendar-event"></i>
-				<span>Events</span>
-			</a>
-		</li>
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
 
-		<!-- Sponsors Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-award"></i>
-				<span>Sponsors</span>
-			</a>
-		</li>
+        .action-buttons .btn {
+            min-width: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-		<!-- Logistics Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-truck"></i>
-				<span>Logistics</span>
-			</a>
-		</li>
+        .badge {
+            font-family: var(--font-body);
+            font-weight: 700;
+            padding: 0.5em 0.8em;
+            font-size: 0.75em;
+            border-radius: 50px;
+            text-transform: uppercase;
+        }
 
-		<!-- Ads Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-megaphone"></i>
-				<span>Advertisements</span>
-			</a>
-		</li>
+        .badge-primary { background-color: var(--custom-btn-bg-color); }
+        .badge-secondary { background-color: #6c757d; }
+        .badge-success { background-color: #28a745; }
+        .badge-warning { background-color: #ffc107; color: #212529; }
+        .badge-danger { background-color: #dc3545; }
 
-		<!-- Merchandise Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-shop"></i>
-				<span>Merchandise</span>
-			</a>
-		</li>
+        .content-section { display: none; }
+        .content-section.active { display: block; }
 
-		<!-- Users Nav Item -->
-		<li class="nav-item">
-			<a class="nav-link" href="#">
-				<i class="bi bi-people"></i>
-				<span>Users</span>
-			</a>
-		</li>
-	</ul>
-	<!-- End of Sidebar -->
+        .chart-container {
+            min-height: 250px;
+            position: relative;
+        }
 
-	<!-- Content Wrapper -->
-	<div
-		id="content">
-		<!-- Begin Page Content -->
-		<div
-			class="container-fluid">
-			<!-- Page Heading -->
-			<div class="page-heading">
-				<h1 class="h3 mb-0 text-gray-800">Events Management</h1>
-				<a href="{{ path('app_evenement_new') }}" class="btn btn-primary">
-					<i class="bi bi-plus-circle"></i>
-					Create New Event
-				</a>
-			</div>
+        .bg-warning {
+            background-color: #ffc107 !important;
+            color: #212529;
+        }
 
-			<!-- Events Table -->
-			<div class="card shadow mb-4">
-				<div class="card-header">
-					<h6 class="m-0 font-weight-bold">All Events</h6>
-					<div class="dropdown d-inline-block">
-						<button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-							<i class="bi bi-filter"></i>
-							Filter
-						</button>
-						<div class="dropdown-menu dropdown-menu-right">
-							<a class="dropdown-item" href="#">All Events</a>
-							<a class="dropdown-item" href="#">Upcoming</a>
-							<a class="dropdown-item" href="#">Past</a>
-						</div>
-					</div>
-				</div>
-				<div class="card-body">
-					<div class="table-responsive">
-						<table class="table" id="dataTable" width="100%" cellspacing="0">
-							<thead>
-								<tr>
-									<th>Title</th>
-									<th>Type</th>
-									<th>Date</th>
-									<th>Location</th>
-									<th>Seats</th>
-									<th>Status</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for evenement in evenements %}
-									{# Define image and color based on event type #}
-									{% set event_assets = {
-                                            'conference': {
-                                                'color': 'primary',
-                                                'icon': 'bi-mic'
-                                            },
-                                            'fête': {
-                                                'color': 'danger',
-                                                'icon': 'bi-music-note-beamed'
-                                            },
-                                            'fete': {
-                                                'color': 'danger',
-                                                'icon': 'bi-music-note-beamed'
-                                            },
-                                            'formation': {
-                                                'color': 'success',
-                                                'icon': 'bi-mortarboard'
-                                            },
-                                            'default': {
-                                                'color': 'secondary',
-                                                'icon': 'bi-calendar-event'
-                                            }
-                                        } %}
+        .campaign-card {
+            transition: transform 0.3s ease;
+        }
 
-									{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
-									{% set is_past = evenement.date and evenement.date < date() %}
+        .campaign-card:hover {
+            transform: translateY(-5px);
+        }
 
-									<tr>
-										<td>
-											<i class="bi {{ current_event.icon }} me-2 text-{{ current_event.color }}"></i>
-											<strong>{{ evenement.titre }}</strong>
-										</td>
-										<td>
-											<span class="badge badge-{{ current_event.color }}">
-												{{ evenement.type }}
-											</span>
-										</td>
-										<td>{{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</td>
-										<td>{{ evenement.lieu }}</td>
-										<td>{{ evenement.nbrplaces }}</td>
-										<td>
-											{% if is_past %}
-												<span class="badge badge-secondary">Completed</span>
-											{% else %}
-												<span class="badge badge-success">Upcoming</span>
-											{% endif %}
-										</td>
-										<td>
-											<div class="action-buttons">
-												<a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-primary" title="View">
-													<i class="bi bi-eye"></i>
-												</a>
-												<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-warning" title="Edit">
-													<i class="bi bi-pencil"></i>
-												</a>
-												<form method="post" action="{{ path('app_evenement_delete', {'id': evenement.id}) }}" onsubmit="return confirm('Are you sure you want to delete this event?');" class="d-inline">
-													<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
-													<button class="btn btn-sm btn-danger" title="Delete">
-														<i class="bi bi-trash"></i>
-													</button>
-												</form>
-											</div>
-										</td>
-									</tr>
-								{% else %}
-									<tr>
-										<td colspan="7" class="text-center py-4">
-											<i class="bi bi-calendar-x fs-1 text-muted"></i>
-											<h5 class="text-muted mt-3">No events found</h5>
-											<a href="{{ path('app_evenement_new') }}" class="btn btn-primary mt-2">
-												<i class="bi bi-plus-circle"></i>
-												Create Event
-											</a>
-										</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- /.container-fluid -->
-	</div>
-	<!-- End of Content Wrapper -->
-</div>{% endblock %}{% block javascripts %}
-{{ parent() }}
-<script>
-	// Toggle sidebar
-document.getElementById('sidebarToggle').addEventListener('click', function () {
-document.getElementById('sidebar').classList.toggle('active');
-document.getElementById('content').classList.toggle('active');
-});
-</script>{% endblock %}
+        /* Responsive */
+        @media(max-width: 991px) {
+            h1 { font-size: 62px; }
+            h2 { font-size: 36px; }
+            h3 { font-size: 32px; }
+            h4 { font-size: 28px; }
+            h5 { font-size: 20px; }
+            h6 { font-size: 18px; }
+        }
+
+        @media(max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                margin-left: -250px;
+                z-index: 1000;
+            }
+            #sidebar.active {
+                margin-left: 0;
+            }
+            #content {
+                width: 100%;
+            }
+            #content.active {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+            }
+            h1 { font-size: 52px; }
+            h2 { font-size: 28px; }
+            h3 { font-size: 26px; }
+            h4 { font-size: 22px; }
+            h5 { font-size: 20px; }
+        }
+
+        .card-header .input-group {
+            max-width: 300px;
+            width: 100%;
+            margin-right: 1rem;
+        }
+
+        .card-header .d-flex.align-items-center {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        #sortEquipmentBtn,
+        #sortReservationBtn,
+        #sortByEventNameBtn,
+        #sortByNameBtn,
+        #sortByDateBtn {
+            min-width: 160px;
+        }
+
+        @media (max-width: 768px) {
+            .card-header .d-flex.align-items-center {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .card-header .input-group,
+            .card-header .btn {
+                width: 100% !important;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+                <div class="sidebar-brand-icon">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+                <div class="sidebar-brand-text mx-2">Admin Panel</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Items -->
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-section="dashboard">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Management
+            </div>
+
+            <!-- Events Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link active" href="#" data-section="events">
+                    <i class="bi bi-calendar-event"></i>
+                    <span>Events</span>
+                </a>
+            </li>
+
+            <!-- Sponsors Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-section="sponsors">
+                    <i class="bi bi-award"></i>
+                    <span>Sponsors</span>
+                </a>
+            </li>
+
+            <!-- Logistics Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-section="equipements">
+                    <i class="bi bi-truck"></i>
+                    <span>Equipement</span>
+                </a>
+            </li>
+
+            <!-- Ads Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-section="ads">
+                    <i class="bi bi-megaphone"></i>
+                    <span>Advertisements</span>
+                </a>
+            </li>
+
+            <!-- Merchandise Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-section="merchandise">
+                    <i class="bi bi-shop"></i>
+                    <span>Merchandise</span>
+                </a>
+            </li>
+
+            <!-- Users Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-section="users">
+                    <i class="bi bi-people"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content">
+            <!-- New Welcome Header with Logout -->
+            <header class="admin-header">
+                <div class="container">
+                    <div class="welcome-container">
+                        <p class="welcome-message mb-0">
+                            <i class="bi-person custom-icon me-2"></i>
+                            <strong class="text-dark">
+                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                    Welcome back,
+                                    {{ app.user.firstName ?? app.user.email }}
+                                {% endif %}
+                            </strong>
+                        </p>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <a href="{{ path('app_logout') }}" class="logout-btn">
+                                <i class="bi-box-arrow-right"></i>Logout
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </header>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Page Heading - Dynamic based on section -->
+                <div class="page-heading">
+                    <h1 class="h3 mb-0 text-gray-800" id="section-title">Events Management</h1>
+                    <a href="#" class="btn btn-primary" id="section-create-button">
+                        <i class="bi bi-plus-circle"></i>
+                        Create New Event
+                    </a>
+                </div>
+
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <div class="card shadow mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold">Dashboard Overview</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Welcome to the admin dashboard. Select a section from the sidebar to manage.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events Section -->
+                <div id="events-section" class="content-section active">
+                    <div class="card shadow mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold">All Events</h6>
+                            <div class="d-flex align-items-center">
+                                <!-- Search Input -->
+                                <div class="input-group input-group-sm mr-3" style="width: 250px;">
+                                    <input type="text" id="eventsSearchInput" class="form-control" placeholder="Search events...">
+                                </div>
+
+                                <!-- Sort Button -->
+                                <button id="sortByEventNameBtn" class="btn btn-info btn-sm mr-3">
+                                    <i class="bi bi-sort-alpha-down"></i>
+                                    Sort by Name
+                                </button>
+
+                                <!-- Add New Event Button -->
+                                <a href="{{ path('app_evenement_new') }}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-plus-circle"></i>
+                                    Add New Event
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Event Statistics -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="card border-left-primary shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Events</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ evenements|length }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card border-left-success shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Upcoming Events</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{ evenements|filter(e => e.date and e.date >= date())|length }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card border-left-secondary shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Past Events</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{ evenements|filter(e => e.date and e.date < date())|length }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Event Table -->
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>Date</th>
+                                            <th>Location</th>
+                                            <th>Seats</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for evenement in evenements %}
+                                            {% set event_assets = {
+                                                'conference': {'color': 'primary', 'icon': 'bi-mic'},
+                                                'fête': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
+                                                'fete': {'color': 'danger', 'icon': 'bi-music-note-beamed'},
+                                                'formation': {'color': 'success', 'icon': 'bi-mortarboard'},
+                                                'default': {'color': 'secondary', 'icon': 'bi-calendar-event'}
+                                            } %}
+
+                                            {% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
+                                            {% set is_past = evenement.date and evenement.date < date() %}
+
+                                            <tr>
+                                                <td>
+                                                    <i class="bi {{ current_event.icon }} me-2 text-{{ current_event.color }}"></i>
+                                                    <strong>{{ evenement.titre }}</strong>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-{{ current_event.color }}">{{ evenement.type }}</span>
+                                                </td>
+                                                <td>{{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</td>
+                                                <td>{{ evenement.lieu }}</td>
+                                                <td>{{ evenement.nbrplaces }}</td>
+                                                <td>
+                                                    {% if is_past %}
+                                                        <span class="badge badge-secondary">Completed</span>
+                                                    {% else %}
+                                                        <span class="badge badge-success">Upcoming</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-primary" title="View">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                        <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-warning" title="Edit">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <form method="post" action="{{ path('app_evenement_delete', {'id': evenement.id}) }}" onsubmit="return confirm('Are you sure you want to delete this event?');" class="d-inline">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
+                                                            <button class="btn btn-sm btn-danger" title="Delete">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="7" class="text-center py-4">
+                                                    <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                                                    <h5 class="text-muted mt-3">No events found</h5>
+                                                    <a href="{{ path('app_evenement_new') }}" class="btn btn-primary mt-2">
+                                                        <i class="bi bi-plus-circle"></i>
+                                                        Create Event
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipement Section -->
+                <div id="equipements-section" class="content-section">
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold">Liste des équipements</h6>
+                            <div class="d-flex align-items-center">
+                                <!-- Search Input -->
+                                <div class="input-group input-group-sm mr-3" style="width: 250px;">
+                                    <input type="text" id="equipmentSearchInput" class="form-control" placeholder="Rechercher équipements...">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" id="clearEquipmentSearch">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Sort Button -->
+                                <button id="sortEquipmentBtn" class="btn btn-info btn-sm mr-3">
+                                    <i class="bi bi-sort-alpha-down"></i>
+                                    Trier par Nom
+                                </button>
+                                
+                                <!-- Add New Button -->
+                                <a href="{{ path('app_equipement_new') }}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-plus-circle"></i>
+                                    Ajouter un equipement
+                                </a>
+
+                                <a href="{{ path('app_equipement_pdf') }}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-file-pdf"></i> Télécharger PDF
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" width="100%" cellspacing="0" id="equipmentTable">
+                                    <thead>
+                                        <tr>
+                                            <th>NOM</th>
+                                            <th>QUANTITÉ TOTALE</th>
+                                            <th>QUANTITÉ DISPO</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>STATUT</th>
+                                            <th>ACTIONS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="equipmentTableBody">
+                                        {% for equipement in equipements %}
+                                            <tr data-name="{{ equipement.nom|lower }}" 
+                                                data-quantity="{{ equipement.quantiteTotale }}"
+                                                data-available="{{ equipement.quantiteDispo }}"
+                                                data-description="{{ equipement.description|lower }}"
+                                                data-status="{{ equipement.statut|lower }}">
+                                                <td>{{ equipement.nom }}</td>
+                                                <td>{{ equipement.quantiteTotale }}</td>
+                                                <td>{{ equipement.quantiteDispo }}</td>
+                                                <td>{{ equipement.description }}</td>
+                                                <td>
+                                                    {% if equipement.statut == 'disponible' %}
+                                                        <span class="badge badge-success">DISPONIBLE</span>
+                                                    {% elseif equipement.statut == 'maintenance' %}
+                                                        <span class="badge badge-warning">MAINTENANCE</span>
+                                                    {% else %}
+                                                        <span class="badge badge-danger">INDISPONIBLE</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <a href="{{ path('app_equipement_show', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-primary" title="Voir">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                        <a href="{{ path('app_equipement_edit', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <form method="post" action="{{ path('app_equipement_delete', {'id_eq': equipement.id_eq}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet équipement ?');" class="d-inline">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipement.id_eq) }}">
+                                                            <button class="btn btn-sm btn-danger" title="Supprimer">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr id="noEquipmentRow">
+                                                <td colspan="6" class="text-center py-4">
+                                                    <i class="bi bi-box-seam fs-1 text-muted"></i>
+                                                    <h5 class="text-muted mt-3">Aucun équipement trouvé</h5>
+                                                    <a href="{{ path('app_equipement_new') }}" class="btn btn-primary mt-2">
+                                                        <i class="bi bi-plus-circle"></i>
+                                                        Ajouter un équipement
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Reservations Section -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold">Réservations d'équipement</h6>
+                            <div class="d-flex align-items-center">
+                                <!-- Search Input for Reservations -->
+                                <div class="input-group input-group-sm mr-3" style="width: 250px;">
+                                    <input type="text" id="reservationSearchInput" class="form-control" placeholder="Rechercher réservations...">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" id="clearReservationSearch">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Sort Button for Reservations -->
+                                <button id="sortReservationBtn" class="btn btn-info btn-sm">
+                                    <i class="bi bi-sort-down"></i>
+                                    Trier par Date
+                                </button>
+                                <a href="{{ path('app_reservation_equipement_new') }}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-plus-circle"></i>
+                                    Ajouter une reservation
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" width="100%" cellspacing="0" id="reservationTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ÉQUIPEMENT</th>
+                                            <th>DATE RÉSERVATION</th>
+                                            <th>STATUT</th>
+                                            <th>ÉVÉNEMENT</th>
+                                            <th>ACTIONS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reservationTableBody">
+                                        {% for reservation in reservation_equipements %}
+                                            {% set status_color = reservation.statut == 'confirme' ? 'success' : 
+                                              (reservation.statut == 'attente' ? 'warning' : 'danger') %}
+                                            <tr data-equipment="{% if reservation.equipement %}{{ reservation.equipement.nom|lower }}{% endif %}"
+                                                data-date="{{ reservation.dateReservation|date('Y-m-d H:i') }}"
+                                                data-status="{{ reservation.statut|lower }}"
+                                                data-event="{% if reservation.evenement %}{{ reservation.evenement.titre|lower }}{% endif %}">
+                                                <td>
+                                                    {% if reservation.equipement %}
+                                                        <strong>{{ reservation.equipement.nom }}</strong>
+                                                    {% else %}
+                                                        <span class="text-muted">Non spécifié</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ reservation.dateReservation|date('d/m/Y H:i') }}</td>
+                                                <td>
+                                                    <span class="badge badge-{{ status_color }}">
+                                                        {% if reservation.statut == 'confirme' %}
+                                                            CONFIRMÉ
+                                                        {% elseif reservation.statut == 'attente' %}
+                                                            EN ATTENTE
+                                                        {% else %}
+                                                            ANNULÉ
+                                                        {% endif %}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {% if reservation.evenement %}
+                                                        {{ reservation.evenement.titre }}
+                                                    {% else %}
+                                                        <span class="text-muted">Non spécifié</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <a href="{{ path('app_reservation_equipement_show', {'id': reservation.id}) }}" class="btn btn-sm btn-primary" title="Voir">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                        <a href="{{ path('app_reservation_equipement_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <!-- Ajout du bouton Supprimer -->
+                                                        <form method="post" action="{{ path('app_reservation_equipement_delete', {'id': reservation.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette réservation ?');" class="d-inline">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
+                                                            <button class="btn btn-sm btn-danger" title="Supprimer">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr id="noReservationRow">
+                                                <td colspan="5" class="text-center py-4">
+                                                    <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                                                    <h5 class="text-muted mt-3">Aucune réservation trouvée</h5>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistiques des équipements -->
+                    <div class="card shadow mb-4 mt-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold">Statistiques des équipements par statut</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="chart-container" style="position: relative; height: 250px;">
+                                        <canvas id="equipmentStatusChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
+                                            <span>Disponible</span>
+                                            <strong>{{ stats.disponible }}</strong>
+                                        </div>
+                                        <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
+                                            <span>Maintenance</span>
+                                            <strong>{{ stats.maintenance }}</strong>
+                                        </div>
+                                        <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
+                                            <span>Indisponible</span>
+                                            <strong>{{ stats.indisponible }}</strong>
+                                        </div>
+                                        <div class="list-group-item border-0 pt-2 d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold">Total équipements</span>
+                                            <strong>{{ equipements|length }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sponsors Section -->
+                <div id="sponsors-section" class="content-section">
+                    <div class="card shadow mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold">Sponsors Management</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Sponsors content will be displayed here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advertisements Section -->
+                <div id="ads-section" class="content-section">
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold">All Advertisements</h6>
+                            <div class="d-flex align-items-center">
+                                <!-- Search Input -->
+                                <div class="input-group input-group-sm mr-3" style="width: 250px;">
+                                    <input type="text" id="adsSearchInput" class="form-control" placeholder="Search advertisements...">
+                                    <div class="input-group-append"></div>
+                                </div>
+
+                                <!-- Sort Button -->
+                                <button id="sortByNameBtn" class="btn btn-info btn-sm mr-3">
+                                    <i class="bi bi-sort-alpha-down"></i>
+                                    Sort by Name
+                                </button>
+
+                                <!-- Add New Button -->
+                                <a href="{{ path('app_publicite_new') }}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-plus-circle"></i>
+                                    Add New
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" width="100%" cellspacing="0" id="adsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>Content</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adsTableBody">
+                                        {% for publicite in publicites %}
+                                            {% set status_color = publicite.statut_pub == 'active' ? 'success' : 'secondary' %}
+                                            <tr data-name="{{ publicite.titre_pub|lower }}" data-type="{{ publicite.type_pub|lower }}" data-content="{{ publicite.contenu_pub|lower }}" data-location="{{ publicite.emplacement_pub|lower }}" data-status="{{ publicite.statut_pub|lower }}">
+                                                <td>
+                                                    <strong>{{ publicite.titre_pub }}</strong>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-primary">
+                                                        {{ publicite.type_pub }}
+                                                    </span>
+                                                </td>
+                                                <td>{{ publicite.contenu_pub|length > 30 ? publicite.contenu_pub|slice(0, 30) ~ '...' : publicite.contenu_pub }}</td>
+                                                <td>{{ publicite.emplacement_pub }}</td>
+                                                <td>
+                                                    <span class="badge badge-{{ status_color }}">
+                                                        {{ publicite.statut_pub }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <a href="{{ path('app_publicite_show', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-primary" title="View">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                        <a href="{{ path('app_publicite_edit', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-warning" title="Edit">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <form method="post" action="{{ path('app_publicite_delete', {'id_pub': publicite.id_pub}) }}" onsubmit="return confirm('Are you sure you want to delete this advertisement?');" class="d-inline">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ publicite.id_pub) }}">
+                                                            <button class="btn btn-sm btn-danger" title="Delete">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr id="noAdsRow">
+                                                <td colspan="6" class="text-center py-4">
+                                                    <i class="bi bi-megaphone fs-1 text-muted"></i>
+                                                    <h5 class="text-muted mt-3">No advertisements found</h5>
+                                                    <a href="{{ path('app_publicite_new') }}" class="btn btn-primary mt-2">
+                                                        <i class="bi bi-plus-circle"></i>
+                                                        Create Advertisement
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advertising Campaigns Section -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold">Advertising Campaigns</h6>
+                            <div>
+                                <button id="sortByDateBtn" class="btn btn-info btn-sm me-2">
+                                    <i class="bi bi-sort-down"></i>
+                                    Sort by Date
+                                </button>
+                                <a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle me-2"></i>Create New Campaign
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Campaign Status Statistics Card -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="m-0 font-weight-bold">Campaign Status Statistics</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="chart-container" style="position: relative; height: 250px;">
+                                                <canvas id="campaignStatusChart"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="status-details">
+                                                {% set stats = {
+                                                    'en_cours': campagnes|filter(c => c.statutCamp == 'en_cours')|length,
+                                                    'suspendue': campagnes|filter(c => c.statutCamp == 'suspendue')|length,
+                                                    'terminee': campagnes|filter(c => c.statutCamp == 'terminee')|length
+                                                } %}
+                                                <div class="list-group list-group-flush">
+                                                    <div class="list-group-item border-0">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>
+                                                                <span bg-success">&nbsp;</span>
+                                                                En Cours</span>
+                                                            <strong>{{ stats.en_cours }}</strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="list-group-item border-0">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>
+                                                                <span bg-warning me-7">&nbsp;</span>
+                                                                Suspendue</span>
+                                                            <strong>{{ stats.suspendue }}</strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="list-group-item border-0">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>
+                                                                <span bg-secondary me-2">&nbsp;</span>
+                                                                Terminee</span>
+                                                            <strong>{{ stats.terminee }}</strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="list-group-item border-0 pt-2">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span class="fw-bold">Total Campaigns</span>
+                                                            <strong>{{ campagnes|length }}</strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Campaigns Grid -->
+                            <div class="row" id="campaignsContainer">
+                                {% for campagne in campagnes %}
+                                    <div class="col-lg-4 col-md-6 mb-4" data-start-date="{{ campagne.dateDebutCamp|date('Y-m-d') }}" data-end-date="{{ campagne.dateFinCamp|date('Y-m-d') }}" data-status="{{ campagne.statutCamp }}" data-budget="{{ campagne.budgetCamp }}">
+                                        <div class="card campaign-card h-100 border-0 shadow-sm">
+                                            <div class="card-header bg-white">
+                                                <h5 class="card-title mb-0">{{ campagne.nomCamp }}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="campaign-meta mb-3">
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="text-muted">Budget:</span>
+                                                        <strong>{{ campagne.budgetCamp }} TND</strong>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="text-muted">Status:</span>
+                                                        <span class="badge bg-{{ campagne.statutCamp == 'en_cours' ? 'success' :
+                                                                                      (campagne.statutCamp == 'suspendue' ? 'warning' :
+                                                                                      (campagne.statutCamp == 'terminee' ? 'secondary' : 'danger')) }}">
+                                                            {{ campagne.statutCamp }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="text-muted">Start:</span>
+                                                        <span>{{ campagne.dateDebutCamp|date('d M Y') }}</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="text-muted">End:</span>
+                                                        <span>{{ campagne.dateFinCamp|date('d M Y') }}</span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="campaign-ad">
+                                                    <h6 class="text-muted mb-2">Associated Ad:</h6>
+                                                    <p class="mb-1"><strong>{{ campagne.publicite.titrePub }}</strong></p>
+                                                    <p class="small text-muted">{{ campagne.publicite.typePub|capitalize }} - {{ campagne.publicite.emplacementPub }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer bg-white d-flex justify-content-between">
+                                                <a href="{{ path('app_campagnes_publicitaire_show', {'id_camp': campagne.idCamp}) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                                <a href="{{ path('app_campagnes_publicitaire_edit', {'id_camp': campagne.idCamp}) }}" class="btn btn-sm btn-outline-secondary">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-12" id="noCampaignsMessage">
+                                        <div class="text-center py-4">
+                                            <i class="bi bi-megaphone fs-1 text-muted"></i>
+                                            <h5 class="text-muted mt-3">No campaigns found</h5>
+                                            <p class="mb-0">Create your first advertising campaign</p>
+                                            <a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary mt-3">
+                                                <i class="bi bi-plus-circle me-2"></i>New Campaign
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Merchandise Section -->
+                <div id="merchandise-section" class="content-section">
+                    <div class="card shadow mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold">Merchandise Management</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Merchandise content will be displayed here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="users-section" class="content-section">
+                    <div class="card shadow mb-4">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold">Users Management</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Users content will be displayed here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // === EQUIPMENT STATUS CHART ===
+            const chartElement = document.getElementById('equipmentStatusChart');
+            if (chartElement && typeof Chart !== "undefined") {
+                const disponible = parseInt("{{ stats.disponible|default(0) }}");
+                const maintenance = parseInt("{{ stats.maintenance|default(0) }}");
+                const indisponible = parseInt("{{ stats.indisponible|default(0) }}");
+
+                new Chart(chartElement, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Disponible', 'Maintenance', 'Indisponible'],
+                        datasets: [{
+                            data: [disponible, maintenance, indisponible],
+                            backgroundColor: [
+                                'rgba(40, 167, 69, 0.8)',
+                                'rgba(255, 193, 7, 0.8)',
+                                'rgba(220, 53, 69, 0.8)'
+                            ],
+                            borderColor: ['#ffffff', '#ffffff', '#ffffff'],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 14,
+                                    padding: 20,
+                                    font: {
+                                        size: 13
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Équipements par statut',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                chartElement.style.height = '250px';
+                chartElement.style.width = '100%';
+                chartElement.style.display = 'block';
+                chartElement.style.margin = '0 auto';
+            } else {
+                console.warn("Element du graphique introuvable ou Chart.js non chargé.");
+            }
+
+            // === CAMPAIGN STATUS CHART ===
+            const campaignCtx = document.getElementById('campaignStatusChart')?.getContext('2d');
+            if (campaignCtx) {
+                new Chart(campaignCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['En Cours', 'Suspendue', 'Terminee'],
+                        datasets: [{
+                            data: [
+                                {{ campagnes|filter(c => c.statutCamp == 'en_cours')|length }}, 
+                                {{ campagnes|filter(c => c.statutCamp == 'suspendue')|length }}, 
+                                {{ campagnes|filter(c => c.statutCamp == 'terminee')|length }}
+                            ],
+                            backgroundColor: [
+                                'rgba(110, 40, 167, 0.8)', // Green for Ongoing
+                                'rgba(251, 22, 87, 0.8)', // Yellow for Suspended
+                                'rgba(108, 117, 125, 0.8)' // Gray for Completed
+                            ],
+                            borderColor: ['rgb(0, 0, 0)', 'rgb(0, 0, 0)', 'rgb(0, 0, 0)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20
+                                }
+                            }
+                        },
+                        cutout: '70%'
+                    }
+                });
+            }
+
+            // === TRI + FILTRE ÉQUIPEMENTS ===
+            const equipmentSearchInput = document.getElementById('equipmentSearchInput');
+            const clearEquipmentSearch = document.getElementById('clearEquipmentSearch');
+            const sortEquipmentBtn = document.getElementById('sortEquipmentBtn');
+            const equipmentTableBody = document.getElementById('equipmentTableBody');
+            const noEquipmentRow = document.getElementById('noEquipmentRow');
+            let equipmentSortAscending = true;
+            let currentEquipmentSearchTerm = '';
+
+            equipmentSearchInput?.addEventListener('input', () => {
+                currentEquipmentSearchTerm = equipmentSearchInput.value.toLowerCase();
+                filterEquipment();
+                clearEquipmentSearch.style.display = currentEquipmentSearchTerm ? 'block' : 'none';
+            });
+
+            clearEquipmentSearch?.addEventListener('click', () => {
+                equipmentSearchInput.value = '';
+                currentEquipmentSearchTerm = '';
+                filterEquipment();
+                clearEquipmentSearch.style.display = 'none';
+                equipmentSearchInput.focus();
+            });
+
+            sortEquipmentBtn?.addEventListener('click', () => {
+                equipmentSortAscending = !equipmentSortAscending;
+                filterEquipment();
+            });
+
+            function filterEquipment() {
+                const rows = Array.from(equipmentTableBody.querySelectorAll('tr:not(#noEquipmentRow)'));
+                let hasVisibleRows = false;
+
+                rows.forEach(row => {
+                    const name = row.dataset.name;
+                    const quantity = row.dataset.quantity;
+                    const available = row.dataset.available;
+                    const description = row.dataset.description;
+                    const status = row.dataset.status;
+
+                    const matches = !currentEquipmentSearchTerm ||
+                        name.includes(currentEquipmentSearchTerm) ||
+                        quantity.includes(currentEquipmentSearchTerm) ||
+                        available.includes(currentEquipmentSearchTerm) ||
+                        description.includes(currentEquipmentSearchTerm) ||
+                        status.includes(currentEquipmentSearchTerm);
+
+                    row.style.display = matches ? '' : 'none';
+                    if (matches) hasVisibleRows = true;
+                });
+
+                noEquipmentRow.style.display = hasVisibleRows ? 'none' : '';
+
+                if (hasVisibleRows) {
+                    const visibleRows = rows.filter(row => row.style.display !== 'none');
+                    visibleRows.sort((a, b) => {
+                        const aName = a.dataset.name;
+                        const bName = b.dataset.name;
+                        return equipmentSortAscending ? aName.localeCompare(bName) : bName.localeCompare(aName);
+                    });
+                    visibleRows.forEach(row => equipmentTableBody.appendChild(row));
+                }
+
+                sortEquipmentBtn.innerHTML = equipmentSortAscending
+                    ? '<i class="bi bi-sort-alpha-down"></i> Trier par Nom'
+                    : '<i class="bi bi-sort-alpha-up"></i> Trier par Nom';
+            }
+
+            // === TRI + FILTRE RÉSERVATIONS ===
+            const reservationSearchInput = document.getElementById('reservationSearchInput');
+            const clearReservationSearch = document.getElementById('clearReservationSearch');
+            const sortReservationBtn = document.getElementById('sortReservationBtn');
+            const reservationTableBody = document.getElementById('reservationTableBody');
+            const noReservationRow = document.getElementById('noReservationRow');
+            let reservationSortAscending = true;
+            let currentReservationSearchTerm = '';
+
+            reservationSearchInput?.addEventListener('input', () => {
+                currentReservationSearchTerm = reservationSearchInput.value.toLowerCase();
+                filterReservations();
+                clearReservationSearch.style.display = currentReservationSearchTerm ? 'block' : 'none';
+            });
+
+            clearReservationSearch?.addEventListener('click', () => {
+                reservationSearchInput.value = '';
+                currentReservationSearchTerm = '';
+                filterReservations();
+                clearReservationSearch.style.display = 'none';
+                reservationSearchInput.focus();
+            });
+
+            sortReservationBtn?.addEventListener('click', () => {
+                reservationSortAscending = !reservationSortAscending;
+                filterReservations();
+            });
+
+            function filterReservations() {
+                const rows = Array.from(reservationTableBody.querySelectorAll('tr:not(#noReservationRow)'));
+                let hasVisibleRows = false;
+
+                rows.forEach(row => {
+                    const equipment = row.dataset.equipment;
+                    const date = row.dataset.date;
+                    const status = row.dataset.status;
+                    const event = row.dataset.event;
+
+                    const matches = !currentReservationSearchTerm ||
+                        (equipment && equipment.includes(currentReservationSearchTerm)) ||
+                        (date && date.includes(currentReservationSearchTerm)) ||
+                        (status && status.includes(currentReservationSearchTerm)) ||
+                        (event && event.includes(currentReservationSearchTerm));
+
+                    row.style.display = matches ? '' : 'none';
+                    if (matches) hasVisibleRows = true;
+                });
+
+                noReservationRow.style.display = hasVisibleRows ? 'none' : '';
+
+                if (hasVisibleRows) {
+                    const visibleRows = rows.filter(row => row.style.display !== 'none');
+                    visibleRows.sort((a, b) => {
+                        const dateA = new Date(a.dataset.date);
+                        const dateB = new Date(b.dataset.date);
+                        return reservationSortAscending ? dateA - dateB : dateB - dateA;
+                    });
+                    visibleRows.forEach(row => reservationTableBody.appendChild(row));
+                }
+
+                sortReservationBtn.innerHTML = reservationSortAscending
+                    ? '<i class="bi bi-sort-down"></i> Trier par Date (Plus ancien)'
+                    : '<i class="bi bi-sort-up"></i> Trier par Date (Plus récent)';
+            }
+
+            // === ADS SEARCH AND SORT ===
+            const adsSearchInput = document.getElementById('adsSearchInput');
+            const sortByNameBtn = document.getElementById('sortByNameBtn');
+            const adsTableBody = document.getElementById('adsTableBody');
+            const noAdsRow = document.getElementById('noAdsRow');
+            let adsSortAscending = true;
+            let currentAdsSearchTerm = '';
+
+            adsSearchInput?.addEventListener('input', () => {
+                currentAdsSearchTerm = adsSearchInput.value.toLowerCase();
+                filterAds();
+            });
+
+            sortByNameBtn?.addEventListener('click', () => {
+                adsSortAscending = !adsSortAscending;
+                filterAds();
+            });
+
+            function filterAds() {
+                const rows = Array.from(adsTableBody.querySelectorAll('tr:not(#noAdsRow)'));
+                let hasVisibleRows = false;
+
+                rows.forEach(row => {
+                    const name = row.dataset.name;
+                    const type = row.dataset.type;
+                    const content = row.dataset.content;
+                    const location = row.dataset.location;
+                    const status = row.dataset.status;
+
+                    const matches = !currentAdsSearchTerm ||
+                        name.includes(currentAdsSearchTerm) ||
+                        type.includes(currentAdsSearchTerm) ||
+                        content.includes(currentAdsSearchTerm) ||
+                        location.includes(currentAdsSearchTerm) ||
+                        status.includes(currentAdsSearchTerm);
+
+                    row.style.display = matches ? '' : 'none';
+                    if (matches) hasVisibleRows = true;
+                });
+
+                noAdsRow.style.display = hasVisibleRows ? 'none' : '';
+
+                if (hasVisibleRows) {
+                    const visibleRows = rows.filter(row => row.style.display !== 'none');
+                    visibleRows.sort((a, b) => {
+                        const aName = a.dataset.name;
+                        const bName = b.dataset.name;
+                        return adsSortAscending ? aName.localeCompare(bName) : bName.localeCompare(aName);
+                    });
+                    visibleRows.forEach(row => adsTableBody.appendChild(row));
+                }
+
+                sortByNameBtn.innerHTML = adsSortAscending
+                    ? '<i class="bi bi-sort-alpha-down"></i> Sort by Name (A-Z)'
+                    : '<i class="bi bi-sort-alpha-up"></i> Sort by Name (Z-A)';
+            }
+
+            // === CAMPAIGN DATE SORT ===
+            const sortByDateBtn = document.getElementById('sortByDateBtn');
+            let campaignSortAscending = true;
+
+            sortByDateBtn?.addEventListener('click', function () {
+                const container = document.getElementById('campaignsContainer');
+                const campaignCards = Array.from(container.querySelectorAll('.col-lg-4.col-md-6.mb-4'));
+                const noCampaignsMessage = document.getElementById('noCampaignsMessage');
+
+                if (noCampaignsMessage) {
+                    container.removeChild(noCampaignsMessage);
+                }
+
+                campaignCards.sort((a, b) => {
+                    const dateA = new Date(a.getAttribute('data-start-date'));
+                    const dateB = new Date(b.getAttribute('data-start-date'));
+                    return campaignSortAscending ? dateA - dateB : dateB - dateA;
+                });
+
+                campaignCards.forEach(card => container.appendChild(card));
+                campaignSortAscending = !campaignSortAscending;
+
+                sortByDateBtn.innerHTML = campaignSortAscending 
+                    ? '<i class="bi bi-sort-down"></i> Sort by Date (Oldest First)'
+                    : '<i class="bi bi-sort-up"></i> Sort by Date (Newest First)';
+            });
+
+            // === EVENTS SEARCH AND SORT ===
+            const eventsSearchInput = document.getElementById('eventsSearchInput');
+            const sortByEventNameBtn = document.getElementById('sortByEventNameBtn');
+            const eventTableBody = document.querySelector('#events-section .table tbody');
+            let eventSortAscending = true;
+
+            eventsSearchInput?.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+                const rows = eventTableBody.querySelectorAll('tr');
+                let hasVisibleRows = false;
+
+                rows.forEach(row => {
+                    const title = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase();
+                    const type = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase();
+                    const location = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase();
+
+                    const matchesSearch = !searchTerm || 
+                        (title && title.includes(searchTerm)) || 
+                        (type && type.includes(searchTerm)) || 
+                        (location && location.includes(searchTerm));
+
+                    row.style.display = matchesSearch ? '' : 'none';
+                    if (matchesSearch) hasVisibleRows = true;
+                });
+
+                // Handle "no events found" row
+                const noEventsRow = eventTableBody.querySelector('tr td[colspan="7"]');
+                if (noEventsRow) {
+                    noEventsRow.style.display = hasVisibleRows ? 'none' : '';
+                }
+            });
+
+            sortByEventNameBtn?.addEventListener('click', function () {
+                const rows = Array.from(eventTableBody.querySelectorAll('tr:not(:last-child)'));
+                rows.sort((a, b) => {
+                    const nameA = a.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
+                    const nameB = b.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
+                    return eventSortAscending ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+                });
+
+                rows.forEach(row => eventTableBody.appendChild(row));
+                eventSortAscending = !eventSortAscending;
+
+                // Update button text
+                sortByEventNameBtn.innerHTML = eventSortAscending 
+                    ? '<i class="bi bi-sort-alpha-down"></i> Sort by Name (A-Z)'
+                    : '<i class="bi bi-sort-alpha-up"></i> Sort by Name (Z-A)';
+            });
+
+            // === NAVIGATION ENTRE SECTIONS ===
+            const sidebarLinks = document.querySelectorAll('#sidebar .nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const sectionTitle = document.getElementById('section-title');
+            const sectionCreateButton = document.getElementById('section-create-button');
+
+            const createButtonPaths = {
+                'events': "{{ path('app_evenement_new') }}",
+                'equipements': "{{ path('app_equipement_new') }}",
+                'ads': "{{ path('app_publicite_new') }}",
+                'sponsors': "#",
+                'merchandise': "#",
+                'users': "#"
+            };
+
+            const sectionTitles = {
+                'dashboard': 'Dashboard Overview',
+                'events': 'Events Management',
+                'equipements': 'Equipment Management',
+                'sponsors': 'Sponsors Management',
+                'ads': 'Advertisements Management',
+                'merchandise': 'Merchandise Management',
+                'users': 'Users Management'
+            };
+
+            function switchSection(sectionId) {
+                sidebarLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.section === sectionId);
+                });
+
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === `${sectionId}-section`);
+                });
+
+                sectionTitle.textContent = sectionTitles[sectionId] || 'Management';
+                sectionCreateButton.href = createButtonPaths[sectionId] || '#';
+                sectionCreateButton.style.display = createButtonPaths[sectionId] ? 'inline-block' : 'none';
+            }
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const sectionId = link.dataset.section;
+                    switchSection(sectionId);
+                    window.location.hash = sectionId;
+                });
+            });
+
+            const initialSection = window.location.hash.substring(1) || 'events';
+            switchSection(initialSection);
+        });
+    </script>
+{% endblock %}

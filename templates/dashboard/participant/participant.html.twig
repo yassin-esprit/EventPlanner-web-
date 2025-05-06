@@ -4,16 +4,18 @@
 {% endblock %}
 
 {% block body %}
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
+	<!-- Then Bootstrap JS -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 	<!-- Hero Section with Full-Size Video -->
 	<section class="hero-section" id="section_1">
 		<div class="section-overlay"></div>
 		<div class="container d-flex justify-content-center align-items-center">
 			<div class="row">
 				<div class="col-12 mt-auto mb-5 text-center">
-					<h1 class="text-white mb-5">Your Events Dashboard</h1>
-					<div
-						class="d-flex justify-content-center gap-3">
-						<!-- Browse Events Button (Always Visible) -->
+					<h1 class="text-white mb-5">MYTHOS PLANNER</h1>
+					<div class="d-flex justify-content-center gap-3">
 						<a class="btn custom-btn smoothscroll" href="#events">
 							<i class="bi bi-calendar-event me-2"></i>Browse Events
 						</a>
@@ -31,143 +33,199 @@
 
 	<!-- Events Section -->
 	<section class="artists-section section-padding" id="events" style="
-																					        background-image: url('{{ asset('images/nicholas-green-unsplash-blur.jpg') }}');
-																					        background-size: cover;
-																					        background-position: center;
-																					        background-attachment: fixed;
-																					        position: relative;
-																					    ">
+																		            background-image: url('{{ asset('images/nicholas-green-unsplash-blur.jpg') }}');
+																		            background-size: cover;
+																		            background-position: center;
+																		            background-attachment: fixed;
+																		            position: relative;
+																		        ">
 		<div class="section-overlay" style="
-												        position: absolute;
-												        top: 0;
-												        left: 0;
-												        width: 100%;
-												        height: 100%;
-												        background-color: rgba(255, 255, 255, 0.79);
-												    "></div>
+																		                position: absolute;
+																		                top: 0;
+																		                left: 0;
+																		                width: 100%;
+																		                height: 100%;
+																		                background-color: rgba(255, 255, 255, 0.79);
+																		            "></div>
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-12 text-center mb-5">
 					<h2 class="mb-4">Upcoming Events</h2>
 				</div>
 
-				{% for evenement in evenements %}
-					{# Define image and color based on event type #}
-					{% set event_assets = {
-                        'conference': {
-                            'image': 'conference.jpg',
-                            'color': 'rgba(70, 130, 180, 0.9)',
-                            'icon': 'bi-mic'
-                        },
-                        'fête': {
-                            'image': 'party.jpg',
-                            'color': 'rgba(220, 53, 69, 0.9)',
-                            'icon': 'bi-music-note-beamed'
-                        },
-                        'fete': {
-                            'image': 'party.jpg',
-                            'color': 'rgba(220, 53, 69, 0.9)',
-                            'icon': 'bi-music-note-beamed'
-                        },
-                        'formation': {
-                            'image': 'training.jpg',
-                            'color': 'rgba(25, 135, 84, 0.9)',
-                            'icon': 'bi-mortarboard'
-                        },
-                        'default': {
-                            'image': 'event-default.jpg',
-                            'color': 'rgba(108, 117, 125, 0.9)',
-                            'icon': 'bi-calendar-event'
-                        }
-                    } %}
-
-					{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
-
-					<div class="col-lg-4 col-md-6 col-12 mb-4">
-						<div class="artists-thumb">
-							<div class="artists-image-wrap">
-								<img src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="artists-image img-fluid" alt="{{ evenement.titre }}">
-								<div class="artists-date-badge">
-									<i class="bi {{ current_event.icon }} me-1"></i>
-									{{ evenement.date ? evenement.date|date('d M') : '' }}
-								</div>
-								<div class="artists-type-badge" style="background: {{ current_event.color }}">
-									{{ evenement.type }}
-								</div>
+				<!-- Search and Sort Controls -->
+				<div class="row mb-4">
+					<div class="col-md-6 mb-3 mb-md-0">
+						<form method="get" action="{{ path('participant_dashboard') }}" class="search-form">
+							<div class="input-group">
+								<input type="text" name="search" class="form-control" placeholder="Search events..." value="{{ search }}" id="searchInput">
+								{% if search %}
+									<button type="button" class="clear-search" onclick="clearSearch()">
+										<i class="bi bi-x-circle"></i>
+									</button>
+								{% endif %}
+								<button class="btn btn-primary" type="submit">
+									<i class="bi bi-search"></i>
+								</button>
 							</div>
-							<div class="artists-hover" style="background: {{ current_event.color }}">
-								<h4>{{ evenement.titre }}</h4>
-								<div class="event-meta">
-									<p>
-										<i class="bi bi-geo-alt"></i>
-										{{ evenement.lieu }}
-									</p>
-									<p>
-										<i class="bi bi-people"></i>
-										{{ evenement.users.count }}
-										participants /
-										{{ evenement.nbrplaces }}
-										seats
-									</p>
-									<p>
-										<i class="bi bi-calendar-check"></i>
-										{{ evenement.date ? evenement.date|date('F j, Y') : '' }}
-									</p>
-									<p class="event-description">
-										{{ evenement.description|slice(0, 120) }}
-										{% if evenement.description|length > 120 %}...
+						</form>
+					</div>
+					<div class="col-md-6">
+						<div class="dropdown float-md-end">
+							<button class="btn custom-sort-btn dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+								Sort by:
+								{% if sort is defined %}
+									{% for field, direction in sort %}
+										{{ field == 'title' ? 'Title' :
+               field == 'type' ? 'Type' :
+               field == 'places' ? 'Places' : 'Date' }}
+										({{ direction == 'asc' ? 'Asc' : 'Desc' }})
+										{% if not loop.last %},
 										{% endif %}
-									</p>
-								</div>
-								<div class="d-flex justify-content-between mt-3">
-									<a href="{{ path('app_evenement_participant_show', {'id': evenement.id}) }}" class="btn btn-sm btn-light">
-										<i class="bi bi-eye me-1"></i>Details
+									{% endfor %}
+								{% else %}
+									Date (Asc)
+								{% endif %}
+							</button>
+
+							<ul class="dropdown-menu" aria-labelledby="sortDropdown">
+								<li>
+									<a class="dropdown-item sort-option {% if sort.date is defined %}active{% endif %}" href="#" data-sort="date" data-direction="{{ sort.date is defined and sort.date == 'asc' ? 'desc' : 'asc' }}">
+										Date
+										{% if sort.date is defined %}
+											<i class="bi bi-arrow-{{ sort.date == 'asc' ? 'up' : 'down' }} float-end"></i>
+										{% endif %}
 									</a>
-
-									{% if app.user %}
-										{% if evenement.nbrplaces <= evenement.users.count %}
-											<span class="badge bg-danger d-flex align-items-center">
-												<i class="bi bi-x-circle me-1"></i>Sold Out
-											</span>
-										{% elseif evenement.users.contains(app.user) %}
-											<span class="badge bg-success d-flex align-items-center">
-												<i class="bi bi-check-circle me-1"></i>Registered
-											</span>
-										{% else %}
-											<form method="post" action="{{ path('app_evenement_participate', {'id': evenement.id}) }}" class="d-inline">
-												<input type="hidden" name="_token" value="{{ csrf_token('participate' ~ evenement.id) }}">
-												<button type="submit" class="btn btn-sm btn-success">
-													<i class="bi bi-check-circle me-1"></i>Participate
-												</button>
-											</form>
+								</li>
+								<li>
+									<a class="dropdown-item sort-option {% if sort.title is defined %}active{% endif %}" href="#" data-sort="title" data-direction="{{ sort.title is defined and sort.title == 'asc' ? 'desc' : 'asc' }}">
+										Title
+										{% if sort.title is defined %}
+											<i class="bi bi-arrow-{{ sort.title == 'asc' ? 'up' : 'down' }} float-end"></i>
 										{% endif %}
-									{% else %}
-										<a href="{{ path('app_login') }}" class="btn btn-sm btn-warning">
-											<i class="bi bi-box-arrow-in-right me-1"></i>Login to Join
-										</a>
-									{% endif %}
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item sort-option {% if sort.type is defined %}active{% endif %}" href="#" data-sort="type" data-direction="{{ sort.type is defined and sort.type == 'asc' ? 'desc' : 'asc' }}">
+										Type
+										{% if sort.type is defined %}
+											<i class="bi bi-arrow-{{ sort.type == 'asc' ? 'up' : 'down' }} float-end"></i>
+										{% endif %}
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item sort-option {% if sort.places is defined %}active{% endif %}" href="#" data-sort="places" data-direction="{{ sort.places is defined and sort.places == 'asc' ? 'desc' : 'asc' }}">
+										Places
+										{% if sort.places is defined %}
+											<i class="bi bi-arrow-{{ sort.places == 'asc' ? 'up' : 'down' }} float-end"></i>
+										{% endif %}
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
 
-									{% if is_granted('ROLE_ADMIN') %}
-										<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-light">
-											<i class="bi bi-pencil me-1"></i>Edit
-										</a>
-									{% endif %}
-								</div>
-							</div>
-						</div>
-					</div>
-				{% else %}
-					<div class="col-12 text-center">
-						<div class="alert alert-info py-4">
-							<i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-							<h4>No events found</h4>
-							<p class="mb-0">Check back later for upcoming events!</p>
-						</div>
-					</div>
-				{% endfor %}
+				<!-- Events Container - Updated via AJAX -->
+				<div id="events-container" class="row">
+					{% include 'dashboard/participant/_events_list.html.twig' with {'evenements': evenements, 'search': search} %}
+				</div>
 			</div>
 		</div>
 	</section>
+  <!-- Active Advertisements -->
+    <section class="active-ads py-5">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="mb-4">All Advertisements</h2>
+                    <div class="d-flex justify-content-center gap-3">
+                        
+                       
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for publicite in publicites %}
+                    {% set normalized_title = publicite.titre_pub|lower|replace({' ': '', '-': '', '_': ''}) %}
+                    
+                    {% set ad_images = {
+                        'dareloudettounsi': 'darOud.jpg',
+                        'phwc': 'PHWC.jpg',
+                        'worthinglaunchevent2025': 'launch.jpg',
+                        'cubaintunisia': 'cuba.jpg',
+                        'default': 'default.jpg'
+                    } %}
+                    
+                    {% set ad_image = ad_images[normalized_title] ?? ad_images['default'] %}
+                    
+                    {% set ad_type_colors = {
+                        'banner': 'rgba(70, 130, 180, 0.9)',
+                        'popup': 'rgba(220, 53, 69, 0.9)',
+                        'video': 'rgba(25, 135, 84, 0.9)',
+                        'default': 'rgba(108, 117, 125, 0.9)'
+                    } %}
+                    
+                    {% set ad_icons = {
+                        'banner': 'bi-image',
+                        'popup': 'bi-window',
+                        'video': 'bi-camera-reels',
+                        'default': 'bi-megaphone'
+                    } %}
+
+                    {% set current_color = ad_type_colors[publicite.type_pub|lower] ?? ad_type_colors['default'] %}
+                    {% set current_icon = ad_icons[publicite.type_pub|lower] ?? ad_icons['default'] %}
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card ad-card mb-4 border-0 shadow-sm h-100">
+                            <div class="card-img-top position-relative" style="height: 200px; overflow: hidden;">
+                                <img src="{{ asset('images/pub/' ~ ad_image) }}" 
+                                     class="img-fluid w-100 h-100" 
+                                     style="object-fit: cover;" 
+                                     alt="{{ publicite.titre_pub }}"
+                                     onerror="console.error('Image not found: images/pub/{{ ad_image }}'); this.src='{{ asset('images/pub/default.jpg') }}'">
+                                
+                                <span class="badge position-absolute top-0 end-0 m-2" style="background: {{ current_color }}">
+                                    <i class="bi {{ current_icon }} me-1"></i>
+                                    {{ publicite.type_pub }}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ publicite.titre_pub }}</h5>
+                                <p class="card-text text-muted">
+                                    <i class="bi bi-pin-map me-2"></i>
+                                    {{ publicite.emplacement_pub }}
+                                </p>
+                                <p class="card-text">
+                                    {{ publicite.contenu_pub|slice(0, 100) }}
+                                    {% if publicite.contenu_pub|length > 100 %}...
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                                <a href="{{ path('app_publicite_show2', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye me-1"></i>Details
+                                </a>
+                               
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No advertisements found.
+                        </div>
+                        <a href="{{ path('app_publicite_new') }}" class="btn btn-primary mt-3">
+                            <i class="bi bi-plus-circle me-1"></i> Create New Advertisement
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+	
 {% endblock %}
 
 {% block stylesheets %}
@@ -226,25 +284,6 @@
 			transform: translateY(-3px);
 			box-shadow: 0 5px 15px rgba(246, 56, 138, 0.4);
 			color: white;
-		}
-
-		.btn-outline-light {
-			border: 2px solid white;
-			color: white;
-			background: transparent;
-			padding: 12px 30px;
-			border-radius: 50px;
-			font-weight: 600;
-			transition: all 0.3s ease;
-			display: inline-flex;
-			align-items: center;
-			font-size: 1.1rem;
-		}
-
-		.btn-outline-light:hover {
-			background: white;
-			color: #f6388a;
-			transform: translateY(-3px);
 		}
 
 		/* Events Section */
@@ -350,6 +389,50 @@
 			line-height: 1.5;
 			color: #000;
 		}
+		.custom-sort-btn {
+			background-color: #f6388a;
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 50px;
+			font-weight: 600;
+			font-size: 1rem;
+			transition: all 0.3s ease;
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.custom-sort-btn:hover,
+		.custom-sort-btn:focus {
+			background-color: #e4317d;
+			color: white;
+			box-shadow: 0 5px 15px rgba(246, 56, 138, 0.3);
+		}
+
+		/* Refined dropdown menu */
+		.dropdown-menu {
+			border-radius: 10px;
+			border: none;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			padding: 0.5rem 0;
+		}
+
+		/* Refined dropdown items */
+		.dropdown-item {
+			padding: 0.6rem 1.2rem;
+			font-size: 0.95rem;
+			transition: background-color 0.2s;
+		}
+
+		.dropdown-item:hover {
+			background-color: rgba(246, 56, 138, 0.1);
+			color: #f6388a;
+		}
+
+		.dropdown-item.active {
+			background-color: #f6388a;
+			color: white;
+		}
 
 		/* Badge styles */
 		.badge {
@@ -360,14 +443,56 @@
 			align-items: center;
 		}
 
-		/* Smooth scroll behavior */
-		html {
-			scroll-behavior: smooth;
+		/* Search and Sort Styles */
+		.search-form .input-group {
+			max-width: 400px;
 		}
 
-		/* Button spacing */
-		.gap-3 {
-			gap: 1rem;
+		.search-form .form-control {
+			border-right: none;
+		}
+
+		.search-form .btn {
+			border-left: none;
+			background-color: #f6388a;
+			color: white;
+		}
+
+		.dropdown-menu {
+			min-width: 200px;
+		}
+
+		.dropdown-item.active {
+			background-color: #f6388a;
+			color: white;
+		}
+
+		/* Clear search button */
+		.clear-search {
+			position: absolute;
+			right: 45px;
+			top: 50%;
+			transform: translateY(-50%);
+			background: none;
+			border: none;
+			color: #6c757d;
+			z-index: 10;
+		}
+
+		.clear-search:hover {
+			color: #f6388a;
+		}
+
+		/* Loading spinner */
+		.loading-spinner {
+			display: none;
+			text-align: center;
+			padding: 20px;
+		}
+
+		.spinner-border {
+			width: 3rem;
+			height: 3rem;
 		}
 
 		/* Responsive adjustments */
@@ -381,16 +506,164 @@
 				height: 200px;
 			}
 
-			.custom-btn,
-			.btn-outline-light {
+			.custom-btn {
 				padding: 10px 20px;
 				font-size: 1rem;
 			}
 
-			.d-flex {
-				flex-direction: column;
-				gap: 0.5rem;
+			.search-form .input-group {
+				max-width: 100%;
+			}
+
+			.dropdown.float-md-end {
+				float: none !important;
+				margin-top: 10px;
 			}
 		}
 	</style>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	console.log('URL:', url);
+				console.log('Params:', params.toString());
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const eventsContainer = document.getElementById('events-container');
+const searchForm = document.querySelector('.search-form');
+const searchInput = document.getElementById('searchInput');
+const sortDropdown = document.getElementById('sortDropdown');
+
+// Initialize currentSort from template or default
+let currentSort = {};
+try {
+currentSort = JSON.parse('{{ sort|json_encode|raw }}') || {
+'date': 'asc'
+};
+} catch (e) {
+currentSort = {
+'date': 'asc'
+};
+}
+
+// Debugging: Log initial state
+console.log('Initial sort state:', currentSort);
+
+// Search form submission
+searchForm.addEventListener('submit', function (e) {
+e.preventDefault();
+loadEvents();
+});
+
+// Sort option clicks
+document.querySelectorAll('.sort-option').forEach(item => {
+item.addEventListener('click', function (e) {
+e.preventDefault();
+const sortField = this.dataset.sort;
+const currentDirection = currentSort[sortField] || 'asc';
+const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+
+// Shift key = multi-sort, otherwise replace
+if (e.shiftKey) {
+currentSort[sortField] = newDirection;
+} else {
+currentSort = {
+[sortField]: newDirection
+};
+}
+
+console.log('New sort state:', currentSort);
+updateSortDropdown();
+loadEvents();
+});
+});
+
+// Clear search
+window.clearSearch = function () {
+searchInput.value = '';
+loadEvents();
+searchInput.focus();
+}
+
+// Load events via AJAX
+function loadEvents() {
+const searchTerm = searchInput.value;
+const url = '{{ path('participant_dashboard_ajax') }}';
+
+console.log('Loading events with params:', {
+search: searchTerm,
+sort: currentSort
+});
+
+// Show loading
+eventsContainer.innerHTML = `
+            <div class="col-12 text-center loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `;
+
+// Build query params
+const params = new URLSearchParams();
+params.append('search', searchTerm);
+for (const [field, direction] of Object.entries(currentSort)) {
+params.append (`sort[${field}]`, direction);
+}
+
+// Make request
+axios.get(url, {params}).then(response => {
+eventsContainer.innerHTML = response.data;
+}).catch(error => {
+console.error('Error loading events:', error);
+eventsContainer.innerHTML = `
+                    <div class="col-12 text-center">
+                        <div class="alert alert-danger py-4">
+                            <i class="bi bi-exclamation-triangle fs-1 d-block mb-3"></i>
+                            <h4>Error loading events</h4>
+                            <p class="mb-0">${
+error.message
+}</p>
+                        </div>
+                    </div>
+                `;
+});
+}
+
+// Update dropdown display
+function updateSortDropdown() { // Build description text
+const descriptions = [];
+for (const [field, direction] of Object.entries(currentSort)) {
+const fieldName = field === 'title' ? 'Title' : field === 'type' ? 'Type' : field === 'places' ? 'Places' : 'Date';
+descriptions.push(`${fieldName} (${
+direction === 'asc' ? 'Asc' : 'Desc'
+})`);
+}
+
+sortDropdown.innerHTML = `Sort by: ${
+descriptions.join(', ') || 'Date (Asc)'
+}`;
+
+// Update active states
+document.querySelectorAll('.sort-option').forEach(item => {
+item.classList.remove('active');
+const field = item.dataset.sort;
+if (currentSort[field]) {
+item.classList.add('active');
+const icon = item.querySelector('i') || document.createElement('i');
+icon.className = `bi bi-arrow-${
+currentSort[field] === 'asc' ? 'up' : 'down'
+} float-end`;
+if (!item.querySelector('i')) {
+item.appendChild(icon);
+}
+}
+});
+}
+
+// Initialize
+updateSortDropdown();
+});
+	</script>
 {% endblock %}

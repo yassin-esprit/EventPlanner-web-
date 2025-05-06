@@ -1,0 +1,305 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Map - {{ publicite.titrePub }}{% endblock %}
+
+{% block body %}
+    <section class="event-details-section section-padding" style="
+            background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        ">
+        <div class="section-overlay" style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            "></div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-12">
+                    <div class="custom-form event-details-card">
+                        <div class="event-header text-center mb-4">
+                            <h2 class="event-title">{{ publicite.titrePub }}</h2>
+                            <div class="event-meta">
+                                <span class="event-type-badge">{{ publicite.typePub|capitalize }}</span>
+                                <span class="event-status-badge {{ publicite.statutPub == 'active' ? 'status-active' : 'status-inactive' }}">
+                                    {{ publicite.statutPub == 'active' ? 'Active' : 'Inactive' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="event-body">
+                            <div class="event-description mb-4">
+                                <h4 class="section-title">Location Details</h4>
+                                <div class="detail-item">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <div>
+                                        <h5>Placement</h5>
+                                        <p>{{ publicite.emplacementPub }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="map-container mb-4">
+                                <h4 class="section-title">Exact Location</h4>
+                                <div id="map">
+                                    <div class="loading-spinner">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="event-actions mt-5">
+                            <div class="d-flex flex-wrap justify-content-center gap-3">
+                                <a href="{{ path('app_publicite_show', {'id_pub': publicite.idPub}) }}" class="btn btn-outline-light">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Details
+                               
+                                <a href="{{ path('app_publicite_pdf', {'id_pub': publicite.idPub}) }}" class="btn btn-warning">
+                                    <i class="bi bi-file-earmark-pdf me-2"></i>Generate PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map { 
+            height: 400px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-top: 15px;
+            background-color: #f8f9fa;
+        }
+        
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        /* Reuse styles from show.html.twig */
+        .event-details-section {
+            position: relative;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .event-details-card {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-header {
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .event-title {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .event-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .event-type-badge {
+            background-color: #f6388a;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .event-status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-inactive {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #f6388a;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item i {
+            font-size: 1.5rem;
+            color: #f6388a;
+            margin-top: 3px;
+        }
+
+        .detail-item h5 {
+            color: #2c3e50;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .detail-item p {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .btn-outline-light {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+
+        @media(max-width: 767.98px) {
+            .event-details-card {
+                padding: 30px 20px;
+            }
+
+            .event-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .event-actions .d-flex {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .event-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapElement = document.getElementById('map');
+            const spinner = mapElement.querySelector('.loading-spinner');
+            
+            // Initialize map with default view
+            const map = L.map('map').setView([0, 0], 2);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            // Encode the location for URL
+            const locationQuery = encodeURIComponent("{{ publicite.emplacementPub }}");
+            
+            // Fetch exact coordinates from Nominatim
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${locationQuery}&limit=1`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const lat = parseFloat(data[0].lat);
+                        const lon = parseFloat(data[0].lon);
+                        
+                        // Remove loading spinner
+                        spinner.remove();
+                        
+                        // Set exact map view
+                        map.setView([lat, lon], 16); // Zoom level 16 = street level
+                        
+                        // Add precise marker
+                        L.marker([lat, lon]).addTo(map)
+                            .bindPopup(`
+                                <b>{{ publicite.titrePub }}</b><br>
+                                <i class="bi bi-geo-alt"></i> {{ publicite.emplacementPub }}
+                            `)
+                            .openPopup();
+                    } else {
+                        spinner.innerHTML = `
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Exact location not found. Showing approximate area.
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error("Geocoding error:", error);
+                    spinner.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="bi bi-x-circle"></i>
+                            Failed to load map. Please try again later.
+                        </div>
+                    `;
+                });
+        });
+    </script>
+{% endblock %}

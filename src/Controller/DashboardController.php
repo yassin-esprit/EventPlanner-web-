@@ -2,47 +2,130 @@
 
 namespace App\Controller;
 
+use App\Entity\Evenement;
+use App\Entity\Equipement;
 use App\Repository\EvenementRepository;
+use App\Repository\EquipementRepository;
+use App\Repository\ReservationEquipementRepository;
+use App\Repository\PubliciteRepository;
+use App\Repository\CampagnesPublicitaireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+<<<<<<< HEAD
 use App\Entity\Evenement;
 use App\Repository\SponsorRepository;
 use App\Repository\ContratRepository;
+=======
+use Symfony\Component\HttpFoundation\Request;
+use App\Service\BadgeService;
+>>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9
 
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard/admin', name: 'admin_dashboard')]
     #[IsGranted('ROLE_ADMIN')]
+<<<<<<< HEAD
     public function adminDashboard(EvenementRepository $evenementRepository): Response
     {
         $evenements = $evenementRepository->findAll();
+=======
+    public function adminDashboard(
+        EvenementRepository $evenementRepository,
+        EquipementRepository $equipementRepository,
+        PubliciteRepository $publiciteRepository,
+        ReservationEquipementRepository $reservationEquipementRepository,
+        CampagnesPublicitaireRepository $campagneRepository
+    ): Response {
+        $evenements   = $evenementRepository->findAll();
+        $equipements  = $equipementRepository->findAll();
+        $publicites   = $publiciteRepository->findAll();
+        $reservationEquipements = $reservationEquipementRepository->findAll();
+        $campagnes    = $campagneRepository->findAll();
+
+        // ✅ Statistiques équipements par statut
+        $stats = [
+            'disponible'   => $equipementRepository->count(['statut' => 'disponible']),
+            'maintenance'  => $equipementRepository->count(['statut' => 'maintenance']),
+            'indisponible' => $equipementRepository->count(['statut' => 'indisponible']),
+        ];
+
+>>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9
         return $this->render('dashboard/admin/admin.html.twig', [
-            'controller_name' => 'DashboardController',
-            'evenements' => $evenements
+            'controller_name'        => 'DashboardController',
+            'evenements'             => $evenements,
+            'equipements'            => $equipements,
+            'publicites'             => $publicites,
+            'campagnes'              => $campagnes,
+            'reservation_equipements'=> $reservationEquipements,
+            'stats'                  => $stats,
         ]);
     }
 
     #[Route('/dashboard/owner', name: 'owner_dashboard')]
     #[IsGranted('ROLE_OWNER')]
+<<<<<<< HEAD
     public function ownerDashboard(EvenementRepository $evenementRepository): Response
     {
         $evenements = $evenementRepository->findAll();
+=======
+    public function ownerDashboard(
+        EvenementRepository $evenementRepository,
+        EquipementRepository $equipementRepository,
+        ReservationEquipementRepository $reservationEquipementRepository,
+        PubliciteRepository $publiciteRepository,
+        CampagnesPublicitaireRepository $campagneRepository
+    ): Response {
+        $evenements            = $evenementRepository->findAll();
+        $equipements           = $equipementRepository->findAll();
+        $publicites            = $publiciteRepository->findAll();
+        $campagnes             = $campagneRepository->findAll();
+        
+        // Get the current user
+        $user = $this->getUser();
+
+>>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9
         return $this->render('dashboard/owner/owner.html.twig', [
-            'controller_name' => 'DashboardController',
-            'evenements' => $evenements
+            'controller_name'        => 'DashboardController',
+            'evenements'             => $evenements,
+            'equipements'            => $equipements,
+            'reservation_equipements' => $reservationEquipementRepository->findBy(['user' => $user]),
+            'publicites'             => $publicites,
+            'campagnes'              => $campagnes,
+            'userId'                => $user->getUserId()
         ]);
     }
 
     #[Route('/dashboard/participant', name: 'participant_dashboard')]
     #[IsGranted('ROLE_PARTICIPANT')]
-    public function participantDashboard(EvenementRepository $evenementRepository): Response
-    {
+    public function participantDashboard(
+        EvenementRepository $evenementRepository,
+        PubliciteRepository $publiciteRepository,
+
+        Request $request,
+        BadgeService $badgeService
+    ): Response {
         $evenements = $evenementRepository->findAll();
+<<<<<<< HEAD
+=======
+        $publicites   = $publiciteRepository->findAll();
+
+
+        // Example of handling search and sort functionality
+        $search = $request->query->get('search', '');
+        $sort = $request->query->get('sort', 'name'); // Default sort field
+        $direction = $request->query->get('direction', 'asc'); // Default sort direction
+>>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9
 
         return $this->render('dashboard/participant/participant.html.twig', [
             'evenements' => $evenements,
+            'publicites' => $publicites,
+
+            'search' => $search,
+            'sort' => $sort,
+            'direction' => $direction,
+            'badge_service' => $badgeService,
         ]);
     }
 

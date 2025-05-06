@@ -40,6 +40,13 @@ class UserRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-
+public function countParticipants(): int
+{
+    return $this->createQueryBuilder('u')
+        ->select('COUNT(DISTINCT u.userId)')
+        ->join('u.evenements', 'e')
+        ->getQuery()
+        ->getSingleScalarResult();
+}
     
 }

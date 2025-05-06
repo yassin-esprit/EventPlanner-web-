@@ -1,0 +1,209 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New Equipment{% endblock %}
+
+{% block body %}
+    <section class="ticket-section section-padding" style="
+            background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        ">
+        <div class="section-overlay" style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            "></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-10 mx-auto">
+                    <div class="custom-form ticket-form mb-5 mb-lg-0">
+                        <h2 class="text-center mb-4">Create New Equipment</h2>
+
+                        <div class="ticket-form-body">
+                            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_label(form.nom, 'Equipment Name', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.nom, {
+                                            'attr': {
+                                                'class': 'form-control' ~ (form.nom.vars.errors ? ' is-invalid' : ''),
+                                                'placeholder': 'Enter equipment name'
+                                            }
+                                        }) }}
+                                        {{ form_errors(form.nom) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_label(form.quantite_totale, 'Total Quantity', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.quantite_totale, {
+                                            'attr': {
+                                                'class': 'form-control' ~ (form.quantite_totale.vars.errors ? ' is-invalid' : ''),
+                                                'min': 0
+                                            }
+                                        }) }}
+                                        {{ form_errors(form.quantite_totale) }}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="input-with-error">
+                                        {{ form_label(form.quantite_dispo, 'Available Quantity', {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.quantite_dispo, {
+                                            'attr': {
+                                                'class': 'form-control' ~ (form.quantite_dispo.vars.errors ? ' is-invalid' : ''),
+                                                'min': 0
+                                            }
+                                        }) }}
+                                        {{ form_errors(form.quantite_dispo) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-with-error">
+                                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.description, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (form.description.vars.errors ? ' is-invalid' : ''),
+                                        'rows': 4,
+                                        'placeholder': 'Enter equipment description'
+                                    }
+                                }) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+
+                            <div class="input-with-error">
+                                {{ form_label(form.statut, 'Status', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.statut, {
+                                    'attr': {
+                                        'class': 'form-select' ~ (form.statut.vars.errors ? ' is-invalid' : '')
+                                    }
+                                }) }}
+                                {{ form_errors(form.statut) }}
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <div class="col-lg-4 col-md-6 col-8">
+                                    <button type="submit" class="btn btn-primary form-control">
+                                        <i class="bi bi-save me-2"></i>{{ button_label|default('Create Equipment') }}
+                                    </button>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-8">
+                                    <a href="{{ path('app_equipement_index') }}" class="btn btn-outline-secondary form-control">
+                                        <i class="bi bi-arrow-left me-2"></i>Cancel
+                                    </a>
+                                </div>
+                            </div>
+
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .ticket-section {
+            position: relative;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-form {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .ticket-form h2 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .form-control, .form-select {
+            height: 45px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3498db;
+            box-shadow: none;
+        }
+
+        textarea.form-control {
+            height: auto;
+            min-height: 120px;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .input-with-error {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .invalid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            font-size: 0.875em;
+            color: #dc3545;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Validation côté client
+            const forms = document.querySelectorAll('.needs-validation');
+            
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        });
+    </script>
+{% endblock %}

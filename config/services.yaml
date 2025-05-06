@@ -1,8 +1,17 @@
 parameters:
+<<<<<<< HEAD
     sponsors_directory: '%kernel.project_dir%/public/uploads/sponsors'
 
 services:
 
+=======
+  openweathermap.api_key: "%env(OPENWEATHERMAP_API_KEY)%"
+
+services:
+  App\Service\WeatherService:
+    arguments:
+      $openWeatherMapApiKey: "%openweathermap.api_key%"
+>>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9
   App\EventListener\LoginSuccessListener:
     tags:
       - {
@@ -27,6 +36,7 @@ services:
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
 
+<<<<<<< HEAD
   # Configuration du service d'email
   App\Service\EmailService:
     arguments:
@@ -34,3 +44,8 @@ services:
 
   App\Controller\SponsorCController:
     tags: ['controller.service_arguments']
+=======
+twig:
+  globals:
+    badge_service: '@App\Service\BadgeService'
+>>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9

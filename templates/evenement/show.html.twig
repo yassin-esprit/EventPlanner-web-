@@ -6,8 +6,21 @@
 {% endblock %}
 
 {% block body %}
-	<section class="event-details-section section-padding">
-		<div class="section-overlay"></div>
+	<section class="event-details-section section-padding" style="
+												        background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+												        background-size: cover;
+												        background-position: center;
+												        background-attachment: fixed;
+												        position: relative;
+												    ">
+		<div class="section-overlay" style="
+																					        position: absolute;
+																					        top: 0;
+																					        left: 0;
+																					        width: 100%;
+																					        height: 100%;
+																					        background-color: rgba(0, 0, 0, 0.5);
+																					    "></div>
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-8 col-12">
@@ -83,14 +96,6 @@
 			align-items: center;
 		}
 
-		.section-overlay {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.7);
-		}
 
 		.event-details-card {
 			background-color: #ffffff;

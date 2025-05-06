@@ -1,0 +1,386 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Owner Reports
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css" rel="stylesheet">
+	<style>
+		.report-card {
+			transition: all 0.3s ease;
+			border-radius: 10px;
+			height: 100%;
+		}
+		.report-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+		}
+		.chart-container {
+			position: relative;
+			height: 300px;
+			width: 100%;
+		}
+		.table-responsive {
+			max-height: 400px;
+			overflow-y: auto;
+		}
+		 .ad-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* Background pattern for ad cards */
+        .ad-card .card-img-top {
+            background-image: radial-gradient(circle, #e0e0e0 1px, transparent 1px);
+            background-size: 15px 15px;
+        }
+		
+        /* Campaign Cards */
+        .campaign-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .campaign-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .campaign-meta {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .campaign-ad {
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+        }
+	</style>
+{% endblock %}
+
+{% block body %}
+	<!-- Hero Section -->
+	<section class="hero-section" id="section_1">
+		<div class="section-overlay"></div>
+		<div class="container d-flex justify-content-center align-items-center">
+			<div class="row">
+				<div class="col-12 mt-auto mb-5 text-center">
+					<h1 class="text-white mb-5">Event Analytics Dashboard</h1>
+					<p class="text-white lead">Comprehensive insights into your events</p>
+				</div>
+			</div>
+		</div>
+		<div class="video-wrap">
+			<video autoplay loop muted class="custom-video" poster="">
+				<source src="{{ asset('video/pexels-2022395.mp4') }}" type="video/mp4">
+				Your browser does not support the video tag.
+			</video>
+		</div>
+	</section>
+
+	<!-- Overview Stats -->
+	<section class="py-5">
+		<div class="container">
+			<div class="row g-4">
+				<div class="col-md-4">
+					<div class="card report-card border-0 shadow-sm">
+						<div class="card-body text-center">
+							<i class="bi bi-calendar-event fs-1 text-primary"></i>
+							<h3 class="mt-3 mb-0">{{ totalEvents }}</h3>
+							<p class="text-muted mb-0">Total Events</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card report-card border-0 shadow-sm">
+						<div class="card-body text-center">
+							<i class="bi bi-people fs-1 text-success"></i>
+							<h3 class="mt-3 mb-0">{{ totalParticipants }}</h3>
+							<p class="text-muted mb-0">Total Participants</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card report-card border-0 shadow-sm">
+						<div class="card-body text-center">
+							<i class="bi bi-calendar-check fs-1 text-warning"></i>
+							<h3 class="mt-3 mb-0">{{ upcomingEvents }}</h3>
+							<p class="text-muted mb-0">Upcoming Events</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Charts Section -->
+	<section class="py-5 bg-light">
+		<div class="container">
+			<div class="row mb-5">
+				<div class="col-12 text-center">
+					<h2 class="mb-4">Event Analytics</h2>
+				</div>
+			</div>
+
+			<div
+				class="row g-4 mb-5">
+				<!-- Events by Type Chart -->
+				<div class="col-lg-6">
+					<div class="card report-card border-0 shadow-sm h-100">
+						<div class="card-body">
+							<h5 class="card-title">Events by Type</h5>
+							<div class="chart-container">
+								<canvas id="eventsByTypeChart"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Rating Distribution Chart -->
+				<div class="col-lg-6">
+					<div class="card report-card border-0 shadow-sm h-100">
+						<div class="card-body">
+							<h5 class="card-title">Rating Distribution</h5>
+							<div class="chart-container">
+								<canvas id="ratingDistributionChart"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="row g-4">
+				<!-- Participation by Event Chart -->
+				<div class="col-lg-6">
+					<div class="card report-card border-0 shadow-sm h-100">
+						<div class="card-body">
+							<h5 class="card-title">Top Events by Participation</h5>
+							<div class="chart-container">
+								<canvas id="participationChart"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Average Ratings Chart -->
+				<div class="col-lg-6">
+					<div class="card report-card border-0 shadow-sm h-100">
+						<div class="card-body">
+							<h5 class="card-title">Top Rated Events</h5>
+							<div class="chart-container">
+								<canvas id="averageRatingsChart"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Data Tables Section -->
+	<section class="py-5">
+		<div class="container">
+			<div class="row mb-5">
+				<div class="col-12 text-center">
+					<h2 class="mb-4">Detailed Statistics</h2>
+				</div>
+			</div>
+
+			<div
+				class="row g-4">
+				<!-- Participation Table -->
+				<div class="col-lg-6">
+					<div class="card report-card border-0 shadow-sm h-100">
+						<div class="card-body">
+							<h5 class="card-title">Event Participation</h5>
+							<div class="table-responsive">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>Event</th>
+											<th>Participants</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for event in participationsByEvent %}
+											<tr>
+												<td>{{ event.titre }}</td>
+												<td>{{ event.participantCount }}</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Ratings Table -->
+				<div class="col-lg-6">
+					<div class="card report-card border-0 shadow-sm h-100">
+						<div class="card-body">
+							<h5 class="card-title">Event Ratings</h5>
+							<div class="table-responsive">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>Event</th>
+											<th>Avg Rating</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for rating in averageRatings %}
+											<tr>
+												<td>{{ rating.titre }}</td>
+												<td>{{ rating.avgRating|number_format(1) }}/5</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Events by Type Chart (Doughnut)
+const eventsByTypeCtx = document.getElementById('eventsByTypeChart').getContext('2d');
+new Chart(eventsByTypeCtx, {
+type: 'doughnut',
+data: {
+labels: {{ eventsByType|map(e => e.eventType)|json_encode|raw }},
+datasets: [
+{
+data: {{ eventsByType|map(e => e.count)|json_encode|raw }},
+backgroundColor: [
+'rgba(54, 162, 235, 0.7)',
+'rgba(255, 99, 132, 0.7)',
+'rgba(75, 192, 192, 0.7)',
+'rgba(255, 206, 86, 0.7)',
+'rgba(153, 102, 255, 0.7)'
+],
+borderWidth: 1
+}
+]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+position: 'right'
+}
+}
+}
+});
+
+// Rating Distribution Chart (Bar)
+const ratingDistributionCtx = document.getElementById('ratingDistributionChart').getContext('2d');
+new Chart(ratingDistributionCtx, {
+type: 'bar',
+data: {
+labels: {{ ratingDistribution|map(r => r.rating ~ ' Stars')|json_encode|raw }},
+datasets: [
+{
+label: 'Number of Ratings',
+data: {{ ratingDistribution|map(r => r.count)|json_encode|raw }},
+backgroundColor: 'rgba(75, 192, 192, 0.7)',
+borderColor: 'rgba(75, 192, 192, 1)',
+borderWidth: 1
+}
+]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+scales: {
+y: {
+beginAtZero: true,
+ticks: {
+stepSize: 1
+}
+}
+}
+}
+});
+
+// Participation Chart (Horizontal Bar)
+const participationCtx = document.getElementById('participationChart').getContext('2d');
+new Chart(participationCtx, {
+type: 'bar',
+data: {
+labels: {{ participationsByEvent|slice(0, 5)|map(e => e.titre)|json_encode|raw }},
+datasets: [
+{
+label: 'Participants',
+data: {{ participationsByEvent|slice(0, 5)|map(e => e.participantCount)|json_encode|raw }},
+backgroundColor: 'rgba(54, 162, 235, 0.7)',
+borderColor: 'rgba(54, 162, 235, 1)',
+borderWidth: 1
+}
+]
+},
+options: {
+indexAxis: 'y',
+responsive: true,
+maintainAspectRatio: false,
+scales: {
+x: {
+beginAtZero: true,
+ticks: {
+stepSize: 1
+}
+}
+}
+}
+});
+
+// Average Ratings Chart (Bar)
+const averageRatingsCtx = document.getElementById('averageRatingsChart').getContext('2d');
+new Chart(averageRatingsCtx, {
+type: 'bar',
+data: {
+labels: {{ averageRatings|slice(0, 5)|map(r => r.titre)|json_encode|raw }},
+datasets: [
+{
+label: 'Average Rating',
+data: {{ averageRatings|slice(0, 5)|map(r => r.avgRating)|json_encode|raw }},
+backgroundColor: 'rgba(255, 159, 64, 0.7)',
+borderColor: 'rgba(255, 159, 64, 1)',
+borderWidth: 1
+}
+]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+scales: {
+y: {
+beginAtZero: true,
+max: 5,
+ticks: {
+stepSize: 0.5
+}
+}
+}
+}
+});
+});
+	</script>
+{% endblock %}
