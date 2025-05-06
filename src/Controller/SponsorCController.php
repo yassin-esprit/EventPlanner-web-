@@ -103,6 +103,29 @@ public function getSponsorInfo(int $id_sponsor, SponsorRepository $sponsorReposi
                 ]);
             }
 
+            // Handle logo file upload
+            $logoFile = $form->get('logo')->getData();
+            if ($logoFile) {
+                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                if (function_exists('transliterator_transliterate')) {
+                    $safeFilename = \transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                } else {
+                    // Fallback if intl extension is not enabled
+                    $safeFilename = preg_replace('/[^A-Za-z0-9_]/', '', strtolower($originalFilename));
+                }
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
+
+                try {
+                    $logoFile->move(
+                        $this->getParameter('sponsors_directory'),
+                        $newFilename
+                    );
+                    $sponsor->setLogo($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors du téléchargement du logo.');
+                }
+            }
+
             try {
                 $entityManager->persist($sponsor);
                 $entityManager->flush();
@@ -140,6 +163,24 @@ public function getSponsorInfo(int $id_sponsor, SponsorRepository $sponsorReposi
                     'sponsor' => $sponsor,
                     'form' => $form,
                 ]);
+            }
+
+            // Handle logo file upload
+            $logoFile = $form->get('logo')->getData();
+            if ($logoFile) {
+                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = \transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
+
+                try {
+                    $logoFile->move(
+                        $this->getParameter('sponsors_directory'),
+                        $newFilename
+                    );
+                    $sponsor->setLogo($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors du téléchargement du logo.');
+                }
             }
 
             try {

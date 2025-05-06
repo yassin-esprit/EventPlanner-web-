@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class Sponsor1Type extends AbstractType
 {
@@ -16,7 +17,14 @@ class Sponsor1Type extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('logo')
+            ->add('logo', FileType::class, [
+                'label' => 'Logo (Image file)',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'accept' => 'image/*',
+                ],
+            ])
             ->add('site_web')
             ->add('contact_email')
             ->add('contact_telephone')
