@@ -83,10 +83,14 @@ class DashboardController extends AbstractController
     #[IsGranted('ROLE_PARTICIPANT')]
     public function participantDashboard(
         EvenementRepository $evenementRepository,
+        PubliciteRepository $publiciteRepository,
+
         Request $request,
         BadgeService $badgeService
     ): Response {
         $evenements = $evenementRepository->findAll();
+        $publicites   = $publiciteRepository->findAll();
+
 
         // Example of handling search and sort functionality
         $search = $request->query->get('search', '');
@@ -95,6 +99,8 @@ class DashboardController extends AbstractController
 
         return $this->render('dashboard/participant/participant.html.twig', [
             'evenements' => $evenements,
+            'publicites' => $publicites,
+
             'search' => $search,
             'sort' => $sort,
             'direction' => $direction,

@@ -4,140 +4,137 @@
 {% endblock %}
 
 {% block body %}
-	<!-- Hero Section -->
-	<section class="hero-section" id="section_1">
-		<div class="section-overlay"></div>
-		<div class="container d-flex justify-content-center align-items-center">
-			<div class="row">
-				<div class="col-12 mt-auto mb-5 text-center">
-					<h1 class="text-white mb-5">Owner Dashboard</h1>
-					<p class="text-white lead">Manage your events and venues</p>
-				</div>
-			</div>
-		</div>
-		<div class="video-wrap">
-			<video autoplay loop muted class="custom-video" poster="">
-				<source src="{{ asset('video/pexels-2022395.mp4') }}" type="video/mp4">
-				Your browser does not support the video tag.
-			</video>
-		</div>
-	</section>
+    <!-- Hero Section -->
+    <section class="hero-section" id="section_1">
+        <div class="section-overlay"></div>
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="row">
+                <div class="col-12 mt-auto mb-5 text-center">
+                    <h1 class="text-white mb-5">Owner Dashboard</h1>
+                    <p class="text-white lead">Manage your events, venues, and equipment</p>
+                </div>
+            </div>
+        </div>
+        <div class="video-wrap">
+            <video autoplay loop muted class="custom-video" poster="">
+                <source src="{{ asset('video/pexels-2022395.mp4') }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
 
-	<!-- Dashboard Stats -->
-	<section class="stats-section py-5 bg-light">
-		<div class="container">
-			<div class="row g-4">
-				<div class="col-md-4">
-					<div class="card stat-card border-0 shadow-sm">
-						<div class="card-body text-center">
-							<i class="bi bi-calendar-event fs-1 text-primary"></i>
-							<h3 class="mt-3 mb-0">24</h3>
-							<p class="text-muted mb-0">Upcoming Events</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="card stat-card border-0 shadow-sm">
-						<div class="card-body text-center">
-							<i class="bi bi-people fs-1 text-success"></i>
-							<h3 class="mt-3 mb-0">1,245</h3>
-							<p class="text-muted mb-0">Total Attendees</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="card stat-card border-0 shadow-sm">
-						<div class="card-body text-center">
-							<i class="bi bi-building fs-1 text-warning"></i>
-							<h3 class="mt-3 mb-0">5</h3>
-							<p class="text-muted mb-0">Venues</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+    <!-- Dashboard Stats -->
+    <section class="stats-section py-5 bg-light">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card stat-card border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="bi bi-calendar-event fs-1 text-primary"></i>
+                            <h3 class="mt-3 mb-0">{{ evenements|length }}</h3>
+                            <p class="text-muted mb-0">Upcoming Events</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="bi bi-people fs-1 text-success"></i>
+                            <h3 class="mt-3 mb-0">1,245</h3>
+                            <p class="text-muted mb-0">Total Attendees</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="bi bi-building fs-1 text-warning"></i>
+                            <h3 class="mt-3 mb-0">5</h3>
+                            <p class="text-muted mb-0">Venues</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-	<!-- Quick Actions -->
-	<section class="quick-actions py-5">
-		<div class="container">
-			<div class="row justify-content-center mb-4">
-				<div class="col-12 text-center">
-					<h2 class="mb-4">Quick Actions</h2>
-				</div>
-			</div>
-			<div class="row g-4 justify-content-center">
-				<div class="col-lg-3 col-md-6">
-					<a href="{{ path('app_evenement_new') }}" class="card action-card text-decoration-none">
-						<div class="card-body text-center">
-							<i class="bi bi-plus-circle fs-1 text-primary"></i>
-							<h5 class="mt-3">Create Event</h5>
-							<p class="text-muted mb-0">Set up a new event</p>
-						</div>
-					</a>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<a href="#" class="card action-card text-decoration-none">
-						<div class="card-body text-center">
-							<i class="bi bi-building fs-1 text-success"></i>
-							<h5 class="mt-3">Manage Venues</h5>
-							<p class="text-muted mb-0">View and edit venues</p>
-						</div>
-					</a>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<a href="#" class="card action-card text-decoration-none">
-						<div class="card-body text-center">
-							<i class="bi bi-ticket-perforated fs-1 text-danger"></i>
-							<h5 class="mt-3">Bookings</h5>
-							<p class="text-muted mb-0">View all bookings</p>
-						</div>
-					</a>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<a href="{{ path('app_owner_reports') }}" class="card action-card text-decoration-none">
-						<div class="card-body text-center">
-							<i class="bi bi-graph-up fs-1 text-info"></i>
-							<h5 class="mt-3">Reports</h5>
-							<p class="text-muted mb-0">View event analytics</p>
-						</div>
-					</a>
-				</div>
-			</div>
-		</div>
-	</section>
+    <!-- Quick Actions -->
+    <section class="quick-actions py-5">
+        <div class="container">
+            <div class="row justify-content-center mb-4">
+                <div class="col-12 text-center">
+                    <h2 class="mb-4">Quick Actions</h2>
+                </div>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3 col-md-6">
+                    <a href="{{ path('app_evenement_new') }}" class="card action-card text-decoration-none">
+                        <div class="card-body text-center">
+                            <i class="bi bi-plus-circle fs-1 text-primary"></i>
+                            <h5 class="mt-3">Create Event</h5>
+                            <p class="text-muted mb-0">Set up a new event</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <a href="#" class="card action-card text-decoration-none">
+                        <div class="card-body text-center">
+                            <i class="bi bi-building fs-1 text-success"></i>
+                            <h5 class="mt-3">Manage Venues</h5>
+                            <p class="text-muted mb-0">View and edit venues</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <a href="#" class="card action-card text-decoration-none">
+                        <div class="card-body text-center">
+                            <i class="bi bi-ticket-perforated fs-1 text-danger"></i>
+                            <h5 class="mt-3">Bookings</h5>
+                            <p class="text-muted mb-0">View all bookings</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <a href="{{ path('app_owner_reports') }}" class="card action-card text-decoration-none">
+                        <div class="card-body text-center">
+                            <i class="bi bi-graph-up fs-1 text-info"></i>
+                            <h5 class="mt-3">Reports</h5>
+                            <p class="text-muted mb-0">View event analytics</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-	<!-- Recent Events -->
-	<section class="recent-events py-5 bg-light" style="
-															        background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
-															        background-size: cover;
-															        background-position: center;
-															        background-attachment: fixed;
-															        position: relative;
-															    ">
-		<div class="section-overlay" style="
-																								        position: absolute;
-																								        top: 0;
-																								        left: 0;
-																								        width: 100%;
-																								        height: 100%;
-																								        background-color: rgba(0, 0, 0, 0.15);
-																								    "></div>
-		<div class="container">
-			<div class="row justify-content-center mb-5">
-				<div class="col-12 text-center">
-					<h2 class="mb-4">Recent Events</h2>
-					<a href="{{ path('app_evenement_index') }}" class="btn btn-outline-primary">
-						View All Events
-						<i class="bi bi-arrow-right ms-2"></i>
-					</a>
-				</div>
-			</div>
+    <!-- Recent Events -->
+    <section class="recent-events py-5 bg-light" style="
+        background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;">
+        <div class="section-overlay" style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.15);"></div>
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="mb-4">Recent Events</h2>
+                    <a href="{{ path('app_evenement_index') }}" class="btn btn-outline-primary">
+                        View All Events
+                        <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
 
-			<div class="row">
-				{% for evenement in evenements|slice(0, 3) %}
-					{# Define image and color based on event type - same as events index #}
-					{% set event_assets = {
+            <div class="row">
+                {% for evenement in evenements|slice(0, 3) %}
+                    {% set event_assets = {
                         'conference': {
                             'image': 'conference.jpg',
                             'color': 'rgba(70, 130, 180, 0.9)',
@@ -165,348 +162,581 @@
                         }
                     } %}
 
-					{% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
+                    {% set current_event = event_assets[evenement.type|lower] ?? event_assets['default'] %}
 
-					<div class="col-lg-4 col-md-6">
-						<div class="card event-card mb-4 border-0 shadow-sm h-100">
-							<div class="card-img-top position-relative" style="height: 200px; overflow: hidden;">
-								<img src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="{{ evenement.titre }}">
-								<span class="badge position-absolute top-0 end-0 m-2" style="background: {{ current_event.color }}">
-									<i class="bi {{ current_event.icon }} me-1"></i>
-									{{ evenement.type }}
-								</span>
-								<span class="badge position-absolute top-0 start-0 m-2 bg-dark">
-									<i class="bi bi-calendar me-1"></i>
-									{{ evenement.date ? evenement.date|date('d M') : '' }}
-								</span>
-							</div>
-							<div class="card-body">
-								<h5 class="card-title">{{ evenement.titre }}</h5>
-								<p class="card-text text-muted">
-									<i class="bi bi-geo-alt me-2"></i>
-									{{ evenement.lieu }}<br>
-									<i class="bi bi-ticket-perforated me-2"></i>
-									{{ evenement.nbrplaces }}
-									seats available
-								</p>
-								<p class="card-text">
-									{{ evenement.description|slice(0, 100) }}
-									{% if evenement.description|length > 100 %}...
-									{% endif %}
-								</p>
-							</div>
-							<div class="card-footer bg-white border-0 d-flex justify-content-between">
-								<a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-primary">
-									<i class="bi bi-eye me-1"></i>Details
-								</a>
-								<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-pencil me-1"></i>Edit
-								</a>
-							</div>
-						</div>
-					</div>
-				{% else %}
-					<div class="col-12 text-center">
-						<div class="alert alert-info">
-							<i class="bi bi-info-circle me-2"></i>
-							No recent events found.
-						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-	</section>
-
-<!-- Active Advertisements -->
-<section class="active-ads py-5">
-    <div class="container">
-        <div class="row justify-content-center mb-5">
-            <div class="col-12 text-center">
-                <h2 class="mb-4">All Advertisements</h2>
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="{{ path('app_publicite_index') }}" class="btn btn-outline-primary">
-                        View All Ads
-                        <i class="bi bi-arrow-right ms-2"></i>
-                    </a>
-                    <a href="{{ path('app_publicite_new') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Create New Ad
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            {% for publicite in publicites %}
-                {# Normalize the title by removing spaces and special characters #}
-                {% set normalized_title = publicite.titre_pub|lower|replace({' ': '', '-': '', '_': ''}) %}
-                
-                {# Create mapping between normalized titles and their images #}
-                {% set ad_images = {
-                    'dareloudettounsi': 'darOud.jpg',
-                    'phwc': 'PHWC.jpg',
-                    'worthinglaunchevent2025': 'launch.jpg',
-                    'cubaintunisia': 'cuba.jpg',
-                    'default': 'default.jpg'
-                } %}
-                
-                {# Get the image filename #}
-                {% set ad_image = ad_images[normalized_title] ?? ad_images['default'] %}
-                
-                {# Type styling #}
-                {% set ad_type_colors = {
-                    'banner': 'rgba(70, 130, 180, 0.9)',
-                    'popup': 'rgba(220, 53, 69, 0.9)',
-                    'video': 'rgba(25, 135, 84, 0.9)',
-                    'default': 'rgba(108, 117, 125, 0.9)'
-                } %}
-                
-                {% set ad_icons = {
-                    'banner': 'bi-image',
-                    'popup': 'bi-window',
-                    'video': 'bi-camera-reels',
-                    'default': 'bi-megaphone'
-                } %}
-
-                {% set current_color = ad_type_colors[publicite.type_pub|lower] ?? ad_type_colors['default'] %}
-                {% set current_icon = ad_icons[publicite.type_pub|lower] ?? ad_icons['default'] %}
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="card ad-card mb-4 border-0 shadow-sm h-100">
-                        <div class="card-img-top position-relative" style="height: 200px; overflow: hidden;">
-                            {# Advertisement Image with debugging fallback #}
-                            <img src="{{ asset('images/pub/' ~ ad_image) }}" 
-                                 class="img-fluid w-100 h-100" 
-                                 style="object-fit: cover;" 
-                                 alt="{{ publicite.titre_pub }}"
-                                 onerror="console.error('Image not found: images/pub/{{ ad_image }}'); this.src='{{ asset('images/pub/default.jpg') }}'">
-                            
-                            {# Type Badge #}
-                            <span class="badge position-absolute top-0 end-0 m-2" style="background: {{ current_color }}">
-                                <i class="bi {{ current_icon }} me-1"></i>
-                                {{ publicite.type_pub }}
-                            </span>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ publicite.titre_pub }}</h5>
-                            <p class="card-text text-muted">
-                                <i class="bi bi-pin-map me-2"></i>
-                                {{ publicite.emplacement_pub }}
-                            </p>
-                            <p class="card-text">
-                                {{ publicite.contenu_pub|slice(0, 100) }}
-                                {% if publicite.contenu_pub|length > 100 %}...
-                                {% endif %}
-                            </p>
-                        </div>
-                        <div class="card-footer bg-white border-0 d-flex justify-content-between">
-                            <a href="{{ path('app_publicite_show', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye me-1"></i>Details
-                            </a>
-                            <a href="{{ path('app_publicite_edit', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-pencil me-1"></i>Edit
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="col-12 text-center">
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
-                        No advertisements found.
-                    </div>
-                    <a href="{{ path('app_publicite_new') }}" class="btn btn-primary mt-3">
-                        <i class="bi bi-plus-circle me-1"></i> Create New Advertisement
-                    </a>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<style>
-    /* Ad Cards Styling */
-    .ad-card {
-        transition: all 0.3s ease;
-        border-radius: 10px;
-    }
-    
-    .ad-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
-    }
-    
-    .ad-card .card-img-top {
-        height: 200px;
-        overflow: hidden;
-    }
-    
-    .ad-card .card-img-top img {
-        object-fit: cover;
-        width: 100%;
-        height: 100%;
-        transition: transform 0.3s ease;
-    }
-    
-    .ad-card:hover .card-img-top img {
-        transform: scale(1.05);
-    }
-</style>
-
-<!-- Advertising Campaigns Section -->
-<section class="campaigns-section py-5 bg-light">
-    <div class="container">
-        <div class="row justify-content-center mb-5">
-            <div class="col-12 text-center">
-                <h2 class="mb-4">Advertising Campaigns</h2>
-                <a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-2"></i>Create New Campaign
-                </a>
-            </div>
-        </div>
-
-        <div class="row">
-            {% for campagne in campagnes %}
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card campaign-card h-100 border-0 shadow-sm">
-                        <div class="card-header bg-white">
-                            <h5 class="card-title mb-0">{{ campagne.nomCamp }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="campaign-meta mb-3">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Budget:</span>
-                                    <strong>{{ campagne.budgetCamp }} TND</strong>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Status:</span>
-                                    <span class="badge bg-{{ campagne.statutCamp == 'en_cours' ? 'success' : 
-                                          (campagne.statutCamp == 'planifiée' ? 'info' : 
-                                          (campagne.statutCamp == 'terminée' ? 'secondary' : 'danger')) }}">
-                                        {{ campagne.statutCamp }}
-                                    </span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Start:</span>
-                                    <span>{{ campagne.dateDebutCamp|date('d M Y') }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span class="text-muted">End:</span>
-                                    <span>{{ campagne.dateFinCamp|date('d M Y') }}</span>
-                                </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card event-card mb-4 border-0 shadow-sm h-100">
+                            <div class="card-img-top position-relative" style="height: 200px; overflow: hidden;">
+                                <img src="{{ asset('assets/images/events/' ~ current_event.image) }}" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="{{ evenement.titre }}">
+                                <span class="badge position-absolute top-0 end-0 m-2" style="background: {{ current_event.color }}">
+                                    <i class="bi {{ current_event.icon }} me-1"></i>
+                                    {{ evenement.type }}
+                                </span>
+                                <span class="badge position-absolute top-0 start-0 m-2 bg-dark">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    {{ evenement.date ? evenement.date|date('d M') : '' }}
+                                </span>
                             </div>
-                            <hr>
-                            <div class="campaign-ad">
-                                <h6 class="text-muted mb-2">Associated Ad:</h6>
-                                <p class="mb-1"><strong>{{ campagne.publicite.titrePub }}</strong></p>
-                                <p class="small text-muted">{{ campagne.publicite.typePub|capitalize }} - {{ campagne.publicite.emplacementPub }}</p>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ evenement.titre }}</h5>
+                                <p class="card-text text-muted">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    {{ evenement.lieu }}<br>
+                                    <i class="bi bi-ticket-perforated me-2"></i>
+                                    {{ evenement.nbrplaces }}
+                                    seats available
+                                </p>
+                                <p class="card-text">
+                                    {{ evenement.description|slice(0, 100) }}
+                                    {% if evenement.description|length > 100 %}...
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                                <a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye me-1"></i>Details
+                                </a>
+                                <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil me-1"></i>Edit
+                                </a>
                             </div>
                         </div>
-                        <div class="card-footer bg-white d-flex justify-content-between">
-                            <a href="{{ path('app_campagnes_publicitaire_show', {'id_camp': campagne.idCamp}) }}" 
-                               class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> View
-                            </a>
-                            <a href="{{ path('app_campagnes_publicitaire_edit', {'id_camp': campagne.idCamp}) }}" 
-                               class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No recent events found.
                         </div>
                     </div>
-                </div>
-            {% else %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Advertisements -->
+    <section class="active-ads py-5">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
                 <div class="col-12 text-center">
-                    <div class="alert alert-info py-4">
-                        <i class="bi bi-megaphone fs-1 d-block mb-3"></i>
-                        <h4>No campaigns found</h4>
-                        <p class="mb-0">Create your first advertising campaign</p>
-                        <a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary mt-3">
-                            <i class="bi bi-plus-circle me-2"></i>New Campaign
+                    <h2 class="mb-4">All Advertisements</h2>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ path('app_publicite_index') }}" class="btn btn-outline-primary">
+                            View All Ads
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                        <a href="{{ path('app_publicite_new') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Create New Ad
                         </a>
                     </div>
                 </div>
-            {% endfor %}
+            </div>
+
+            <div class="row">
+                {% for publicite in publicites %}
+                    {% set normalized_title = publicite.titre_pub|lower|replace({' ': '', '-': '', '_': ''}) %}
+                    
+                    {% set ad_images = {
+                        'dareloudettounsi': 'darOud.jpg',
+                        'phwc': 'PHWC.jpg',
+                        'worthinglaunchevent2025': 'launch.jpg',
+                        'cubaintunisia': 'cuba.jpg',
+                        'default': 'default.jpg'
+                    } %}
+                    
+                    {% set ad_image = ad_images[normalized_title] ?? ad_images['default'] %}
+                    
+                    {% set ad_type_colors = {
+                        'banner': 'rgba(70, 130, 180, 0.9)',
+                        'popup': 'rgba(220, 53, 69, 0.9)',
+                        'video': 'rgba(25, 135, 84, 0.9)',
+                        'default': 'rgba(108, 117, 125, 0.9)'
+                    } %}
+                    
+                    {% set ad_icons = {
+                        'banner': 'bi-image',
+                        'popup': 'bi-window',
+                        'video': 'bi-camera-reels',
+                        'default': 'bi-megaphone'
+                    } %}
+
+                    {% set current_color = ad_type_colors[publicite.type_pub|lower] ?? ad_type_colors['default'] %}
+                    {% set current_icon = ad_icons[publicite.type_pub|lower] ?? ad_icons['default'] %}
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card ad-card mb-4 border-0 shadow-sm h-100">
+                            <div class="card-img-top position-relative" style="height: 200px; overflow: hidden;">
+                                <img src="{{ asset('images/pub/' ~ ad_image) }}" 
+                                     class="img-fluid w-100 h-100" 
+                                     style="object-fit: cover;" 
+                                     alt="{{ publicite.titre_pub }}"
+                                     onerror="console.error('Image not found: images/pub/{{ ad_image }}'); this.src='{{ asset('images/pub/default.jpg') }}'">
+                                
+                                <span class="badge position-absolute top-0 end-0 m-2" style="background: {{ current_color }}">
+                                    <i class="bi {{ current_icon }} me-1"></i>
+                                    {{ publicite.type_pub }}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ publicite.titre_pub }}</h5>
+                                <p class="card-text text-muted">
+                                    <i class="bi bi-pin-map me-2"></i>
+                                    {{ publicite.emplacement_pub }}
+                                </p>
+                                <p class="card-text">
+                                    {{ publicite.contenu_pub|slice(0, 100) }}
+                                    {% if publicite.contenu_pub|length > 100 %}...
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                                <a href="{{ path('app_publicite_show', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye me-1"></i>Details
+                                </a>
+                                <a href="{{ path('app_publicite_edit', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil me-1"></i>Edit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No advertisements found.
+                        </div>
+                        <a href="{{ path('app_publicite_new') }}" class="btn btn-primary mt-3">
+                            <i class="bi bi-plus-circle me-1"></i> Create New Advertisement
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Advertising Campaigns Section -->
+    <section class="campaigns-section py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="mb-4">Advertising Campaigns</h2>
+                    <a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Create New Campaign
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for campagne in campagnes %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card campaign-card h-100 border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="card-title mb-0">{{ campagne.nomCamp }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="campaign-meta mb-3">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Budget:</span>
+                                        <strong>{{ campagne.budgetCamp }} TND</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Status:</span>
+                                        <span class="badge bg-{{ campagne.statutCamp == 'en_cours' ? 'success' : 
+                                              (campagne.statutCamp == 'planifiée' ? 'info' : 
+                                              (campagne.statutCamp == 'terminée' ? 'secondary' : 'danger')) }}">
+                                            {{ campagne.statutCamp }}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Start:</span>
+                                        <span>{{ campagne.dateDebutCamp|date('d M Y') }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-muted">End:</span>
+                                        <span>{{ campagne.dateFinCamp|date('d M Y') }}</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="campaign-ad">
+                                    <h6 class="text-muted mb-2">Associated Ad:</h6>
+                                    <p class="mb-1"><strong>{{ campagne.publicite.titrePub }}</strong></p>
+                                    <p class="small text-muted">{{ campagne.publicite.typePub|capitalize }} - {{ campagne.publicite.emplacementPub }}</p>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white d-flex justify-content-between">
+                                <a href="{{ path('app_campagnes_publicitaire_show', {'id_camp': campagne.idCamp}) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <a href="{{ path('app_campagnes_publicitaire_edit', {'id_camp': campagne.idCamp}) }}" 
+                                   class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info py-4">
+                            <i class="bi bi-megaphone fs-1 d-block mb-3"></i>
+                            <h4>No campaigns found</h4>
+                            <p class="mb-0">Create your first advertising campaign</p>
+                            <a href="{{ path('app_campagnes_publicitaire_new') }}" class="btn btn-primary mt-3">
+                                <i class="bi bi-plus-circle me-2"></i>New Campaign
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Equipment Section -->
+    <section class="py-5" style="
+        background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;">
+        <div class="section-overlay" style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);">
+        </div>
+
+        <div class="container position-relative">
+            <div class="row justify-content-center mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="mb-4 text-white">Available Equipments</h2>
+                </div>
+            </div>
+            <div class="row g-4">
+                {% for equipement in equipements %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ equipement.nom }}</h5>
+                                <p class="card-text mb-1"><strong>Total:</strong> {{ equipement.quantiteTotale }}</p>
+                                <p class="card-text mb-1"><strong>Available:</strong> {{ equipement.quantiteDispo }}</p>
+                                <p class="card-text text-muted"><em>{{ equipement.description }}</em></p>
+                            </div>
+                            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                                {% if equipement.statut == 'disponible' %}
+                                    <span class="badge bg-success">{{ equipement.statut }}</span>
+                                {% elseif equipement.statut == 'réparé' %}
+                                    <span class="badge bg-warning text-dark">{{ equipement.statut }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ equipement.statut }}</span>
+                                {% endif %}
+                                <div class="d-flex gap-2">
+                                    <a href="{{ path('app_reservation_equipement_new_from_equipement', {'id': equipement.idEq}) }}" class="btn btn-sm btn-outline-primary">Reserve</a>
+                                    <a href="{{ path('app_equipement_show', {'id_eq': equipement.id_eq}) }}" class="btn btn-sm btn-outline-secondary">Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No equipment found.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservations Section -->
+<section class="artists-section section-padding" id="reservations" style="
+    background-image: url('{{ asset('images/nainoa-shizuru-unsplash-blur.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;">
+
+    <div class="section-overlay" style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(231, 228, 228, 0.5);">
+    </div>
+
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-12 text-center mb-5">
+                <h2 class="mb-4">Vos Réservations</h2>
+            </div>
+				{% if app.user %}
+
+                {% if reservation_equipements is not empty %}
+                    {% for reservation in reservation_equipements %}
+                        {% set status_colors = {
+                            'pending': 'rgba(255, 193, 7, 0.9)',
+                            'confirmed': 'rgba(40, 167, 69, 0.9)',
+                            'cancelled': 'rgba(220, 53, 69, 0.9)',
+                            'completed': 'rgba(23, 162, 184, 0.9)',
+                            'default': 'rgba(108, 117, 125, 0.9)'
+                        } %}
+                        {% set current_color = status_colors[reservation.statut|lower] ?? status_colors['default'] %}
+
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="artists-thumb1">
+                                <div class="artists-image-wrap">
+                                    <img src="{{ asset('assets/images/equipment/equipment-default.jpg') }}" class="artists-image img-fluid" alt="Equipment">
+                                    <div class="artists-type-badge" style="background: {{ current_color }}">
+                                        {{ reservation.statut }}
+                                    </div>
+                                </div>
+
+                                <!-- Infos visibles -->
+                                <div class="p-3 bg-white border-top">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-muted small">
+                                            <i class="bi bi-calendar-check me-1"></i>
+                                            {{ reservation.dateReservation ? reservation.dateReservation|date('d M Y') : '' }}
+                                        </span>
+                                        <span class="badge bg-light text-dark border" style="font-size: 0.75rem;">
+                                            {{ reservation.statut|capitalize }}
+                                        </span>
+                                    </div>
+
+                                    <h5 class="mb-1 text-truncate" title="{{ reservation.equipement.nom }}">
+                                        <i class="bi bi-gear me-1"></i> {{ reservation.equipement.nom }}
+                                    </h5>
+                                    <p class="mb-0 text-muted text-truncate" title="{{ reservation.evenement.titre ?? 'N/A' }}">
+                                        <i class="bi bi-calendar-event me-1"></i> {{ reservation.evenement.titre ?? 'N/A' }}
+                                    </p>
+                                </div>
+
+                                <!-- Boutons -->
+                                <div class="d-flex justify-content-between px-3 py-2 bg-white border-top">
+                                    <a href="{{ path('app_reservation_equipement_show', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye me-1"></i>Details
+                                    </a>
+                                    <a href="{{ path('app_reservation_equipement_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil me-1"></i>Edit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info py-4">
+                            <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
+                            <h4>Aucune réservation trouvée</h4>
+                            <p class="mb-0">Ajoutez une réservation pour commencer !</p>
+                            <a href="{{ path('app_reservation_equipement_new') }}" class="btn btn-primary mt-3">
+                                <i class="bi bi-plus-circle me-1"></i>Créer Réservation
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <div class="alert alert-warning py-4">
+                        <i class="bi bi-exclamation-triangle fs-1 d-block mb-3"></i>
+                        <h4>Accès refusé</h4>
+                        <p class="mb-0">Vous devez être connecté pour voir vos réservations.</p>
+                    </div>
+                </div>
+            {% endif %}
+
+
+			
+
+   
         </div>
     </div>
 </section>
 {% endblock %}
 
 {% block stylesheets %}
-	<style>
-		/* Hero Section */
-		.hero-section {
-			position: relative;
-			height: 60vh;
-			min-height: 400px;
-			display: flex;
-			align-items: center;
-			overflow: hidden;
-		}
+    <style>
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            height: 60vh;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
 
-		.section-overlay {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.5);
-		}
+        .section-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
 
-		.video-wrap {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			z-index: -1;
-		}
+        .video-wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
 
-		.custom-video {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
+        .custom-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-		/* Stats Cards */
-		.stat-card {
-			transition: transform 0.3s ease;
-			border-radius: 10px;
-		}
+        /* Stats Cards */
+        .stat-card {
+            transition: transform 0.3s ease;
+            border-radius: 10px;
+        }
 
-		.stat-card:hover {
-			transform: translateY(-5px);
-		}
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
 
-		/* Action Cards */
-		.action-card {
-			transition: all 0.3s ease;
-			border-radius: 10px;
-			height: 100%;
-			border: 1px solid rgba(0, 0, 0, 0.125);
-		}
+        /* Action Cards */
+        .action-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            height: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.125);
+        }
 
-		.action-card:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-			background-color: #f8f9fa;
-		}
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background-color: #f8f9fa;
+        }
 
-		/* Event Cards */
-		.event-card {
-			transition: all 0.3s ease;
-			border-radius: 10px;
-		}
+        /* Event Cards */
+        .event-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
 
-		.event-card:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
-		}
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+        }
 
-		/* Responsive adjustments */
-		@media(max-width: 767.98px) {
-			.hero-section {
-				min-height: 300px;
-				height: 40vh;
-			}
-		}
-	</style>
+        /* Ad Cards Styling */
+        .ad-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .ad-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .ad-card .card-img-top {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .ad-card .card-img-top img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+        
+        .ad-card:hover .card-img-top img {
+            transform: scale(1.05);
+        }
+
+        /* Artists/Reservation Cards */
+        .artists-thumb1 {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 350px;
+        }
+
+        .artists-image-wrap {
+            position: relative;
+            height: 100%;
+        }
+
+        .artists-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .artists-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            color: white;
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .artists-thumb:hover .artists-hover {
+            opacity: 1;
+        }
+
+        .artists-thumb:hover .artists-image {
+            transform: scale(1.05);
+        }
+
+        .artists-date-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .artists-type-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .event-meta p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .artists-hover h4 {
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Responsive adjustments */
+        @media(max-width: 767.98px) {
+            .hero-section {
+                min-height: 300px;
+                height: 40vh;
+            }
+        }
+    </style>
 {% endblock %}
