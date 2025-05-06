@@ -55,6 +55,14 @@ final class PubliciteController extends AbstractController{
             'publicite' => $publicite,
         ]);
     }
+    
+    #[Route('/{id_pub}', name: 'app_publicite_show2', methods: ['GET'])]
+    public function show2(Publicite $publicite): Response
+    {
+        return $this->render('publicite/show2.html.twig', [
+            'publicite' => $publicite,
+        ]);
+    }
     #[Route('/{id_pub}/edit', name: 'app_publicite_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Publicite $publicite, EntityManagerInterface $entityManager): Response
     {
@@ -96,6 +104,7 @@ final class PubliciteController extends AbstractController{
                     'from' => $twilioNumber,
                     'body' => sprintf(
                         "Advertisement '%s' has been updated.\nType: %s\nLocation: %s\nStatus: %s",
+        
                         $publicite->getTitrePub(),
                         $publicite->getTypePub(),
                         $publicite->getEmplacementPub(),

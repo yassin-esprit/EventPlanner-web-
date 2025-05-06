@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\PubliciteRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/evenement')]
@@ -117,8 +119,12 @@ final class EvenementController extends AbstractController
 #[Route('/participant/dashboard', name: 'participant_dashboard')]
 public function participantDashboard(
     EvenementRepository $evenementRepository,
+    PubliciteRepository $publiciteRepository,
+
     Request $request
 ): Response {
+    $publicites   = $publiciteRepository->findAll();
+
     // Get search and sort parameters
     $search = $request->query->get('search');
     $sort = $request->query->all('sort') ?? ['date' => 'asc'];
@@ -128,6 +134,8 @@ public function participantDashboard(
     
     return $this->render('dashboard/participant/participant.html.twig', [
         'evenements' => $evenements,
+        'publicites'=> $publicites,
+
         'search' => $search,
         'sort' => $sort
     ]);

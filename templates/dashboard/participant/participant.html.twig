@@ -14,7 +14,7 @@
 		<div class="container d-flex justify-content-center align-items-center">
 			<div class="row">
 				<div class="col-12 mt-auto mb-5 text-center">
-					<h1 class="text-white mb-5">Your Events Dashboard</h1>
+					<h1 class="text-white mb-5">MYTHOS PLANNER</h1>
 					<div class="d-flex justify-content-center gap-3">
 						<a class="btn custom-btn smoothscroll" href="#events">
 							<i class="bi bi-calendar-event me-2"></i>Browse Events
@@ -133,7 +133,98 @@
 			</div>
 		</div>
 	</section>
+  <!-- Active Advertisements -->
+    <section class="active-ads py-5">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="mb-4">All Advertisements</h2>
+                    <div class="d-flex justify-content-center gap-3">
+                        
+                       
+                    </div>
+                </div>
+            </div>
 
+            <div class="row">
+                {% for publicite in publicites %}
+                    {% set normalized_title = publicite.titre_pub|lower|replace({' ': '', '-': '', '_': ''}) %}
+                    
+                    {% set ad_images = {
+                        'dareloudettounsi': 'darOud.jpg',
+                        'phwc': 'PHWC.jpg',
+                        'worthinglaunchevent2025': 'launch.jpg',
+                        'cubaintunisia': 'cuba.jpg',
+                        'default': 'default.jpg'
+                    } %}
+                    
+                    {% set ad_image = ad_images[normalized_title] ?? ad_images['default'] %}
+                    
+                    {% set ad_type_colors = {
+                        'banner': 'rgba(70, 130, 180, 0.9)',
+                        'popup': 'rgba(220, 53, 69, 0.9)',
+                        'video': 'rgba(25, 135, 84, 0.9)',
+                        'default': 'rgba(108, 117, 125, 0.9)'
+                    } %}
+                    
+                    {% set ad_icons = {
+                        'banner': 'bi-image',
+                        'popup': 'bi-window',
+                        'video': 'bi-camera-reels',
+                        'default': 'bi-megaphone'
+                    } %}
+
+                    {% set current_color = ad_type_colors[publicite.type_pub|lower] ?? ad_type_colors['default'] %}
+                    {% set current_icon = ad_icons[publicite.type_pub|lower] ?? ad_icons['default'] %}
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card ad-card mb-4 border-0 shadow-sm h-100">
+                            <div class="card-img-top position-relative" style="height: 200px; overflow: hidden;">
+                                <img src="{{ asset('images/pub/' ~ ad_image) }}" 
+                                     class="img-fluid w-100 h-100" 
+                                     style="object-fit: cover;" 
+                                     alt="{{ publicite.titre_pub }}"
+                                     onerror="console.error('Image not found: images/pub/{{ ad_image }}'); this.src='{{ asset('images/pub/default.jpg') }}'">
+                                
+                                <span class="badge position-absolute top-0 end-0 m-2" style="background: {{ current_color }}">
+                                    <i class="bi {{ current_icon }} me-1"></i>
+                                    {{ publicite.type_pub }}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ publicite.titre_pub }}</h5>
+                                <p class="card-text text-muted">
+                                    <i class="bi bi-pin-map me-2"></i>
+                                    {{ publicite.emplacement_pub }}
+                                </p>
+                                <p class="card-text">
+                                    {{ publicite.contenu_pub|slice(0, 100) }}
+                                    {% if publicite.contenu_pub|length > 100 %}...
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                                <a href="{{ path('app_publicite_show2', {'id_pub': publicite.id_pub}) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye me-1"></i>Details
+                                </a>
+                               
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No advertisements found.
+                        </div>
+                        <a href="{{ path('app_publicite_new') }}" class="btn btn-primary mt-3">
+                            <i class="bi bi-plus-circle me-1"></i> Create New Advertisement
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 	
 {% endblock %}
 
