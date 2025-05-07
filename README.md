@@ -52,12 +52,11 @@ L’application prend en charge plusieurs rôles utilisateur (administrateur, pr
 1. Cloner le dépôt :
    ```bash
    git clone https://github.com/votre-utilisateur/eventmaster.git
-   cd eventmaster
+   cd EventPlanner-web-
    ```
 2. Installer les dépendances :
    ```bash
-   composer install
-   npm install
+   composer i
    ```
 3. Configurer l’environnement :
    - Copier `.env` en `.env.local`
@@ -70,14 +69,14 @@ L’application prend en charge plusieurs rôles utilisateur (administrateur, pr
 
 5. Lancer le serveur local :
    ```bash
-   symfony serve
+   symfony serve:start
    ```
 
 ## 💡 Utilisation
 
 - Accédez à l’application via `http://localhost:8000`
 - Créez un compte et connectez-vous selon l’un des rôles : administrateur, propriétaire ou participant
-- Gérez vos événements, annonces, sponsors, équipements et marchandises
+- Gérez vos événements, publicites, équipements, sponsors et marchandises
 
 ## 🧩 Modules du projet
 
