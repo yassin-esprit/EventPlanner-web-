@@ -40,7 +40,7 @@ L’application prend en charge plusieurs rôles utilisateur (administrateur, pr
 - **Frontend** : Twig / HTML / CSS / JS
 - **Base de données** : MySQL avec Doctrine ORM
 - **APIs externes** : API météo (ex : OpenWeatherMap)
-                    : API Map (ex: OpensStreetMap)
+  - API Map (ex: OpensStreetMap)
                     : Twilio sms API
                     : API  QrCode
                     : Calendrier (ex: Google calender)
