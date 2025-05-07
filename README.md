@@ -1,10 +1,11 @@
-# EventMaster – Système de Gestion d'Événements avec Symfony
+# MYTHOS PLANNER
 
 ## 🎯 Présentation
 
-**EventMaster** est une application web développée avec Symfony dans le cadre du module **PIDEV 3A** à **Esprit School of Engineering**.  
-Elle propose une plateforme modulaire permettant la gestion d’événements, de publicités, de sponsors, de marchandises et bien plus.  
-L’application gère plusieurs rôles utilisateur : administrateur, propriétaire d’événement et participant, chacun ayant des fonctionnalités spécifiques.
+**Mythos Planner** est une application web développée avec Symfony dans le cadre du module **PIDEV 3A** à **Esprit School of Engineering**.  
+Elle repose sur une architecture modulaire comprenant six modules principaux : Utilisateur, événement , publicité , logistique et services, sponsor , marchandise et donation.
+Chaque module remplit une fonction bien définie, permettant une gestion complète et flexible des événements.
+L’application prend en charge plusieurs rôles utilisateur (administrateur, propriétaire d’événement, participant), chacun disposant de droits et de fonctionnalités spécifiques selon son profil.
 
 ## 📚 Table des matières
 
@@ -27,18 +28,23 @@ L’application gère plusieurs rôles utilisateur : administrateur, propriétai
 
 - Gestion complète des événements
 - Contrôle d’accès basé sur les rôles
-- Intégration météo via API
 - Système de publicités et campagnes interactives
-- Gestion des sponsors et équipements par événement
+- Gestion des sponsors 
+- Gestion des équipements et reservation par événement
 - Boutique de marchandises spécifique à chaque événement
 
 ## 🛠 Technologies utilisées
 
-- **Framework** : Symfony 6.x
-- **Langage** : PHP 8.x
+- **Framework** : Symfony 6.4.20
+- **Langage** : PHP 8.2
 - **Frontend** : Twig / HTML / CSS / JS
 - **Base de données** : MySQL avec Doctrine ORM
 - **APIs externes** : API météo (ex : OpenWeatherMap)
+                    : API Map (ex: OpensStreetMap)
+                    : Twilio sms API
+                    : API  QrCode
+                    : Calendrier (ex: Google calender)
+                    : ChatBot API (Gemini)
 
 ## 🚀 Installation
 
