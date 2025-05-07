@@ -121,7 +121,3 @@ Veuillez forker le dépôt, créer une branche, proposer des pull requests, et r
 
 Ce projet est sous licence MIT. Consultez le fichier [LICENSE](LICENSE) pour plus d’informations.
 
-## 🙏 Remerciements
-
-Développé dans le cadre du cours **PIDEV 3A** à **Esprit School of Engineering**  
-Encadré par [Nom du Professeur](mailto:prof@example.com)
