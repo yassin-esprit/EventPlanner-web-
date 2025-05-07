@@ -466,7 +466,12 @@
                     <span>Sponsors</span>
                 </a>
             </li>
-
+ <li class="nav-item">
+                <a class="nav-link" href="#" data-section="contrats">
+                    <i class="bi bi-award"></i>
+                    <span>contrats</span>
+                </a>
+            </li>
             <!-- Logistics Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="#" data-section="equipements">
@@ -931,6 +936,82 @@
                 <!-- Sponsors Section -->
                 <div id="sponsors-section" class="content-section">
                     <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold">Liste des Sponsors</h6>
+                            <a href="{{ path('app_sponsor_c_new') }}" class="btn btn-primary btn-sm">
+                                <i class="bi bi-plus-circle"></i> Ajouter un Sponsor
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="search-container">
+                                        <input type="text" id="sponsorSearchInput" class="form-control" placeholder="Rechercher par nom, email, téléphone ou secteur..." autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="sponsorList">
+                                {% for sponsor in sponsors %}
+                                    <div class="col-md-4 mb-4 sponsor-card" 
+                                         data-name="{{ sponsor.nom|lower }}" 
+                                         data-email="{{ sponsor.contactemail|lower }}" 
+                                         data-phone="{{ sponsor.contacttelephone|lower }}" 
+                                         data-sector="{{ sponsor.secteuractivite|lower }}">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+<img src="{{ sponsor.logo ? asset('uploads/sponsors/' ~ sponsor.logo) : asset('images/default-logo.png') }}"
+     alt="{{ sponsor.nom }}" class="sponsor-logo mb-3" style="width: 150px; height: 150px; object-fit: contain; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                                <h5 class="card-title">{{ sponsor.nom }}</h5>
+                                                <p class="text-muted mb-2">{{ sponsor.contactemail }}</p>
+                                                <p class="text-muted mb-2">{{ sponsor.contacttelephone }}</p>
+                                                <span class="secteur-badge mb-3">{{ sponsor.secteuractivite }}</span>
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <a href="{{ path('app_sponsor_c_show', {'id_sponsor': sponsor.id_sponsor}) }}"
+                                                       class="btn btn-info text-white">
+                                                        <i class="bi bi-eye me-1"></i>Voir
+                                                    </a>
+                                                    <a href="{{ path('app_sponsor_c_edit', {'id_sponsor': sponsor.id_sponsor}) }}"
+                                                       class="btn btn-warning">
+                                                        <i class="bi bi-pencil me-1"></i>Modifier
+                                                    </a>
+                                                    <button class="btn btn-secondary openai-info-btn" data-sponsor-name="{{ sponsor.nom }}" data-sponsor-id="{{ sponsor.id_sponsor }}">
+                                                        <i class="bi bi-search me-1"></i>Infos
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            <i class="bi bi-info-circle me-2"></i>Aucun sponsor trouvé
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal Structure -->
+                    <div class="modal fade" id="sponsorInfoModal" tabindex="-1" aria-labelledby="sponsorInfoModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="sponsorInfoModalLabel">Informations sur le Sponsor</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="sponsorInfoContent">Chargement des informations...</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sponsors Section -->
+                <div id="sponsors-section" class="content-section">
+                    <div class="card shadow mb-4">
                         <div class="card-header">
                             <h6 class="m-0 font-weight-bold">Sponsors Management</h6>
                         </div>
@@ -1181,22 +1262,92 @@
                     </div>
                 </div>
 
-                <!-- Users Section -->
-                <div id="users-section" class="content-section">
-                    <div class="card shadow mb-4">
-                        <div class="card-header">
-                            <h6 class="m-0 font-weight-bold">Users Management</h6>
+        <!-- Contrats Section -->
+        <div id="contrats-section" class="content-section">
+            <div class="card shadow mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold">Liste des Contrats</h6>
+                    <a href="{{ path('app_contrat_new') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle"></i> Ajouter un Contrat
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="search-container">
+                                <input type="text" id="contratSearchInput" class="form-control" placeholder="Rechercher un contrat..." autocomplete="off">
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <p>Users content will be displayed here.</p>
-                        </div>
+                    </div>
+                    <div class="row" id="contratList">
+                        {% for contrat in contrats %}
+                            <div class="col-md-4 mb-4 contrat-card">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ contrat.description }}</h5>
+                                        <p class="card-text">
+                                            <strong>Sponsor:</strong> {{ contrat.sponsor.nom }}<br>
+                                            <strong>Date de début:</strong> {{ contrat.datedebut|date('d/m/Y') }}<br>
+                                            <strong>Date de fin:</strong> {{ contrat.datefin|date('d/m/Y') }}<br>
+                                            <strong>Montant:</strong> {{ contrat.montant }} €<br>
+                                            <strong>Statut:</strong> 
+                                            <span class="badge {% if contrat.statut == 'Actif' %}badge-success{% else %}badge-danger{% endif %}">
+                                                {{ contrat.statut }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('app_contrat_show', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-info btn-sm">
+                                                <i class="bi bi-eye"></i> Voir
+                                            </a>
+                                            <a href="{{ path('app_contrat_edit', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-pencil"></i> Modifier
+                                            </a>
+                                            <a href="{{ path('app_contrat_print', {'id_contrat': contrat.id_contrat}) }}" class="btn btn-success btn-sm" target="_blank">
+                                                <i class="bi bi-printer"></i> Imprimer
+                                            </a>
+                                            {% if contrat.sponsor is defined and contrat.sponsor.id_sponsor is defined and contrat.sponsor.id_sponsor is not null %}
+                                                <button type="button" class="btn btn-primary btn-sm" onclick="getSponsorInfo({{ contrat.sponsor.id_sponsor }})">
+                                                    <i class="bi bi-info-circle"></i> Infos
+                                                </button>
+                                            {% else %}
+                                                <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                                    <i class="bi bi-info-circle"></i> Pas de sponsor
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>Aucun contrat trouvé
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-            <!-- /.container-fluid -->
         </div>
-        <!-- End of Content Wrapper -->
+
+        <!-- Users Section -->
+        <div id="users-section" class="content-section">
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold">Users Management</h6>
+                </div>
+                <div class="card-body">
+                    <p>Users content will be displayed here.</p>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- End of Content Wrapper -->
+</div>
 {% endblock %}
 
 {% block javascripts %}

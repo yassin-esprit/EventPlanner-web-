@@ -39,7 +39,7 @@ class SponsorInfoService
 
     private function fetchWikipediaSummary(string $title): ?array
     {
-        $url = 'https://fr.wikipedia.org/api/rest_v1/page/summary/' . urlencode($title);
+        $url = 'https://en.wikipedia.org/api/rest_v1/page/summary/' . urlencode($title);
 
         try {
             $response = $this->httpClient->request('GET', $url);
@@ -56,7 +56,8 @@ class SponsorInfoService
                 }
             }
         } catch (\Exception $e) {
-            // Peut logguer l'erreur si besoin
+            // Log the error for debugging
+            error_log('Error fetching Wikipedia summary: ' . $e->getMessage());
         }
 
         return null;

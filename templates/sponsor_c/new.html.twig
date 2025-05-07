@@ -5,55 +5,171 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        .form-container {
-            max-width: 100%;
-            margin: 2rem auto;
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #f8cb2e;
+            --secondary-color: #ee5007;
+            --section-bg-color: #f0f8ff;
+            --custom-btn-bg-color: #ee5007;
+            --custom-btn-bg-hover-color: #c01f27;
+            --dark-color: #000000;
+            --p-color: #717275;
+            --border-color: #7fffd4;
+            --link-hover-color: #b22727;
         }
-        .form-card {
+
+        /* Main Layout */
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark-color) 0%, #333 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-brand {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand-icon {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1rem 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Content */
+        #content {
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: #f8f9fc;
+            padding: 2rem;
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
             background: #ffffff;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 0 15px rgba(0,0,0,0.08);
         }
+
         .form-title {
             text-align: center;
             margin-bottom: 2rem;
             font-weight: bold;
+            font-size: 1.8rem;
         }
+
         .form-row {
             margin-bottom: 1rem;
             display: flex;
             flex-wrap: wrap;
+            gap: 1rem;
         }
+
         .form-label {
             font-weight: bold;
+            flex: 1 0 100%;
         }
+
         .form-control {
             border-radius: 8px;
             border: 1px solid #ccc;
             padding: 10px;
+            flex: 1 0 100%;
             transition: border-color 0.3s ease;
         }
+
         .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(248, 203, 46, 0.5);
         }
+
         .btn-primary {
             width: 100%;
             padding: 12px;
             border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: var(--custom-btn-bg-color);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
+        .btn-primary:hover {
+            background: var(--custom-btn-bg-hover-color);
+        }
+
         .back-link {
             display: block;
             text-align: center;
             margin-top: 1.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
         }
-        .form-row .col-md-6 {
-            padding: 0 15px;
-            width: 50%;
+
+        .back-link:hover {
+            text-decoration: underline;
         }
+
         .form-error {
-            color: red;
+            color: #dc3545;
             font-size: 0.9em;
             margin-top: 5px;
         }
@@ -61,175 +177,166 @@
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div id="sidebar" class="col-md-3 bg-dark text-white min-vh-100 sidebar p-0">
-            <ul class="navbar-nav sidebar sidebar-dark accordion">
-                <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="#">
-                    <div class="sidebar-brand-icon">
-                        <i class="bi bi-shield-lock"></i>
-                    </div>
-                    <div class="sidebar-brand-text mx-2">Admin Panel</div>
-                </a>
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul id="sidebar" class="navbar-nav sidebar sidebar-dark accordion">
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <div class="sidebar-brand-text mx-2">Admin Panel</div>
+        </a>
 
-                <hr class="sidebar-divider my-0 bg-light">
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="dashboard">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
+        <!-- Nav Items -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
 
-                <hr class="sidebar-divider bg-light">
+        <!-- Divider -->
+        <hr class="sidebar-divider">
 
-                <div class="sidebar-heading text-light">
-                    Management
-                </div>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="events">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Events</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="sponsors">
-                        <i class="bi bi-award"></i>
-                        <span>Sponsors</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="equipements">
-                        <i class="bi bi-truck"></i>
-                        <span>Equipement</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="ads">
-                        <i class="bi bi-megaphone"></i>
-                        <span>Advertisements</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="merchandise">
-                        <i class="bi bi-shop"></i>
-                        <span>Merchandise</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" data-section="users">
-                        <i class="bi bi-people"></i>
-                        <span>Users</span>
-                    </a>
-                </li>
-            </ul>
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Management
         </div>
-        <!-- End Sidebar -->
 
-        <!-- Content -->
-        <div id="content" class="col-md-9">
-            {# TOASTS #}
-            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-                {% for label, messages in app.flashes %}
-                    {% for message in messages %}
-                        <div class="toast align-items-center text-bg-{{ label == 'success' ? 'success' : 'danger' }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="d-flex">
-                                <div class="toast-body">
-                                    {{ message }}
-                                </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endfor %}
+        <!-- Events Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Events</span>
+            </a>
+        </li>
+
+        <!-- Sponsors Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link active" href="#">
+                <i class="bi bi-award"></i>
+                <span>Sponsors</span>
+            </a>
+        </li>
+
+        <!-- Contrat de Sponsor Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-calendar-event"></i>
+                <span>Contrat de Sponsor</span>
+            </a>
+        </li>
+
+        <!-- Logistics Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-truck"></i>
+                <span>Logistics</span>
+            </a>
+        </li>
+
+        <!-- Ads Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-megaphone"></i>
+                <span>Advertisements</span>
+            </a>
+        </li>
+
+        <!-- Merchandise Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-shop"></i>
+                <span>Merchandise</span>
+            </a>
+        </li>
+
+        <!-- Users Nav Item -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+        </li>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content -->
+    <div id="content">
+        <div class="form-container">
+            <h1 class="form-title">Créer un nouveau Sponsor</h1>
+
+            {{ form_start(form) }}
+
+            <div class="form-row">
+                <label for="nom" class="form-label">Nom</label>
+                {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.nom) }}
             </div>
 
-            <div class="form-container">
-                <div class="form-card">
-                    <h1 class="form-title">Créer un nouveau Sponsor</h1>
-
-                    {{ form_start(form) }}
-
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <label for="nom" class="form-label">Nom</label>
-                            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.nom) }}
-                        </div>
-                        <div class="col-md-6">
-                            <label for="logo" class="form-label">Logo</label>
-                            {{ form_widget(form.logo, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.logo) }}
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <label for="site_web" class="form-label">Site Web</label>
-                            {{ form_widget(form.site_web, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.site_web) }}
-                        </div>
-                        <div class="col-md-6">
-                            <label for="contact_email" class="form-label">Email</label>
-                            {{ form_widget(form.contact_email, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.contact_email) }}
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <label for="contact_telephone" class="form-label">Téléphone</label>
-                            {{ form_widget(form.contact_telephone, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.contact_telephone) }}
-                        </div>
-                        <div class="col-md-6">
-                            <label for="adresse" class="form-label">Adresse</label>
-                            {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.adresse) }}
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <label for="secteur_activite" class="form-label">Secteur d'activité</label>
-                            {{ form_widget(form.secteur_activite, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.secteur_activite) }}
-                        </div>
-                        <div class="col-md-6">
-                            <label for="date_inscription" class="form-label">Date d'inscription</label>
-                            {{ form_widget(form.date_inscription, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.date_inscription) }}
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <label for="statut" class="form-label">Statut</label>
-                            {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.statut) }}
-                        </div>
-                        <div class="col-md-6">
-                            <label for="user" class="form-label">Utilisateur</label>
-                            {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.user) }}
-                        </div>
-                    </div>
-
-                    <button class="btn btn-primary">✅ Enregistrer</button>
-                    {{ form_end(form) }}
-
-                    <a href="{{ path('app_sponsor_c_index') }}" class="back-link">← Retour à la liste</a>
-                </div>
+            <div class="form-row">
+                <label for="logo" class="form-label">Logo</label>
+                {{ form_widget(form.logo, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.logo) }}
             </div>
+
+            <div class="form-row">
+                <label for="site_web" class="form-label">Site Web</label>
+                {{ form_widget(form.site_web, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.site_web) }}
+            </div>
+
+            <div class="form-row">
+                <label for="contact_email" class="form-label">Email</label>
+                {{ form_widget(form.contact_email, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.contact_email) }}
+            </div>
+
+            <div class="form-row">
+                <label for="contact_telephone" class="form-label">Téléphone</label>
+                {{ form_widget(form.contact_telephone, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.contact_telephone) }}
+            </div>
+
+            <div class="form-row">
+                <label for="adresse" class="form-label">Adresse</label>
+                {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.adresse) }}
+            </div>
+
+            <div class="form-row">
+                <label for="secteur_activite" class="form-label">Secteur d'activité</label>
+                {{ form_widget(form.secteur_activite, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.secteur_activite) }}
+            </div>
+
+            <div class="form-row">
+                <label for="date_inscription" class="form-label">Date d'inscription</label>
+                {{ form_widget(form.date_inscription, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.date_inscription) }}
+            </div>
+
+            <div class="form-row">
+                <label for="statut" class="form-label">Statut</label>
+                {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.statut) }}
+            </div>
+
+            <div class="form-row">
+                <label for="user" class="form-label">Utilisateur</label>
+                {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.user) }}
+            </div>
+
+            <button class="btn btn-primary">✅ Enregistrer</button>
+            {{ form_end(form) }}
+
+            <a href="{{ path('app_sponsor_c_index') }}" class="back-link">← Retour à la liste</a>
         </div>
-        <!-- End Content -->
     </div>
 </div>
 {% endblock %}

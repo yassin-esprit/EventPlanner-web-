@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/sponsor/c')]
+#[Route('//sponsor/c')]
 final class SponsorCController extends AbstractController
 {
     private $sponsorInfoService;
@@ -122,6 +122,10 @@ public function getSponsorInfo(int $id_sponsor, SponsorRepository $sponsorReposi
                     );
                     $sponsor->setLogo($newFilename);
                 } catch (FileException $e) {
+                    $this->logger->error('Error uploading logo file', [
+                        'error' => $e->getMessage(),
+                        'file' => $logoFile->getClientOriginalName()
+                    ]);
                     $this->addFlash('error', 'Erreur lors du téléchargement du logo.');
                 }
             }
@@ -169,7 +173,12 @@ public function getSponsorInfo(int $id_sponsor, SponsorRepository $sponsorReposi
             $logoFile = $form->get('logo')->getData();
             if ($logoFile) {
                 $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = \transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                if (function_exists('transliterator_transliterate')) {
+                    $safeFilename = \transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                } else {
+                    // Fallback if intl extension is not enabled
+                    $safeFilename = preg_replace('/[^A-Za-z0-9_]/', '', strtolower($originalFilename));
+                }
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
 
                 try {
@@ -179,6 +188,10 @@ public function getSponsorInfo(int $id_sponsor, SponsorRepository $sponsorReposi
                     );
                     $sponsor->setLogo($newFilename);
                 } catch (FileException $e) {
+                    $this->logger->error('Error uploading logo file', [
+                        'error' => $e->getMessage(),
+                        'file' => $logoFile->getClientOriginalName()
+                    ]);
                     $this->addFlash('error', 'Erreur lors du téléchargement du logo.');
                 }
             }

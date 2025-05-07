@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Evenement;
-use App\Entity\Equipement;
 use App\Repository\EvenementRepository;
 use App\Repository\EquipementRepository;
 use App\Repository\ReservationEquipementRepository;
@@ -13,36 +12,31 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-<<<<<<< HEAD
-use App\Entity\Evenement;
 use App\Repository\SponsorRepository;
 use App\Repository\ContratRepository;
-=======
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\BadgeService;
->>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9
 
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard/admin', name: 'admin_dashboard')]
     #[IsGranted('ROLE_ADMIN')]
-<<<<<<< HEAD
-    public function adminDashboard(EvenementRepository $evenementRepository): Response
-    {
-        $evenements = $evenementRepository->findAll();
-=======
     public function adminDashboard(
         EvenementRepository $evenementRepository,
         EquipementRepository $equipementRepository,
         PubliciteRepository $publiciteRepository,
         ReservationEquipementRepository $reservationEquipementRepository,
-        CampagnesPublicitaireRepository $campagneRepository
+        CampagnesPublicitaireRepository $campagneRepository,
+        SponsorRepository $sponsorRepository,
+        ContratRepository $contratRepository
     ): Response {
         $evenements   = $evenementRepository->findAll();
         $equipements  = $equipementRepository->findAll();
         $publicites   = $publiciteRepository->findAll();
         $reservationEquipements = $reservationEquipementRepository->findAll();
         $campagnes    = $campagneRepository->findAll();
+        $sponsors     = $sponsorRepository->findAll();
+        $contrats     = $contratRepository->findAll();
 
         // ✅ Statistiques équipements par statut
         $stats = [
@@ -51,7 +45,6 @@ class DashboardController extends AbstractController
             'indisponible' => $equipementRepository->count(['statut' => 'indisponible']),
         ];
 
->>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9
         return $this->render('dashboard/admin/admin.html.twig', [
             'controller_name'        => 'DashboardController',
             'evenements'             => $evenements,
@@ -60,16 +53,13 @@ class DashboardController extends AbstractController
             'campagnes'              => $campagnes,
             'reservation_equipements'=> $reservationEquipements,
             'stats'                  => $stats,
+            'sponsors'               => $sponsors,
+            'contrats'               => $contrats,
         ]);
     }
 
     #[Route('/dashboard/owner', name: 'owner_dashboard')]
     #[IsGranted('ROLE_OWNER')]
-<<<<<<< HEAD
-    public function ownerDashboard(EvenementRepository $evenementRepository): Response
-    {
-        $evenements = $evenementRepository->findAll();
-=======
     public function ownerDashboard(
         EvenementRepository $evenementRepository,
         EquipementRepository $equipementRepository,
@@ -85,7 +75,6 @@ class DashboardController extends AbstractController
         // Get the current user
         $user = $this->getUser();
 
->>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9
         return $this->render('dashboard/owner/owner.html.twig', [
             'controller_name'        => 'DashboardController',
             'evenements'             => $evenements,
@@ -102,26 +91,20 @@ class DashboardController extends AbstractController
     public function participantDashboard(
         EvenementRepository $evenementRepository,
         PubliciteRepository $publiciteRepository,
-
         Request $request,
         BadgeService $badgeService
     ): Response {
         $evenements = $evenementRepository->findAll();
-<<<<<<< HEAD
-=======
         $publicites   = $publiciteRepository->findAll();
-
 
         // Example of handling search and sort functionality
         $search = $request->query->get('search', '');
         $sort = $request->query->get('sort', 'name'); // Default sort field
         $direction = $request->query->get('direction', 'asc'); // Default sort direction
->>>>>>> d78921272f638abc0f384ea72aad8824ef2cbcd9
 
         return $this->render('dashboard/participant/participant.html.twig', [
             'evenements' => $evenements,
             'publicites' => $publicites,
-
             'search' => $search,
             'sort' => $sort,
             'direction' => $direction,

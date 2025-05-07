@@ -465,6 +465,36 @@
 		background-color: #dc3545;
 	}
 
+	/* Sponsor Logo */
+	.sponsor-logo {
+		width: 100px;
+		height: 100px;
+		object-fit: cover;
+		border-radius: 50%;
+		border: 2px solid var(--primary-color);
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	/* Sponsor Card */
+	.sponsor-card {
+		transition: transform 0.3s, box-shadow 0.3s;
+	}
+
+	.sponsor-card:hover {
+		transform: translateY(-10px);
+		box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+	}
+
+	/* Secteur Badge */
+	.secteur-badge {
+		display: inline-block;
+		padding: 0.25em 0.5em;
+		font-size: 0.75rem;
+		color: white;
+		background-color: var(--primary-color);
+		border-radius: 0.25rem;
+	}
+
 	/* Responsive */
 	@media(max-width: 768px) {
 		#sidebar {
