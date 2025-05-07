@@ -9,7 +9,7 @@ L’application prend en charge plusieurs rôles utilisateur (administrateur, pr
 
 ## 📚 Table des matières
 
-- [Fonctionnalités](#Fonctionnalités)
+- [Fonctionnalités](##Fonctionnalités)
 - [Technologies utilisées](#technologies-utilisées)
 - [Installation](#installation)
 - [Utilisation](#utilisation)
