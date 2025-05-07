@@ -39,12 +39,13 @@ L’application prend en charge plusieurs rôles utilisateur (administrateur, pr
 - **Langage** : PHP 8.2
 - **Frontend** : Twig / HTML / CSS / JS
 - **Base de données** : MySQL avec Doctrine ORM
-- **APIs externes** : API météo (ex : OpenWeatherMap)
+- **APIs externes** :
+  - API météo (ex : OpenWeatherMap)
   - API Map (ex: OpensStreetMap)
-                    : Twilio sms API
-                    : API  QrCode
-                    : Calendrier (ex: Google calender)
-                    : ChatBot API (Gemini)
+  - Twilio sms API
+  - API  QrCode
+  - Calendrier (ex: Google calender)
+  - ChatBot API (Gemini)
 
 ## 🚀 Installation
 
