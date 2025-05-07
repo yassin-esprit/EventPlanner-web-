@@ -9,11 +9,11 @@ L’application prend en charge plusieurs rôles utilisateur (administrateur, pr
 
 ## 📚 Table des matières
 
-[Fonctionnalités](#️-fonctionnalités)
-[Technologies utilisées](#-technologies-utilisées)
-[Installation](#-installation)
-[Utilisation](#-utilisation)
-[Modules du projet](#-modules-du-projet)
+- [Fonctionnalités](#️-fonctionnalités)
+- [Technologies utilisées](#-technologies-utilisées)
+- [Installation](#-installation)
+- [Utilisation](#-utilisation)
+- [Modules du projet](#-modules-du-projet)
 
   - [Module Utilisateur](#1--module-utilisateur)
   - [Module Événement](#2--module-événement)
@@ -21,8 +21,8 @@ L’application prend en charge plusieurs rôles utilisateur (administrateur, pr
   - [Module Équipement](#4--module-équipement)
   - [Module Sponsor](#5--module-sponsor)
   - [Module Marchandises](#6--module-marchandises)
-[Contribution](#-contribution)
-[Licence](#-licence)
+- [Contribution](#-contribution)
+- [Licence](#-licence)
 
 ## ✨ Fonctionnalités
 
