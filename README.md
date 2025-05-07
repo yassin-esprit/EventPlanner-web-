@@ -9,21 +9,22 @@ L’application prend en charge plusieurs rôles utilisateur (administrateur, pr
 
 ## 📚 Table des matières
 
-- [Fonctionnalités](##Fonctionnalités)
-- [Technologies utilisées](#technologies-utilisées)
-- [Installation](#installation)
-- [Utilisation](#utilisation)
-- [Modules du projet](#modules-du-projet)
-  - [Module Utilisateur](#1-module-utilisateur)
-  - [Module Événement](#2-module-événement)
-  - [Publicités & Campagnes](#3-publicités--campagnes)
-  - [Module Équipement](#4-module-équipement)
-  - [Module Sponsor](#5-module-sponsor)
-  - [Module Marchandises](#6-module-marchandises)
-- [Contribution](#contribution)
-- [Licence](#licence)
-- [Remerciements](#remerciements)
 
+[Fonctionnalités](#️-fonctionnalités)
+[Technologies utilisées](#-technologies-utilisées)
+[Installation](#-installation)
+[Utilisation](#-utilisation)
+[Modules du projet](#-modules-du-projet)
+
+  - [Module Utilisateur](#1--module-utilisateur)
+  - [Module Événement](#2--module-événement)
+  - [Publicités & Campagnes](#3--publicités--campagnes)
+  - [Module Équipement](#4--module-équipement)
+  - [Module Sponsor](#5--module-sponsor)
+  - [Module Marchandises](#6--module-marchandises)
+[Contribution](#-contribution)
+[Licence](#-licence)
+[Remerciements](#-remerciements)
 ## ✨ Fonctionnalités
 
 - Gestion complète des événements
